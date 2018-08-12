@@ -1,0 +1,22 @@
+{
+   "curly": true,
+   "esversion": 6,
+   "nonbsp": true,
+   "nonew": true,
+   "undef": true,
+   "unused": true,
+   "globals": {
+      "console": false,
+      "document": false,
+      "Image": false,
+      "Immutable": false,
+      "PropTypes": false,
+      "QUnit": false,
+      "R": false,
+      "React": false,
+      "ReactDOMFactories": false,
+      "Redux": false,
+      "XMA": false,
+      "XMS": false
+   }
+}

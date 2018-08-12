@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>X-Wing Miniatures (local)</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tachyons@4.11.1/css/tachyons.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xwing-miniatures-font@2.1.2/dist/xwing-miniatures.css">
+	<link rel="stylesheet" href="../../view/src/style.css">
+
+	<script src="https://cdn.jsdelivr.net/npm/ramda@0.25.0/dist/ramda.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/react@16.4.2/umd/react.development.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/react-dom@16.4.2/umd/react-dom.development.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/prop-types@15.6.2/prop-types.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/react-dom-factories@1.0.2/index.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/redux@4.0.0/dist/redux.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/seamless-immutable@7.1.3/seamless-immutable.development.js"></script>
+
+	<script src="../../dist/xwing-miniatures-artifact.js"></script>
+	<script src="../../dist/xwing-miniatures-state.js"></script>
+	<script src="../../dist/xwing-miniatures-model.js"></script>
+	<script src="../../dist/xwing-miniatures-view.js"></script>
+
+	<script src="XWingMiniaturesApp.js" type="module"></script>
+</head>
+<body>
+	<div id="statusBarContainer"></div>
+	<div id="pilotArea1"></div>
+	<div id="agentInputArea1"></div>
+	<div id="playAreaContainer" style="text-align: center;"></div>
+	<div id="agentInputArea2"></div>
+	<div id="pilotArea2"></div>
+
+	<audio id="explosionAudio" src="../../view/resource/audio/Explosion.wav" preload="auto"></audio>
+	<audio id="millenniumFalconLaserAudio" src="../../view/resource/audio/MillenniumFalconLaser.wav" preload="auto"></audio>
+	<audio id="slave1LaserAudio" src="../../view/resource/audio/Slave1Laser.wav" preload="auto"></audio>
+	<audio id="tieFighterLaserAudio" src="../../view/resource/audio/TIEFighterLaser.wav" preload="auto"></audio>
+	<audio id="xWingLaserAudio" src="../../view/resource/audio/XWingLaser.wav" preload="auto"></audio>
+</body>
+
+</html>

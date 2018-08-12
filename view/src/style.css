@@ -1,0 +1,62 @@
+body {
+  background-image: url(../resource/background/SeamlessMetalTextureSmooth.jpg);
+  font-family: "San Francisco", "Helvetica Neue", Helvetica, sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.b--xw-medium {
+  /* D3D3D3 near Tachyons moon-gray */
+  border: 1px solid lightGray;
+}
+
+.bg-xw-dark {
+  /* Tachyons mid-gray */
+  background-color: #555555;
+}
+
+.bg-xw-jet {
+  /* near Tachyons dark-gray */
+  background-color: #343434;
+}
+
+.bg-xw-light {
+  /* near Tachyons near-white */
+  background-color: #F0F0F0;
+}
+
+.bg-xw-medium {
+  /* D3D3D3 near Tachyons moon-gray */
+  background-color: lightGray;
+}
+
+.xw-cyan {
+  /* 7FBFFF */
+  color: rgb(127, 191, 255);
+}
+
+.xw-f8 {
+  /* Used by Maneuver Chooser */
+  font-size: .60rem;
+}
+
+.xw-green {
+  /* 7FBF7F */
+  color: rgb(127, 191, 127);
+}
+
+.xw-min-w1-5 {
+  /* Used by Maneuver Chooser */
+  min-width: 1.5rem;
+}
+
+.xw-violet {
+  /* EE82EE */
+  color: violet;
+}

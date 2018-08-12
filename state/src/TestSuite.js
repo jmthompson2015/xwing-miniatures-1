@@ -1,0 +1,23 @@
+import AbilityStateTest from "./AbilityState.test.js";
+import ActionCreatorTest from "./ActionCreator.test.js";
+import ActionTypeTest from "./ActionType.test.js";
+import AgentQueryStateTest from "./AgentQueryState.test.js";
+import AgentResponseStateTest from "./AgentResponseState.test.js";
+import AgentStateTest from "./AgentState.test.js";
+import CombatStateTest from "./CombatState.test.js";
+import DamageStateTest from "./DamageState.test.js";
+import ExplosionStateTest from "./ExplosionState.test.js";
+import GameStateTest from "./GameState.test.js";
+import LaserBeamStateTest from "./LaserBeamState.test.js";
+import ManeuverStateTest from "./ManeuverState.test.js";
+import PilotStateTest from "./PilotState.test.js";
+import PositionStateTest from "./PositionState.test.js";
+import ReducerTest from "./Reducer.test.js";
+import SelectorTest from "./Selector.test.js";
+import SquadStateTest from "./SquadState.test.js";
+import StatBonusesStateTest from "./StatBonusesState.test.js";
+import TargetLockStateTest from "./TargetLockState.test.js";
+import TokenCountsStateTest from "./TokenCountsState.test.js";
+import UpgradeStateTest from "./UpgradeState.test.js";
+
+QUnit.start();

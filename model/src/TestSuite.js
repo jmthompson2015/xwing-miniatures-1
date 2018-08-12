@@ -1,0 +1,20 @@
+import AbilityUtilitiesTest from "./AbilityUtilities.test.js";
+import ActivationTaskTest from "./ActivationTask.test.js";
+import AgentQueryTypeTest from "./AgentQueryType.test.js";
+import AgentUtilitiesTest from "./AgentUtilities.test.js";
+import CombatTaskTest from "./CombatTask.test.js";
+import DamageDeckTest from "./DamageDeck.test.js";
+import DiceUtilitiesTest from "./DiceUtilities.test.js";
+import EndTaskTest from "./EndTask.test.js";
+import ManeuverComputerTest from "./ManeuverComputer.test.js";
+import ModifyDiceAbilityTest from "./ModifyDiceAbility.test.js";
+import PathUtilitiesTest from "./PathUtilities.test.js";
+import PilotUtilitiesTest from "./PilotUtilities.test.js";
+import PlanningTask from "./PlanningTask.test.js";
+import SelectorTest from "./Selector.test.js";
+import ShipActionAbilityTest from "./ShipActionAbility.test.js";
+import SquadBuilderTest from "./SquadBuilder.test.js";
+import SquadUtilitiesTest from "./SquadUtilities.test.js";
+import XWingMiniaturesModelTest from "./XWingMiniaturesModel.test.js";
+
+QUnit.start();
