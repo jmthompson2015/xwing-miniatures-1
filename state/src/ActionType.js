@@ -20,13 +20,6 @@ ActionType.DEQUEUE_COMBAT = "dequeueCombat";
 ActionType.DEQUEUE_END = "dequeueEnd";
 ActionType.DEQUEUE_PLANNING = "dequeuePlanning";
 
-ActionType.INCREMENT_NEXT_AGENT_ID = "incrementNextAgentId";
-ActionType.INCREMENT_NEXT_COMBAT_ID = "incrementNextCombatId";
-ActionType.INCREMENT_NEXT_CONDITION_ID = "incrementNextConditionId";
-ActionType.INCREMENT_NEXT_DAMAGE_ID = "incrementNextDamageId";
-ActionType.INCREMENT_NEXT_PILOT_ID = "incrementNextPilotId";
-ActionType.INCREMENT_NEXT_SQUAD_ID = "incrementNextSquadId";
-ActionType.INCREMENT_NEXT_UPGRADE_ID = "incrementNextUpgradeId";
 ActionType.INCREMENT_ROUND = "incrementRound";
 
 ActionType.MOVE_PILOT = "movePilot";

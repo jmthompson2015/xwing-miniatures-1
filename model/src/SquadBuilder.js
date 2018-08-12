@@ -268,8 +268,7 @@ const computePoints = pilotAndUpgradeKeys =>
 const createPilot = (store, pilotKey) =>
 {
    // Side effects.
-   const pilotId = store.getState().nextPilotId;
-   store.dispatch(ActionCreator.incrementNextPilotId());
+   const pilotId = XMS.Selector.nextPilotId(store.getState());
 
    return XMS.PilotState.create(
    {
@@ -281,8 +280,7 @@ const createPilot = (store, pilotKey) =>
 const createUpgrade = (store, upgradeKey) =>
 {
    // Side effects.
-   const upgradeId = store.getState().nextUpgradeId;
-   store.dispatch(ActionCreator.incrementNextUpgradeId());
+   const upgradeId = XMS.Selector.nextUpgradeId(store.getState());
 
    return XMS.UpgradeState.create(
    {

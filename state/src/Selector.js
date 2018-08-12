@@ -99,17 +99,19 @@ Selector.displayManeuver = state => R.prop("displayManeuver", state);
 
 Selector.endQueue = state => R.prop("endQueue", state);
 
-Selector.nextAgentId = state => R.prop("nextAgentId", state);
+Selector.nextAgentId = state => nextId(state.agentInstances);
 
-Selector.nextCombatId = state => R.prop("nextCombatId", state);
+Selector.nextCombatId = state => nextId(state.combatInstances);
 
-Selector.nextConditionId = state => R.prop("nextConditionId", state);
+Selector.nextConditionId = state => nextId(state.conditionInstances);
 
-Selector.nextDamageId = state => R.prop("nextDamageId", state);
+Selector.nextDamageId = state => nextId(state.damageInstances);
 
-Selector.nextPilotId = state => R.prop("nextPilotId", state);
+Selector.nextPilotId = state => nextId(state.pilotInstances);
 
-Selector.nextUpgradeId = state => R.prop("nextUpgradeId", state);
+Selector.nextSquadId = state => nextId(state.squadInstances);
+
+Selector.nextUpgradeId = state => nextId(state.upgradeInstances);
 
 Selector.phaseKey = state => R.prop("phaseKey", state);
 
@@ -158,6 +160,14 @@ Selector.squadInstance = (squadId, state) => R.path(["squadInstances", squadId],
 Selector.upgradeInstance = (upgradeId, state) => R.path(["upgradeInstances", upgradeId], state);
 
 ////////////////////////////////////////////////////////////////////////////////
+
+const nextId = instanceMap =>
+{
+   const reduceFunction = (accum, key) => Math.max(accum, key);
+   const maxId = R.reduce(reduceFunction, 0, Object.keys(instanceMap));
+
+   return (maxId !== undefined ? maxId : 0) + 1;
+};
 
 Object.freeze(Selector);
 

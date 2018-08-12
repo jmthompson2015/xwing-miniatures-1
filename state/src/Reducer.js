@@ -64,20 +64,6 @@ Reducer.root = function(state, action)
          console.log("Active Agent ID: " + newActiveAgentId + " Agent: " + (newActiveAgentId !== undefined ? state.agentInstances[newActiveAgentId].name : undefined));
          return assoc("activeAgentId", newActiveAgentId, assoc("planningQueue", state.planningQueue.slice(1), state));
 
-      case ActionType.INCREMENT_NEXT_AGENT_ID:
-         return assoc("nextAgentId", state.nextAgentId + 1, state);
-      case ActionType.INCREMENT_NEXT_COMBAT_ID:
-         return assoc("nextCombatId", state.nextCombatId + 1, state);
-      case ActionType.INCREMENT_NEXT_CONDITION_ID:
-         return assoc("nextConditionId", state.nextConditionId + 1, state);
-      case ActionType.INCREMENT_NEXT_DAMAGE_ID:
-         return assoc("nextDamageId", state.nextDamageId + 1, state);
-      case ActionType.INCREMENT_NEXT_PILOT_ID:
-         return assoc("nextPilotId", state.nextPilotId + 1, state);
-      case ActionType.INCREMENT_NEXT_SQUAD_ID:
-         return assoc("nextSquadId", state.nextSquadId + 1, state);
-      case ActionType.INCREMENT_NEXT_UPGRADE_ID:
-         return assoc("nextUpgradeId", state.nextUpgradeId + 1, state);
       case ActionType.INCREMENT_ROUND:
          console.log("Round: " + (state.round + 1));
          return assoc("round", state.round + 1, state);

@@ -50,13 +50,6 @@
    ActionType.DEQUEUE_END = "dequeueEnd";
    ActionType.DEQUEUE_PLANNING = "dequeuePlanning";
 
-   ActionType.INCREMENT_NEXT_AGENT_ID = "incrementNextAgentId";
-   ActionType.INCREMENT_NEXT_COMBAT_ID = "incrementNextCombatId";
-   ActionType.INCREMENT_NEXT_CONDITION_ID = "incrementNextConditionId";
-   ActionType.INCREMENT_NEXT_DAMAGE_ID = "incrementNextDamageId";
-   ActionType.INCREMENT_NEXT_PILOT_ID = "incrementNextPilotId";
-   ActionType.INCREMENT_NEXT_SQUAD_ID = "incrementNextSquadId";
-   ActionType.INCREMENT_NEXT_UPGRADE_ID = "incrementNextUpgradeId";
    ActionType.INCREMENT_ROUND = "incrementRound";
 
    ActionType.MOVE_PILOT = "movePilot";
@@ -129,20 +122,6 @@
    ActionCreator.dequeueEnd = makeActionCreator(ActionType.DEQUEUE_END);
 
    ActionCreator.dequeuePlanning = makeActionCreator(ActionType.DEQUEUE_PLANNING);
-
-   ActionCreator.incrementNextAgentId = makeActionCreator(ActionType.INCREMENT_NEXT_AGENT_ID);
-
-   ActionCreator.incrementNextCombatId = makeActionCreator(ActionType.INCREMENT_NEXT_COMBAT_ID);
-
-   ActionCreator.incrementNextConditionId = makeActionCreator(ActionType.INCREMENT_NEXT_CONDITION_ID);
-
-   ActionCreator.incrementNextDamageId = makeActionCreator(ActionType.INCREMENT_NEXT_DAMAGE_ID);
-
-   ActionCreator.incrementNextPilotId = makeActionCreator(ActionType.INCREMENT_NEXT_PILOT_ID);
-
-   ActionCreator.incrementNextSquadId = makeActionCreator(ActionType.INCREMENT_NEXT_SQUAD_ID);
-
-   ActionCreator.incrementNextUpgradeId = makeActionCreator(ActionType.INCREMENT_NEXT_UPGRADE_ID);
 
    ActionCreator.incrementRound = makeActionCreator(ActionType.INCREMENT_ROUND);
 
@@ -372,13 +351,6 @@
       activeCombatId,
       activePilotId,
       isGameOver = false,
-      nextAgentId = 1,
-      nextCombatId = 1,
-      nextConditionId = 1,
-      nextDamageId = 1,
-      nextPilotId = 1,
-      nextSquadId = 1,
-      nextUpgradeId = 1,
       phaseKey = "setup",
       playFormatKey = "standard",
       round = 0,
@@ -414,13 +386,6 @@
          activeCombatId: activeCombatId,
          activePilotId: activePilotId,
          isGameOver: isGameOver,
-         nextAgentId: nextAgentId,
-         nextCombatId: nextCombatId,
-         nextConditionId: nextConditionId,
-         nextDamageId: nextDamageId,
-         nextPilotId: nextPilotId,
-         nextSquadId: nextSquadId,
-         nextUpgradeId: nextUpgradeId,
          phaseKey: phaseKey,
          playFormatKey: playFormatKey,
          round: round,
@@ -610,20 +575,6 @@
             console.log("Active Agent ID: " + newActiveAgentId + " Agent: " + (newActiveAgentId !== undefined ? state.agentInstances[newActiveAgentId].name : undefined));
             return assoc("activeAgentId", newActiveAgentId, assoc("planningQueue", state.planningQueue.slice(1), state));
 
-         case ActionType.INCREMENT_NEXT_AGENT_ID:
-            return assoc("nextAgentId", state.nextAgentId + 1, state);
-         case ActionType.INCREMENT_NEXT_COMBAT_ID:
-            return assoc("nextCombatId", state.nextCombatId + 1, state);
-         case ActionType.INCREMENT_NEXT_CONDITION_ID:
-            return assoc("nextConditionId", state.nextConditionId + 1, state);
-         case ActionType.INCREMENT_NEXT_DAMAGE_ID:
-            return assoc("nextDamageId", state.nextDamageId + 1, state);
-         case ActionType.INCREMENT_NEXT_PILOT_ID:
-            return assoc("nextPilotId", state.nextPilotId + 1, state);
-         case ActionType.INCREMENT_NEXT_SQUAD_ID:
-            return assoc("nextSquadId", state.nextSquadId + 1, state);
-         case ActionType.INCREMENT_NEXT_UPGRADE_ID:
-            return assoc("nextUpgradeId", state.nextUpgradeId + 1, state);
          case ActionType.INCREMENT_ROUND:
             console.log("Round: " + (state.round + 1));
             return assoc("round", state.round + 1, state);
@@ -820,17 +771,19 @@
 
    Selector.endQueue = state => R.prop("endQueue", state);
 
-   Selector.nextAgentId = state => R.prop("nextAgentId", state);
+   Selector.nextAgentId = state => nextId(state.agentInstances);
 
-   Selector.nextCombatId = state => R.prop("nextCombatId", state);
+   Selector.nextCombatId = state => nextId(state.combatInstances);
 
-   Selector.nextConditionId = state => R.prop("nextConditionId", state);
+   Selector.nextConditionId = state => nextId(state.conditionInstances);
 
-   Selector.nextDamageId = state => R.prop("nextDamageId", state);
+   Selector.nextDamageId = state => nextId(state.damageInstances);
 
-   Selector.nextPilotId = state => R.prop("nextPilotId", state);
+   Selector.nextPilotId = state => nextId(state.pilotInstances);
 
-   Selector.nextUpgradeId = state => R.prop("nextUpgradeId", state);
+   Selector.nextSquadId = state => nextId(state.squadInstances);
+
+   Selector.nextUpgradeId = state => nextId(state.upgradeInstances);
 
    Selector.phaseKey = state => R.prop("phaseKey", state);
 
@@ -879,6 +832,14 @@
    Selector.upgradeInstance = (upgradeId, state) => R.path(["upgradeInstances", upgradeId], state);
 
    ////////////////////////////////////////////////////////////////////////////////
+
+   const nextId = instanceMap =>
+   {
+      const reduceFunction = (accum, key) => Math.max(accum, key);
+      const maxId = R.reduce(reduceFunction, 0, Object.keys(instanceMap));
+
+      return (maxId !== undefined ? maxId : 0) + 1;
+   };
 
    Object.freeze(Selector);
 

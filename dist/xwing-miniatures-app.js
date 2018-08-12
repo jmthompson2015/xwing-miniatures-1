@@ -649,26 +649,22 @@
    const createStore = () =>
    {
       const store = Redux.createStore(XMS.Reducer.root);
-      const agentId1 = store.getState().nextAgentId;
-      store.dispatch(XMS.ActionCreator.incrementNextAgentId());
-      const agentId2 = store.getState().nextAgentId;
-      store.dispatch(XMS.ActionCreator.incrementNextAgentId());
+      const agentId1 = XMS.Selector.nextAgentId(store.getState());
       store.dispatch(XMS.ActionCreator.setAgentInstance(XMS.AgentState.create(
       {
          id: agentId1,
          name: "Imperial Agent",
          strategy: "HumanAgentStrategy"
       })));
+      const agentId2 = XMS.Selector.nextAgentId(store.getState());
       store.dispatch(XMS.ActionCreator.setAgentInstance(XMS.AgentState.create(
       {
          id: agentId2,
          name: "Rebel Agent"
       })));
-      const squadId1 = store.getState().nextSquadId;
-      store.dispatch(XMS.ActionCreator.incrementNextSquadId());
+      const squadId1 = XMS.Selector.nextSquadId(store.getState());
       store.dispatch(XMS.ActionCreator.setSquadInstance(XMM.SquadBuilder.buildCoreSetImperial(store, squadId1)));
-      const squadId2 = store.getState().nextSquadId;
-      store.dispatch(XMS.ActionCreator.incrementNextSquadId());
+      const squadId2 = XMS.Selector.nextSquadId(store.getState());
       store.dispatch(XMS.ActionCreator.setSquadInstance(XMM.SquadBuilder.buildCoreSetRebel(store, squadId2)));
 
       store.dispatch(XMS.ActionCreator.setAgentSquad(agentId1, squadId1));

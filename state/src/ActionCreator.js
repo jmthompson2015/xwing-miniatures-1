@@ -34,20 +34,6 @@ ActionCreator.dequeueEnd = makeActionCreator(ActionType.DEQUEUE_END);
 
 ActionCreator.dequeuePlanning = makeActionCreator(ActionType.DEQUEUE_PLANNING);
 
-ActionCreator.incrementNextAgentId = makeActionCreator(ActionType.INCREMENT_NEXT_AGENT_ID);
-
-ActionCreator.incrementNextCombatId = makeActionCreator(ActionType.INCREMENT_NEXT_COMBAT_ID);
-
-ActionCreator.incrementNextConditionId = makeActionCreator(ActionType.INCREMENT_NEXT_CONDITION_ID);
-
-ActionCreator.incrementNextDamageId = makeActionCreator(ActionType.INCREMENT_NEXT_DAMAGE_ID);
-
-ActionCreator.incrementNextPilotId = makeActionCreator(ActionType.INCREMENT_NEXT_PILOT_ID);
-
-ActionCreator.incrementNextSquadId = makeActionCreator(ActionType.INCREMENT_NEXT_SQUAD_ID);
-
-ActionCreator.incrementNextUpgradeId = makeActionCreator(ActionType.INCREMENT_NEXT_UPGRADE_ID);
-
 ActionCreator.incrementRound = makeActionCreator(ActionType.INCREMENT_ROUND);
 
 ActionCreator.movePilot = makeActionCreator(ActionType.MOVE_PILOT, "pilotId", "toPosition");

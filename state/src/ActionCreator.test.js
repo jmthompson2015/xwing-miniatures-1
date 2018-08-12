@@ -13,7 +13,7 @@ QUnit.test("all action types", function(assert)
 {
    // Setup.
    const actionTypeKeys = Object.getOwnPropertyNames(ActionType);
-   assert.equal(actionTypeKeys.length, 57);
+   assert.equal(actionTypeKeys.length, 50);
 
    // Run / Verify.
    actionTypeKeys.forEach(key =>
@@ -210,76 +210,6 @@ QUnit.test("dequeuePlanning()", function(assert)
    // Verify.
    assert.ok(result);
    assert.equal(result.type, ActionType.DEQUEUE_PLANNING);
-});
-
-QUnit.test("incrementNextAgentId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextAgentId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_AGENT_ID);
-});
-
-QUnit.test("incrementNextCombatId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextCombatId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_COMBAT_ID);
-});
-
-QUnit.test("incrementNextConditionId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextConditionId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_CONDITION_ID);
-});
-
-QUnit.test("incrementNextDamageId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextDamageId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_DAMAGE_ID);
-});
-
-QUnit.test("incrementNextPilotId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextPilotId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_PILOT_ID);
-});
-
-QUnit.test("incrementNextSquadId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextSquadId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_SQUAD_ID);
-});
-
-QUnit.test("incrementNextUpgradeId()", function(assert)
-{
-   // Run.
-   const result = ActionCreator.incrementNextUpgradeId();
-
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.type, ActionType.INCREMENT_NEXT_UPGRADE_ID);
 });
 
 QUnit.test("movePilot()", function(assert)

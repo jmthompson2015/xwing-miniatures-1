@@ -657,6 +657,97 @@ QUnit.test("maneuverByPilot() 1", function(assert)
    assert.equal(result, "myBestManeuver");
 });
 
+QUnit.test("nextAgentId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextAgentId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 3);
+});
+
+QUnit.test("nextCombatId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextCombatId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 1);
+});
+
+QUnit.test("nextConditionId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextConditionId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 1);
+});
+
+QUnit.test("nextDamageId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextDamageId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 34);
+});
+
+QUnit.test("nextPilotId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextPilotId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 4);
+});
+
+QUnit.test("nextSquadId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextSquadId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 3);
+});
+
+QUnit.test("nextUpgradeId()", function(assert)
+{
+   // Setup.
+   const gameState = TestData.createGameState();
+
+   // Run.
+   const result = Selector.nextUpgradeId(gameState);
+
+   // Verify.
+   assert.ok(result);
+   assert.equal(result, 4);
+});
+
 QUnit.test("phaseKey()", function(assert)
 {
    // Setup.

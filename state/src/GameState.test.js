@@ -3,7 +3,7 @@ import TestData from "./TestData.js";
 
 QUnit.module("GameState");
 
-const PROPS = ["activeAgentId", "activeCombatId", "activePilotId", "isGameOver", "nextAgentId", "nextCombatId", "nextConditionId", "nextDamageId", "nextPilotId", "nextSquadId", "nextUpgradeId", "phaseKey", "playFormatKey", "round", "userMessage",
+const PROPS = ["activeAgentId", "activeCombatId", "activePilotId", "isGameOver", "phaseKey", "playFormatKey", "round", "userMessage",
   "agentQuery", "agentResponse", "displayExplosion", "displayLaserBeam", "displayManeuver", "pilotToManeuver",
   "activationQueue", "combatQueue", "damageDeck", "damageDiscardPile", "endQueue", "planningQueue", "targetLocks",
   "agentInstances", "combatInstances", "conditionInstances", "damageInstances", "pilotInstances", "squadInstances", "upgradeInstances"];
@@ -59,13 +59,6 @@ function createTestState()
       activeCombatId: i++,
       activePilotId: i++,
       isGameOver: i++,
-      nextAgentId: i++,
-      nextCombatId: i++,
-      nextConditionId: i++,
-      nextDamageId: i++,
-      nextPilotId: i++,
-      nextSquadId: i++,
-      nextUpgradeId: i++,
       phaseKey: i++,
       playFormatKey: i++,
       round: i++,

@@ -238,8 +238,7 @@ QUnit.test("doIt() Full Cycle", function(assert)
 ////////////////////////////////////////////////////////////////////////////////
 const createAgent1 = store =>
 {
-   const agentId = store.getState().nextAgentId;
-   store.dispatch(ActionCreator.incrementNextAgentId());
+   const agentId = XMS.Selector.nextAgentId(store.getState());
    const agent = XMS.AgentState.create(
    {
       id: agentId,
@@ -252,8 +251,7 @@ const createAgent1 = store =>
 
 const createAgent2 = store =>
 {
-   const agentId = store.getState().nextAgentId;
-   store.dispatch(ActionCreator.incrementNextAgentId());
+   const agentId = XMS.Selector.nextAgentId(store.getState());
    const agent = XMS.AgentState.create(
    {
       id: agentId,

@@ -2071,7 +2071,6 @@
             const rangeKey = agentResponse.payload.rangeKey;
             const weaponKey = agentResponse.payload.weaponKey;
             const combatId = XMS.Selector.nextCombatId(store.getState());
-            store.dispatch(ActionCreator$4.incrementNextCombatId());
             store.dispatch(ActionCreator$4.setActiveCombatId(combatId));
 
             const combatInstance = XMS.CombatState.create(
@@ -2986,8 +2985,7 @@
    const createPilot = (store, pilotKey) =>
    {
       // Side effects.
-      const pilotId = store.getState().nextPilotId;
-      store.dispatch(ActionCreator$8.incrementNextPilotId());
+      const pilotId = XMS.Selector.nextPilotId(store.getState());
 
       return XMS.PilotState.create(
       {
@@ -2999,8 +2997,7 @@
    const createUpgrade = (store, upgradeKey) =>
    {
       // Side effects.
-      const upgradeId = store.getState().nextUpgradeId;
-      store.dispatch(ActionCreator$8.incrementNextUpgradeId());
+      const upgradeId = XMS.Selector.nextUpgradeId(store.getState());
 
       return XMS.UpgradeState.create(
       {

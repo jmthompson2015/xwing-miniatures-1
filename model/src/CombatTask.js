@@ -94,7 +94,6 @@ PHASE_TO_CONFIG[Phase.COMBAT_DECLARE_TARGET] = {
          const rangeKey = agentResponse.payload.rangeKey;
          const weaponKey = agentResponse.payload.weaponKey;
          const combatId = XMS.Selector.nextCombatId(store.getState());
-         store.dispatch(ActionCreator.incrementNextCombatId());
          store.dispatch(ActionCreator.setActiveCombatId(combatId));
 
          const combatInstance = XMS.CombatState.create(

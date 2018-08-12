@@ -16,7 +16,10 @@
       "React": false,
       "ReactDOMFactories": false,
       "Redux": false,
+      "setTimeout": false,
       "XMA": false,
-      "XMS": false
+      "XMM": false,
+      "XMS": false,
+      "XMV": false
    }
 }

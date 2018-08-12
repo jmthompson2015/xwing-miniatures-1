@@ -146,7 +146,6 @@ const createStore = rangeKey =>
 {
    const store = Redux.createStore(Reducer.root, TestData.createGameState());
    const combatId = XMS.Selector.nextCombatId(store.getState());
-   store.dispatch(ActionCreator.incrementNextCombatId());
    store.dispatch(ActionCreator.setActiveCombatId(combatId));
    const attackerId = 3;
    const defenderId = 2;
