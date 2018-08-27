@@ -23,483 +23,442 @@ import UpgradeSlot from "./UpgradeSlot.js";
 
 QUnit.module("Selector");
 
-QUnit.test("attackDiceValue()", function(assert)
-{
-   // Setup.
-   const diceKey = AttackDiceValue.HIT;
+QUnit.test("attackDiceValue()", assert => {
+  // Setup.
+  const diceKey = AttackDiceValue.HIT;
 
-   // Run.
-   const result = Selector.attackDiceValue(diceKey);
+  // Run.
+  const result = Selector.attackDiceValue(diceKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, diceKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, diceKey);
 });
 
-QUnit.test("conditionCard()", function(assert)
-{
-   // Setup.
-   const conditionKey = ConditionCard.A_DEBT_TO_PAY;
+QUnit.test("conditionCard()", assert => {
+  // Setup.
+  const conditionKey = ConditionCard.A_DEBT_TO_PAY;
 
-   // Run.
-   const result = Selector.conditionCard(conditionKey);
+  // Run.
+  const result = Selector.conditionCard(conditionKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, conditionKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, conditionKey);
 });
 
-QUnit.test("damageCard()", function(assert)
-{
-   // Setup.
-   const damageKey = DamageCard.BLINDED_PILOT;
+QUnit.test("damageCard()", assert => {
+  // Setup.
+  const damageKey = DamageCard.BLINDED_PILOT;
 
-   // Run.
-   const result = Selector.damageCard(damageKey);
+  // Run.
+  const result = Selector.damageCard(damageKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, damageKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, damageKey);
 });
 
-QUnit.test("damageCardTFA()", function(assert)
-{
-   // Setup.
-   const damageKey = DamageCardTFA.BLINDED_PILOT;
+QUnit.test("damageCardTFA()", assert => {
+  // Setup.
+  const damageKey = DamageCardTFA.BLINDED_PILOT;
 
-   // Run.
-   const result = Selector.damageCardTFA(damageKey);
+  // Run.
+  const result = Selector.damageCardTFA(damageKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, damageKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, damageKey);
 });
 
-QUnit.test("defenseDiceValue()", function(assert)
-{
-   // Setup.
-   const diceKey = DefenseDiceValue.EVADE;
+QUnit.test("defenseDiceValue()", assert => {
+  // Setup.
+  const diceKey = DefenseDiceValue.EVADE;
 
-   // Run.
-   const result = Selector.defenseDiceValue(diceKey);
+  // Run.
+  const result = Selector.defenseDiceValue(diceKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, diceKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, diceKey);
 });
 
-QUnit.test("faction()", function(assert)
-{
-   // Setup.
-   const factionKey = Faction.GALACTIC_EMPIRE;
+QUnit.test("faction()", assert => {
+  // Setup.
+  const factionKey = Faction.GALACTIC_EMPIRE;
 
-   // Run.
-   const result = Selector.faction(factionKey);
+  // Run.
+  const result = Selector.faction(factionKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, factionKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, factionKey);
 });
 
-QUnit.test("factionKeysByShip()", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.FIRESPRAY_31;
+QUnit.test("factionKeysByShip()", assert => {
+  // Setup.
+  const shipKey = Ship.FIRESPRAY_31;
 
-   // Run.
-   const result = Selector.factionKeysByShip(shipKey);
+  // Run.
+  const result = Selector.factionKeysByShip(shipKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.length, 2);
-   let i = 0;
-   assert.equal(result[i++], Faction.GALACTIC_EMPIRE);
-   assert.equal(result[i++], Faction.SCUM_AND_VILLAINY);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], Faction.GALACTIC_EMPIRE);
+  assert.equal(result[1], Faction.SCUM_AND_VILLAINY);
 });
 
-QUnit.test("factionValueByPilot()", function(assert)
-{
-   // Setup.
-   const pilotKey = PilotCard.ACADEMY_PILOT;
+QUnit.test("factionValueByPilot()", assert => {
+  // Setup.
+  const pilotKey = PilotCard.ACADEMY_PILOT;
 
-   // Run.
-   const result = Selector.factionValueByPilot(pilotKey);
+  // Run.
+  const result = Selector.factionValueByPilot(pilotKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, Faction.GALACTIC_EMPIRE);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, Faction.GALACTIC_EMPIRE);
 });
 
-QUnit.test("firingArc()", function(assert)
-{
-   // Setup.
-   const arcKey = FiringArc.FRONT;
+QUnit.test("firingArc()", assert => {
+  // Setup.
+  const arcKey = FiringArc.FRONT;
 
-   // Run.
-   const result = Selector.firingArc(arcKey);
+  // Run.
+  const result = Selector.firingArc(arcKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, arcKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, arcKey);
 });
 
-QUnit.test("firingArcKeysByShip()", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.FIRESPRAY_31;
+QUnit.test("firingArcKeysByShip()", assert => {
+  // Setup.
+  const shipKey = Ship.FIRESPRAY_31;
 
-   // Run.
-   const result = Selector.firingArcKeysByShip(shipKey);
+  // Run.
+  const result = Selector.firingArcKeysByShip(shipKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.length, 2);
-   let i = 0;
-   assert.equal(result[i++], FiringArc.AUXILIARY_REAR);
-   assert.equal(result[i++], FiringArc.FRONT);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], FiringArc.AUXILIARY_REAR);
+  assert.equal(result[1], FiringArc.FRONT);
 });
 
-QUnit.test("maneuver()", function(assert)
-{
-   // Setup.
-   const maneuverKey = Maneuver.BANK_LEFT_1_EASY_1BG;
+QUnit.test("maneuver()", assert => {
+  // Setup.
+  const maneuverKey = Maneuver.BANK_LEFT_1_EASY_1BG;
 
-   // Run.
-   const result = Selector.maneuver(maneuverKey);
+  // Run.
+  const result = Selector.maneuver(maneuverKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, maneuverKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, maneuverKey);
 });
 
-QUnit.test("maneuverKeysByShip()", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.X_WING;
+QUnit.test("maneuverKeysByShip()", assert => {
+  // Setup.
+  const shipKey = Ship.X_WING;
 
-   // Run.
-   const result = Selector.maneuverKeysByShip(shipKey);
+  // Run.
+  const result = Selector.maneuverKeysByShip(shipKey);
 
-   // Verify.
-   assert.ok(result);
-   const length = 15;
-   assert.equal(result.length, length);
-   assert.equal(result[0], Maneuver.BANK_LEFT_1_EASY_1BG);
-   assert.equal(result[length - 1], Maneuver.KOIOGRAN_TURN_4_HARD_4KR);
+  // Verify.
+  assert.ok(result);
+  const length = 15;
+  assert.equal(result.length, length);
+  assert.equal(result[0], Maneuver.BANK_LEFT_1_EASY_1BG);
+  assert.equal(result[length - 1], Maneuver.KOIOGRAN_TURN_4_HARD_4KR);
 });
 
-QUnit.test("phase()", function(assert)
-{
-   // Setup.
-   const phaseKey = Phase.PLANNING_START;
+QUnit.test("phase()", assert => {
+  // Setup.
+  const phaseKey = Phase.PLANNING_START;
 
-   // Run.
-   const result = Selector.phase(phaseKey);
+  // Run.
+  const result = Selector.phase(phaseKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, phaseKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, phaseKey);
 });
 
-QUnit.test("pilotCard()", function(assert)
-{
-   // Setup.
-   const pilotKey = PilotCard.ACADEMY_PILOT;
+QUnit.test("pilotCard()", assert => {
+  // Setup.
+  const pilotKey = PilotCard.ACADEMY_PILOT;
 
-   // Run.
-   const result = Selector.pilotCard(pilotKey);
+  // Run.
+  const result = Selector.pilotCard(pilotKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, pilotKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, pilotKey);
 });
 
-QUnit.test("playFormat()", function(assert)
-{
-   // Setup.
-   const formatKey = PlayFormat.STANDARD;
+QUnit.test("playFormat()", assert => {
+  // Setup.
+  const formatKey = PlayFormat.STANDARD;
 
-   // Run.
-   const result = Selector.playFormat(formatKey);
+  // Run.
+  const result = Selector.playFormat(formatKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, formatKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, formatKey);
 });
 
-QUnit.test("range()", function(assert)
-{
-   // Setup.
-   const rangeKey = Range.TWO;
+QUnit.test("range()", assert => {
+  // Setup.
+  const rangeKey = Range.TWO;
 
-   // Run.
-   const result = Selector.range(rangeKey);
+  // Run.
+  const result = Selector.range(rangeKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, rangeKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, rangeKey);
 });
 
-QUnit.test("rangesByUpgrade() Hot Shot Blaster", function(assert)
-{
-   // Setup.
-   const upgradeKey = UpgradeCard.HOT_SHOT_BLASTER;
+QUnit.test("rangesByUpgrade() Hot Shot Blaster", assert => {
+  // Setup.
+  const upgradeKey = UpgradeCard.HOT_SHOT_BLASTER;
 
-   // Run.
-   const result = Selector.rangesByUpgrade(upgradeKey);
+  // Run.
+  const result = Selector.rangesByUpgrade(upgradeKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.length, 2);
-   let i = 0;
-   assert.equal(result[i++], Range.ONE);
-   assert.equal(result[i++], Range.TWO);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], Range.ONE);
+  assert.equal(result[1], Range.TWO);
 });
 
-QUnit.test("rangesByUpgrade() Proton Torpedoes", function(assert)
-{
-   // Setup.
-   const upgradeKey = UpgradeCard.PROTON_TORPEDOES;
+QUnit.test("rangesByUpgrade() Proton Torpedoes", assert => {
+  // Setup.
+  const upgradeKey = UpgradeCard.PROTON_TORPEDOES;
 
-   // Run.
-   const result = Selector.rangesByUpgrade(upgradeKey);
+  // Run.
+  const result = Selector.rangesByUpgrade(upgradeKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.length, 2);
-   let i = 0;
-   assert.equal(result[i++], Range.TWO);
-   assert.equal(result[i++], Range.THREE);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], Range.TWO);
+  assert.equal(result[1], Range.THREE);
 });
 
-QUnit.test("referenceCard()", function(assert)
-{
-   // Setup.
-   const referenceKey = ReferenceCard.AUXILIARY_FIRING_ARC;
+QUnit.test("referenceCard()", assert => {
+  // Setup.
+  const referenceKey = ReferenceCard.AUXILIARY_FIRING_ARC;
 
-   // Run.
-   const result = Selector.referenceCard(referenceKey);
+  // Run.
+  const result = Selector.referenceCard(referenceKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, referenceKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, referenceKey);
 });
 
-QUnit.test("ship()", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.A_WING;
+QUnit.test("ship()", assert => {
+  // Setup.
+  const shipKey = Ship.A_WING;
 
-   // Run.
-   const result = Selector.ship(shipKey);
+  // Run.
+  const result = Selector.ship(shipKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, shipKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, shipKey);
 });
 
-QUnit.test("shipAction()", function(assert)
-{
-   // Setup.
-   const actionKey = ShipAction.BARREL_ROLL;
+QUnit.test("shipAction()", assert => {
+  // Setup.
+  const actionKey = ShipAction.BARREL_ROLL;
 
-   // Run.
-   const result = Selector.shipAction(actionKey);
+  // Run.
+  const result = Selector.shipAction(actionKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, actionKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, actionKey);
 });
 
-QUnit.test("shipActionKeysByShip()", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.X_WING;
+QUnit.test("shipActionKeysByShip()", assert => {
+  // Setup.
+  const shipKey = Ship.X_WING;
 
-   // Run.
-   const result = Selector.shipActionKeysByShip(shipKey);
+  // Run.
+  const result = Selector.shipActionKeysByShip(shipKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.length, 2);
-   let i = 0;
-   assert.equal(result[i++], ShipAction.FOCUS);
-   assert.equal(result[i++], ShipAction.TARGET_LOCK);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 2);
+  assert.equal(result[0], ShipAction.FOCUS);
+  assert.equal(result[1], ShipAction.TARGET_LOCK);
 });
 
-QUnit.test("shipBase()", function(assert)
-{
-   // Setup.
-   const baseKey = ShipBase.SMALL;
+QUnit.test("shipBase()", assert => {
+  // Setup.
+  const baseKey = ShipBase.SMALL;
 
-   // Run.
-   const result = Selector.shipBase(baseKey);
+  // Run.
+  const result = Selector.shipBase(baseKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, baseKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, baseKey);
 });
 
-QUnit.test("shipBaseValueByShip()", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.X_WING;
+QUnit.test("shipBaseValueByShip()", assert => {
+  // Setup.
+  const shipKey = Ship.X_WING;
 
-   // Run.
-   const result = Selector.shipBaseValueByShip(shipKey);
+  // Run.
+  const result = Selector.shipBaseValueByShip(shipKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, ShipBase.SMALL);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, ShipBase.SMALL);
 });
 
-QUnit.test("shipKeyByPilot()", function(assert)
-{
-   // Setup.
-   const pilotKey = PilotCard.ACADEMY_PILOT;
+QUnit.test("shipKeyByPilot()", assert => {
+  // Setup.
+  const pilotKey = PilotCard.ACADEMY_PILOT;
 
-   // Run.
-   const result = Selector.shipKeyByPilot(pilotKey);
+  // Run.
+  const result = Selector.shipKeyByPilot(pilotKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result, Ship.TIE_FIGHTER);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result, Ship.TIE_FIGHTER);
 });
 
-QUnit.test("shipValueByPilot()", function(assert)
-{
-   // Setup.
-   const pilotKey = PilotCard.ACADEMY_PILOT;
+QUnit.test("shipValueByPilot()", assert => {
+  // Setup.
+  const pilotKey = PilotCard.ACADEMY_PILOT;
 
-   // Run.
-   const result = Selector.shipValueByPilot(pilotKey);
+  // Run.
+  const result = Selector.shipValueByPilot(pilotKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.name, "TIE Fighter");
-   assert.equal(result.key, Ship.TIE_FIGHTER);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.name, "TIE Fighter");
+  assert.equal(result.key, Ship.TIE_FIGHTER);
 });
 
-QUnit.test("source()", function(assert)
-{
-   // Setup.
-   const sourceKey = Source.A_WING_EXPANSION_PACK;
+QUnit.test("source()", assert => {
+  // Setup.
+  const sourceKey = Source.A_WING_EXPANSION_PACK;
 
-   // Run.
-   const result = Selector.source(sourceKey);
+  // Run.
+  const result = Selector.source(sourceKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, sourceKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, sourceKey);
 });
 
-QUnit.test("stat() Primary Weapon", function(assert)
-{
-   // Setup.
-   const statKey = Stat.PRIMARY_WEAPON;
+QUnit.test("stat() Primary Weapon", assert => {
+  // Setup.
+  const statKey = Stat.PRIMARY_WEAPON;
 
-   // Run.
-   const result = Selector.stat(statKey);
+  // Run.
+  const result = Selector.stat(statKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.name, "Primary Weapon");
-   assert.equal(result.key, statKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.name, "Primary Weapon");
+  assert.equal(result.key, statKey);
 });
 
-QUnit.test("statValueByPilot() Luke Skywalker Primary Weapon", function(assert)
-{
-   // Setup.
-   const pilotKey = PilotCard.LUKE_SKYWALKER;
-   const statKey = Stat.PRIMARY_WEAPON;
+QUnit.test("statValueByPilot() Luke Skywalker Primary Weapon", assert => {
+  // Setup.
+  const pilotKey = PilotCard.LUKE_SKYWALKER;
+  const statKey = Stat.PRIMARY_WEAPON;
 
-   // Run.
-   const result = Selector.statValueByPilot(pilotKey, statKey);
+  // Run.
+  const result = Selector.statValueByPilot(pilotKey, statKey);
 
-   // Verify.
-   assert.equal(result, undefined);
+  // Verify.
+  assert.equal(result, undefined);
 });
 
-QUnit.test("statValueByShip() X-Wing Primary Weapon", function(assert)
-{
-   // Setup.
-   const shipKey = Ship.X_WING;
-   const statKey = Stat.PRIMARY_WEAPON;
+QUnit.test("statValueByShip() X-Wing Primary Weapon", assert => {
+  // Setup.
+  const shipKey = Ship.X_WING;
+  const statKey = Stat.PRIMARY_WEAPON;
 
-   // Run.
-   const result = Selector.statValueByShip(shipKey, statKey);
+  // Run.
+  const result = Selector.statValueByShip(shipKey, statKey);
 
-   // Verify.
-   assert.equal(result, 3);
+  // Verify.
+  assert.equal(result, 3);
 });
 
-QUnit.test("token()", function(assert)
-{
-   // Setup.
-   const tokenKey = Token.CLOAK;
+QUnit.test("token()", assert => {
+  // Setup.
+  const tokenKey = Token.CLOAK;
 
-   // Run.
-   const result = Selector.token(tokenKey);
+  // Run.
+  const result = Selector.token(tokenKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, tokenKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, tokenKey);
 });
 
-QUnit.test("upgradeCard()", function(assert)
-{
-   // Setup.
-   const upgradeKey = UpgradeCard.A_SCORE_TO_SETTLE;
+QUnit.test("upgradeCard()", assert => {
+  // Setup.
+  const upgradeKey = UpgradeCard.A_SCORE_TO_SETTLE;
 
-   // Run.
-   const result = Selector.upgradeCard(upgradeKey);
+  // Run.
+  const result = Selector.upgradeCard(upgradeKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, upgradeKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, upgradeKey);
 });
 
-QUnit.test("upgradeSlot()", function(assert)
-{
-   // Setup.
-   const slotKey = UpgradeSlot.ASTROMECH;
+QUnit.test("upgradeSlot()", assert => {
+  // Setup.
+  const slotKey = UpgradeSlot.ASTROMECH;
 
-   // Run.
-   const result = Selector.upgradeSlot(slotKey);
+  // Run.
+  const result = Selector.upgradeSlot(slotKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, slotKey);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, slotKey);
 });
 
-QUnit.test("upgradeSlotKeysByPilot()", function(assert)
-{
-   // Setup.
-   const pilotKey = PilotCard.LUKE_SKYWALKER;
+QUnit.test("upgradeSlotKeysByPilot()", assert => {
+  // Setup.
+  const pilotKey = PilotCard.LUKE_SKYWALKER;
 
-   // Run.
-   const result = Selector.upgradeSlotKeysByPilot(pilotKey);
+  // Run.
+  const result = Selector.upgradeSlotKeysByPilot(pilotKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.length, 3);
-   let i = 0;
-   assert.equal(result[i++], UpgradeSlot.ELITE);
-   assert.equal(result[i++], UpgradeSlot.TORPEDO);
-   assert.equal(result[i++], UpgradeSlot.ASTROMECH);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.length, 3);
+  assert.equal(result[0], UpgradeSlot.ELITE);
+  assert.equal(result[1], UpgradeSlot.TORPEDO);
+  assert.equal(result[2], UpgradeSlot.ASTROMECH);
 });
 
-QUnit.test("upgradeSlotValueByUpgrade()", function(assert)
-{
-   // Setup.
-   const upgradeKey = UpgradeCard.A_SCORE_TO_SETTLE;
+QUnit.test("upgradeSlotValueByUpgrade()", assert => {
+  // Setup.
+  const upgradeKey = UpgradeCard.A_SCORE_TO_SETTLE;
 
-   // Run.
-   const result = Selector.upgradeSlotValueByUpgrade(upgradeKey);
+  // Run.
+  const result = Selector.upgradeSlotValueByUpgrade(upgradeKey);
 
-   // Verify.
-   assert.ok(result);
-   assert.equal(result.key, UpgradeSlot.ELITE);
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.key, UpgradeSlot.ELITE);
 });
 
 const SelectorTest = {};
