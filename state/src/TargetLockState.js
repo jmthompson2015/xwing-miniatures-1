@@ -1,19 +1,7 @@
 const TargetLockState = {};
 
-TargetLockState.create = function(
-{
-   id,
-   attackerId,
-   defenderId
-})
-{
-   return Immutable(
-   {
-      id: id,
-      attackerId: attackerId,
-      defenderId: defenderId
-   });
-};
+TargetLockState.create = ({ id, attackerId, defenderId }) =>
+  Immutable({ id, attackerId, defenderId });
 
 Object.freeze(TargetLockState);
 

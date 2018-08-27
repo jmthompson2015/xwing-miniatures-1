@@ -1,25 +1,7 @@
 const StatBonusesState = {};
 
-StatBonusesState.create = function(
-{
-   agility,
-   energy,
-   hull,
-   pilotSkill,
-   primaryWeapon,
-   shield
-} = {})
-{
-   return Immutable(
-   {
-      agility: agility,
-      energy: energy,
-      hull: hull,
-      pilotSkill: pilotSkill,
-      primaryWeapon: primaryWeapon,
-      shield: shield
-   });
-};
+StatBonusesState.create = ({ agility, energy, hull, pilotSkill, primaryWeapon, shield } = {}) =>
+  Immutable({ agility, energy, hull, pilotSkill, primaryWeapon, shield });
 
 Object.freeze(StatBonusesState);
 

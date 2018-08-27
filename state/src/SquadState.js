@@ -1,27 +1,23 @@
 const SquadState = {};
 
-SquadState.create = function(
-{
-   id,
-   name,
-   year,
-   description,
-   points,
+SquadState.create = ({
+  id,
+  name,
+  year,
+  description,
+  points,
 
-   pilots
-})
-{
-   return Immutable(
-   {
-      id: id,
-      name: name,
-      year: year,
-      description: description,
-      points: points,
+  pilots
+}) =>
+  Immutable({
+    id,
+    name,
+    year,
+    description,
+    points,
 
-      pilots: Immutable(pilots)
-   });
-};
+    pilots: Immutable(pilots)
+  });
 
 Object.freeze(SquadState);
 

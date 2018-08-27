@@ -1,21 +1,7 @@
 const UpgradeState = {};
 
-UpgradeState.create = function(
-{
-   id,
-   upgradeKey,
-
-   tokenCounts
-})
-{
-   return Immutable(
-   {
-      id: id,
-      upgradeKey: upgradeKey,
-
-      tokenCounts: Immutable(tokenCounts)
-   });
-};
+UpgradeState.create = ({ id, upgradeKey, tokenCounts }) =>
+  Immutable({ id, upgradeKey, tokenCounts: Immutable(tokenCounts) });
 
 Object.freeze(UpgradeState);
 

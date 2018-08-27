@@ -1,19 +1,6 @@
 const PositionState = {};
 
-PositionState.create = function(
-{
-   x = 0,
-   y = 0,
-   heading = 0
-} = {})
-{
-   return Immutable(
-   {
-      x: x,
-      y: y,
-      heading: heading
-   });
-};
+PositionState.create = ({ x = 0, y = 0, heading = 0 } = {}) => Immutable({ x, y, heading });
 
 Object.freeze(PositionState);
 

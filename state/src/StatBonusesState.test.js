@@ -4,63 +4,50 @@ QUnit.module("StatBonusesState");
 
 const PROPS = ["agility", "energy", "hull", "pilotSkill", "primaryWeapon", "shield"];
 
-QUnit.test("create()", function(assert)
-{
-   // Setup.
+const createTestState = () =>
+  StatBonusesState.create({
+    agility: 1,
+    energy: 2,
+    hull: 3,
+    pilotSkill: 4,
+    primaryWeapon: 5,
+    shield: 6
+  });
 
-   // Run.
-   const statBonuses = createTestState();
+QUnit.test("create()", assert => {
+  // Setup.
 
-   // Verify.
-   PROPS.forEach((prop, i) =>
-   {
-      assert.equal(statBonuses[prop], i + 1);
-   });
+  // Run.
+  const statBonuses = createTestState();
+
+  // Verify.
+  PROPS.forEach((prop, i) => {
+    assert.equal(statBonuses[prop], i + 1);
+  });
 });
 
-QUnit.test("create() Default", function(assert)
-{
-   // Setup.
-   const statBonuses = StatBonusesState.create();
+QUnit.test("create() Default", assert => {
+  // Setup.
+  const statBonuses = StatBonusesState.create();
 
-   // Verify.
-   PROPS.forEach(prop =>
-   {
-      assert.equal(statBonuses[prop], undefined);
-   });
+  // Verify.
+  PROPS.forEach(prop => {
+    assert.equal(statBonuses[prop], undefined);
+  });
 });
 
-QUnit.test("create() immutable", function(assert)
-{
-   // Setup.
-   const statBonuses = createTestState();
+QUnit.test("create() immutable", assert => {
+  // Setup.
+  const statBonuses = createTestState();
 
-   // Run / Verify.
-   try
-   {
-      statBonuses.agility = 12;
-      assert.ok(false, "Should have thrown an exception");
-   }
-   catch (e)
-   {
-      assert.ok(true);
-   }
+  // Run / Verify.
+  try {
+    statBonuses.agility = 12;
+    assert.ok(false, "Should have thrown an exception");
+  } catch (e) {
+    assert.ok(true);
+  }
 });
-
-function createTestState()
-{
-   let i = 1;
-
-   return StatBonusesState.create(
-   {
-      agility: i++,
-      energy: i++,
-      hull: i++,
-      pilotSkill: i++,
-      primaryWeapon: i++,
-      shield: i++
-   });
-}
 
 const StatBonusesStateTest = {};
 export default StatBonusesStateTest;

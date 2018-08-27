@@ -5,20 +5,8 @@
  */
 const AbilityState = {};
 
-AbilityState.create = function(
-{
-   sourceName,
-   sourceKey,
-   context
-})
-{
-   return Immutable(
-   {
-      sourceName: sourceName,
-      sourceKey: sourceKey,
-      context: context
-   });
-};
+AbilityState.create = ({ sourceName, sourceKey, context }) =>
+  Immutable({ sourceName, sourceKey, context });
 
 Object.freeze(AbilityState);
 

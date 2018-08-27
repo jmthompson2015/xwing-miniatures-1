@@ -1,17 +1,6 @@
 const ExplosionState = {};
 
-ExplosionState.create = function(
-{
-   position,
-   size = 40
-})
-{
-   return Immutable(
-   {
-      position: position,
-      size: size
-   });
-};
+ExplosionState.create = ({ position, size = 40 }) => Immutable({ position, size });
 
 Object.freeze(ExplosionState);
 

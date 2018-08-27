@@ -1,31 +1,27 @@
 const PilotState = {};
 
-PilotState.create = function(
-{
-   id,
-   pilotKey,
+PilotState.create = ({
+  id,
+  pilotKey,
 
-   criticals,
-   damages,
-   position,
-   statBonuses,
-   tokenCounts,
-   upgrades
-})
-{
-   return Immutable(
-   {
-      id: id,
-      pilotKey: pilotKey,
+  criticals,
+  damages,
+  position,
+  statBonuses,
+  tokenCounts,
+  upgrades
+}) =>
+  Immutable({
+    id,
+    pilotKey,
 
-      criticals: Immutable(criticals),
-      damages: Immutable(damages),
-      position: Immutable(position),
-      statBonuses: Immutable(statBonuses),
-      tokenCounts: Immutable(tokenCounts),
-      upgrades: Immutable(upgrades)
-   });
-};
+    criticals: Immutable(criticals),
+    damages: Immutable(damages),
+    position: Immutable(position),
+    statBonuses: Immutable(statBonuses),
+    tokenCounts: Immutable(tokenCounts),
+    upgrades: Immutable(upgrades)
+  });
 
 Object.freeze(PilotState);
 

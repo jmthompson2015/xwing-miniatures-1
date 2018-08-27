@@ -4,49 +4,31 @@ QUnit.module("SquadState");
 
 const PROPS = ["id", "name", "year", "description", "points", "pilots"];
 
-QUnit.test("create()", function(assert)
-{
-   // Run.
-   const squad = createTestData();
+const createTestData = () =>
+  SquadState.create({ id: 1, name: 2, year: 3, description: 4, points: 5, pilots: 6 });
 
-   // Verify.
-   PROPS.forEach((prop, i) =>
-   {
-      assert.equal(squad[prop], i + 1);
-   });
+QUnit.test("create()", assert => {
+  // Run.
+  const squad = createTestData();
+
+  // Verify.
+  PROPS.forEach((prop, i) => {
+    assert.equal(squad[prop], i + 1);
+  });
 });
 
-QUnit.test("create() immutable", function(assert)
-{
-   // Setup.
-   const squad = createTestData();
+QUnit.test("create() immutable", assert => {
+  // Setup.
+  const squad = createTestData();
 
-   // Run / Verify.
-   try
-   {
-      squad.faction = 12;
-      assert.ok(false, "Should have thrown an exception");
-   }
-   catch (e)
-   {
-      assert.ok(true);
-   }
+  // Run / Verify.
+  try {
+    squad.faction = 12;
+    assert.ok(false, "Should have thrown an exception");
+  } catch (e) {
+    assert.ok(true);
+  }
 });
-
-function createTestData()
-{
-   let i = 1;
-
-   return SquadState.create(
-   {
-      id: i++,
-      name: i++,
-      year: i++,
-      description: i++,
-      points: i++,
-      pilots: i++
-   });
-}
 
 const SquadStateTest = {};
 export default SquadStateTest;

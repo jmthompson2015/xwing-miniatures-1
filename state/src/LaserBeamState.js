@@ -1,21 +1,7 @@
 const LaserBeamState = {};
 
-LaserBeamState.create = function(
-{
-   color,
-   fromPosition,
-   isPrimary = true,
-   toPosition
-})
-{
-   return Immutable(
-   {
-      color: color,
-      fromPosition: fromPosition,
-      isPrimary: isPrimary,
-      toPosition: toPosition
-   });
-};
+LaserBeamState.create = ({ color, fromPosition, isPrimary = true, toPosition }) =>
+  Immutable({ color, fromPosition, isPrimary, toPosition });
 
 Object.freeze(LaserBeamState);
 

@@ -20,27 +20,26 @@ import TargetLockState from "./TargetLockState.js";
 import TokenCountsState from "./TokenCountsState.js";
 import UpgradeState from "./UpgradeState.js";
 
-export
-{
-   AbilityState,
-   ActionCreator,
-   ActionType,
-   AgentQueryState,
-   AgentResponseState,
-   AgentState,
-   CombatState,
-   DamageState,
-   ExplosionState,
-   GameState,
-   LaserBeamState,
-   ManeuverState,
-   PilotState,
-   PositionState,
-   Reducer,
-   Selector,
-   SquadState,
-   StatBonusesState,
-   TargetLockState,
-   TokenCountsState,
-   UpgradeState
+export {
+  AbilityState,
+  ActionCreator,
+  ActionType,
+  AgentQueryState,
+  AgentResponseState,
+  AgentState,
+  CombatState,
+  DamageState,
+  ExplosionState,
+  GameState,
+  LaserBeamState,
+  ManeuverState,
+  PilotState,
+  PositionState,
+  Reducer,
+  Selector,
+  SquadState,
+  StatBonusesState,
+  TargetLockState,
+  TokenCountsState,
+  UpgradeState
 };

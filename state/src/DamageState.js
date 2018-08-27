@@ -1,17 +1,6 @@
 const DamageState = {};
 
-DamageState.create = function(
-{
-   id,
-   damageKey
-})
-{
-   return Immutable(
-   {
-      id: id,
-      damageKey: damageKey
-   });
-};
+DamageState.create = ({ id, damageKey }) => Immutable({ id, damageKey });
 
 Object.freeze(DamageState);
 

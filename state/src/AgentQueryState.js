@@ -1,19 +1,7 @@
 const AgentQueryState = {};
 
-AgentQueryState.create = function(
-{
-   agentId,
-   queryKey,
-   payload = {}
-})
-{
-   return Immutable(
-   {
-      agentId: agentId,
-      queryKey: queryKey,
-      payload: payload
-   });
-};
+AgentQueryState.create = ({ agentId, queryKey, payload = {} }) =>
+  Immutable({ agentId, queryKey, payload });
 
 Object.freeze(AgentQueryState);
 

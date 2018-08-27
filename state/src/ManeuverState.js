@@ -1,23 +1,7 @@
 const ManeuverState = {};
 
-ManeuverState.create = function(
-{
-   color,
-   fromPolygon,
-   fromPosition,
-   path,
-   toPolygon
-})
-{
-   return Immutable(
-   {
-      color: color,
-      fromPolygon: fromPolygon,
-      fromPosition: fromPosition,
-      path: path,
-      toPolygon: toPolygon
-   });
-};
+ManeuverState.create = ({ color, fromPolygon, fromPosition, path, toPolygon }) =>
+  Immutable({ color, fromPolygon, fromPosition, path, toPolygon });
 
 Object.freeze(ManeuverState);
 

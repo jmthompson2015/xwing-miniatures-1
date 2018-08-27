@@ -2,70 +2,69 @@ import TokenCountsState from "./TokenCountsState.js";
 
 QUnit.module("TokenCountsState");
 
-const PROPS = ["cloak", "energy", "evade", "focus", "ion", "ordnance", "reinforce", "shield", "stress", "tractorBeam", "weaponsDisabled"];
+const PROPS = [
+  "cloak",
+  "energy",
+  "evade",
+  "focus",
+  "ion",
+  "ordnance",
+  "reinforce",
+  "shield",
+  "stress",
+  "tractorBeam",
+  "weaponsDisabled"
+];
 
-QUnit.test("create()", function(assert)
-{
-   // Setup.
+const createTestState = () =>
+  TokenCountsState.create({
+    cloak: 1,
+    energy: 2,
+    evade: 3,
+    focus: 4,
+    ion: 5,
+    ordnance: 6,
+    reinforce: 7,
+    shield: 8,
+    stress: 9,
+    tractorBeam: 10,
+    weaponsDisabled: 11
+  });
 
-   // Run.
-   const tokenCount = createTestState();
+QUnit.test("create()", assert => {
+  // Setup.
 
-   // Verify.
-   PROPS.forEach((prop, i) =>
-   {
-      assert.equal(tokenCount[prop], i + 1);
-   });
+  // Run.
+  const tokenCount = createTestState();
+
+  // Verify.
+  PROPS.forEach((prop, i) => {
+    assert.equal(tokenCount[prop], i + 1);
+  });
 });
 
-QUnit.test("create() Default", function(assert)
-{
-   // Setup.
-   const tokenCount = TokenCountsState.create();
+QUnit.test("create() Default", assert => {
+  // Setup.
+  const tokenCount = TokenCountsState.create();
 
-   // Verify.
-   PROPS.forEach(prop =>
-   {
-      assert.equal(tokenCount[prop], undefined);
-   });
+  // Verify.
+  PROPS.forEach(prop => {
+    assert.equal(tokenCount[prop], undefined);
+  });
 });
 
-QUnit.test("create() immutable", function(assert)
-{
-   // Setup.
-   const tokenCount = createTestState();
+QUnit.test("create() immutable", assert => {
+  // Setup.
+  const tokenCount = createTestState();
 
-   // Run / Verify.
-   try
-   {
-      tokenCount.ion = 12;
-      assert.ok(false, "Should have thrown an exception");
-   }
-   catch (e)
-   {
-      assert.ok(true);
-   }
+  // Run / Verify.
+  try {
+    tokenCount.ion = 12;
+    assert.ok(false, "Should have thrown an exception");
+  } catch (e) {
+    assert.ok(true);
+  }
 });
-
-function createTestState()
-{
-   let i = 1;
-
-   return TokenCountsState.create(
-   {
-      cloak: i++,
-      energy: i++,
-      evade: i++,
-      focus: i++,
-      ion: i++,
-      ordnance: i++,
-      reinforce: i++,
-      shield: i++,
-      stress: i++,
-      tractorBeam: i++,
-      weaponsDisabled: i++
-   });
-}
 
 const TokenCountsStateTest = {};
 export default TokenCountsStateTest;

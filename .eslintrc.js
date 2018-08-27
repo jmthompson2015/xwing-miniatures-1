@@ -8,14 +8,14 @@ module.exports = {
     // AM: true,
     // AS: true,
     // AV: true,
-    // Immutable: true,
+    Immutable: true,
     // PropTypes: true,
     QUnit: true,
-    R: true
+    R: true,
     // React: true,
     // ReactDOM: true,
     // ReactDOMFactories: true,
-    // Redux: true,
+    Redux: true
   },
   rules: {
     "import/extensions": ["error", { js: "always" }],

@@ -1,19 +1,7 @@
 const AgentResponseState = {};
 
-AgentResponseState.create = function(
-{
-   agentId,
-   responseKey,
-   payload = {}
-})
-{
-   return Immutable(
-   {
-      agentId: agentId,
-      responseKey: responseKey,
-      payload: payload
-   });
-};
+AgentResponseState.create = ({ agentId, responseKey, payload = {} }) =>
+  Immutable({ agentId, responseKey, payload });
 
 Object.freeze(AgentResponseState);
 
