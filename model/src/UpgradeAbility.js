@@ -1,17 +1,14 @@
-const UpgradeCard = XMA.UpgradeCard;
+const { UpgradeCard } = XMA;
 
 const UpgradeAbility = {};
 
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 UpgradeAbility[UpgradeCard.R2_D2] = {
-   condition: (pilotId, state) =>
-   {
-      return false;
-   },
-   consequent: (pilotId, store) => new Promise((resolve) =>
-   {
+  condition: (/* pilotId, state */) => false,
+  consequent: (pilotId, store) =>
+    new Promise(resolve => {
       resolve(store);
-   })
+    })
 };
 
 Object.freeze(UpgradeAbility);

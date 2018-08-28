@@ -1,13 +1,14 @@
 import Selector from "./Selector.js";
 
-const ShipAction = XMA.ShipAction;
-const Token = XMA.Token;
+const { ShipAction, Token } = XMA;
 
-const ActionCreator = XMS.ActionCreator;
+const { ActionCreator } = XMS;
 
 const ShipActionAbility = {};
 
-////////////////////////////////////////////////////////////////////////
+const isActivePilot = (pilotId, state) => pilotId === Selector.activePilotId(state);
+
+// //////////////////////////////////////////////////////////////////////
 // ShipActionAbility[ShipAction.BARREL_ROLL] = {
 //    // Perform the barrel roll action to move laterally and adjust their position.
 //    condition: function(store, token)
@@ -52,7 +53,7 @@ const ShipActionAbility = {};
 // };
 
 // ShipActionAbility[ShipAction.COORDINATE] = {
-//    // Choose another friendly ship at Range 1-2. That ship may immediately perform one free action.
+//  // Choose another friendly ship at Range 1-2. That ship may immediately perform one free action.
 //    condition: function(store, token)
 //    {
 //       return isActiveToken(store, token);
@@ -81,33 +82,28 @@ const ShipActionAbility = {};
 // };
 
 ShipActionAbility[ShipAction.EVADE] = {
-   // Assign one evade token to the ship.
-   condition: (pilotId, state) =>
-   {
-      return isActivePilot(pilotId, state);
-   },
-   consequent: (pilotId, store) => new Promise((resolve) =>
-   {
+  // Assign one evade token to the ship.
+  condition: (pilotId, state) => isActivePilot(pilotId, state),
+  consequent: (pilotId, store) =>
+    new Promise(resolve => {
       store.dispatch(ActionCreator.addPilotTokenCount(pilotId, Token.EVADE, 1));
       resolve(store);
-   })
+    })
 };
 
 ShipActionAbility[ShipAction.FOCUS] = {
-   // Assign one focus token to the ship.
-   condition: (pilotId, state) =>
-   {
-      return isActivePilot(pilotId, state);
-   },
-   consequent: (pilotId, store) => new Promise((resolve) =>
-   {
+  // Assign one focus token to the ship.
+  condition: (pilotId, state) => isActivePilot(pilotId, state),
+  consequent: (pilotId, store) =>
+    new Promise(resolve => {
       store.dispatch(ActionCreator.addPilotTokenCount(pilotId, Token.FOCUS, 1));
       resolve(store);
-   })
+    })
 };
 
 // ShipActionAbility[ShipAction.JAM] = {
-//    // Choose one enemy ship at Range 1-2 and assign Stress tokens until the ship has 2 total stress tokens.
+//    // Choose one enemy ship at Range 1-2 and assign Stress tokens until the ship has 2 total
+//    // stress tokens.
 //    condition: function(store, token)
 //    {
 //       return isActiveToken(store, token);
@@ -128,7 +124,8 @@ ShipActionAbility[ShipAction.FOCUS] = {
 // };
 
 // ShipActionAbility[ShipAction.RECOVER] = {
-//    // Remove all energy tokens from the corresponding ship card. For each energy token removed, the ship recovers one shield, up to its maximum shield value.
+//    // Remove all energy tokens from the corresponding ship card. For each energy token removed,
+//    // the ship recovers one shield, up to its maximum shield value.
 //    condition: function(store, token)
 //    {
 //       return isActiveToken(store, token);
@@ -141,7 +138,8 @@ ShipActionAbility[ShipAction.FOCUS] = {
 // };
 
 // ShipActionAbility[ShipAction.REINFORCE] = {
-//    // Choose either the fore or aft side of a double-sided reinforce token and place the token with that side faceup near its ship token.
+//    // Choose either the fore or aft side of a double-sided reinforce token and place the token
+//    // with that side faceup near its ship token.
 //    condition: function(store, token)
 //    {
 //       return isActiveToken(store, token);
@@ -188,7 +186,7 @@ ShipActionAbility[ShipAction.FOCUS] = {
 //    },
 // };
 
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 // function getActiveToken(store)
 // {
 //    InputValidator.validateNotNull("store", store);
@@ -197,8 +195,6 @@ ShipActionAbility[ShipAction.FOCUS] = {
 //
 //    return environment.activeCardInstance();
 // }
-
-const isActivePilot = (pilotId, state) => pilotId === Selector.activePilotId(state);
 
 // function isActiveToken(store, token)
 // {

@@ -1,17 +1,14 @@
-const PilotCard = XMA.PilotCard;
+const { PilotCard } = XMA;
 
 const PilotAbility = {};
 
-////////////////////////////////////////////////////////////////////////
+// //////////////////////////////////////////////////////////////////////
 PilotAbility[PilotCard.LUKE_SKYWALKER] = {
-   condition: (pilotId, state) =>
-   {
-      return false;
-   },
-   consequent: (pilotId, store) => new Promise((resolve) =>
-   {
+  condition: (/* pilotId, state */) => false,
+  consequent: (pilotId, store) =>
+    new Promise(resolve => {
       resolve(store);
-   })
+    })
 };
 
 Object.freeze(PilotAbility);

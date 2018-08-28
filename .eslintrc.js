@@ -4,9 +4,9 @@ module.exports = {
   },
   extends: ["airbnb", "prettier"],
   globals: {
-    // AA: true,
+    XMA: true,
     // AM: true,
-    // AS: true,
+    XMS: true,
     // AV: true,
     Immutable: true,
     // PropTypes: true,

@@ -2,11 +2,9 @@ import ShipActionAbility from "./ShipActionAbility.js";
 import Selector from "./Selector.js";
 import TestData from "./TestData.js";
 
-const ShipAction = XMA.ShipAction;
-const Token = XMA.Token;
+const { ShipAction, Token } = XMA;
 
-const ActionCreator = XMS.ActionCreator;
-const Reducer = XMS.Reducer;
+const { ActionCreator, Reducer } = XMS;
 
 QUnit.module("ShipActionAbility");
 
@@ -130,58 +128,68 @@ QUnit.module("ShipActionAbility");
 //    ability.consequent(store, token, callback, context);
 // });
 
-QUnit.test("evade", function(assert)
-{
-   // Setup.
-   const store = Redux.createStore(Reducer.root, TestData.createGameState());
-   const pilotId = 3;
-   store.dispatch(ActionCreator.setActivePilotId(pilotId));
-   const ability = ShipActionAbility[ShipAction.EVADE];
-   const callback = function()
-   {
-      // Verify.
-      assert.ok(true, "test resumed from async operation");
-      assert.equal(Selector.countByPilotToken(pilotId, Token.EVADE, store.getState()), 1, "evade token count");
-      assert.equal(Selector.countByPilotToken(pilotId, Token.FOCUS, store.getState()), 0, "focus token count");
-      done();
-   };
+QUnit.test("evade", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root, TestData.createGameState());
+  const pilotId = 3;
+  store.dispatch(ActionCreator.setActivePilotId(pilotId));
+  const ability = ShipActionAbility[ShipAction.EVADE];
 
-   // Run.
-   const done = assert.async();
-   const conditionPassed = ability.condition(pilotId, store.getState());
-   assert.equal(conditionPassed, true, "conditionPassed");
+  // Run.
+  const done = assert.async();
+  const conditionPassed = ability.condition(pilotId, store.getState());
+  assert.equal(conditionPassed, true, "conditionPassed");
+  const callback = () => {
+    // Verify.
+    assert.ok(true, "test resumed from async operation");
+    assert.equal(
+      Selector.countByPilotToken(pilotId, Token.EVADE, store.getState()),
+      1,
+      "evade token count"
+    );
+    assert.equal(
+      Selector.countByPilotToken(pilotId, Token.FOCUS, store.getState()),
+      0,
+      "focus token count"
+    );
+    done();
+  };
 
-   if (conditionPassed)
-   {
-      ability.consequent(pilotId, store).then(callback);
-   }
+  if (conditionPassed) {
+    ability.consequent(pilotId, store).then(callback);
+  }
 });
 
-QUnit.test("focus", function(assert)
-{
-   // Setup.
-   const store = Redux.createStore(Reducer.root, TestData.createGameState());
-   const pilotId = 3;
-   store.dispatch(ActionCreator.setActivePilotId(pilotId));
-   const ability = ShipActionAbility[ShipAction.FOCUS];
-   const callback = function()
-   {
-      // Verify.
-      assert.ok(true, "test resumed from async operation");
-      assert.equal(Selector.countByPilotToken(pilotId, Token.EVADE, store.getState()), 0, "evade token count");
-      assert.equal(Selector.countByPilotToken(pilotId, Token.FOCUS, store.getState()), 1, "focus token count");
-      done();
-   };
+QUnit.test("focus", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root, TestData.createGameState());
+  const pilotId = 3;
+  store.dispatch(ActionCreator.setActivePilotId(pilotId));
+  const ability = ShipActionAbility[ShipAction.FOCUS];
 
-   // Run.
-   const done = assert.async();
-   const conditionPassed = ability.condition(pilotId, store.getState());
-   assert.equal(conditionPassed, true, "conditionPassed");
+  // Run.
+  const done = assert.async();
+  const conditionPassed = ability.condition(pilotId, store.getState());
+  assert.equal(conditionPassed, true, "conditionPassed");
+  const callback = () => {
+    // Verify.
+    assert.ok(true, "test resumed from async operation");
+    assert.equal(
+      Selector.countByPilotToken(pilotId, Token.EVADE, store.getState()),
+      0,
+      "evade token count"
+    );
+    assert.equal(
+      Selector.countByPilotToken(pilotId, Token.FOCUS, store.getState()),
+      1,
+      "focus token count"
+    );
+    done();
+  };
 
-   if (conditionPassed)
-   {
-      ability.consequent(pilotId, store).then(callback);
-   }
+  if (conditionPassed) {
+    ability.consequent(pilotId, store).then(callback);
+  }
 });
 
 // QUnit.test("jam", function(assert)
@@ -303,11 +311,14 @@ QUnit.test("focus", function(assert)
 //    store.dispatch(CardAction.addFocusCount(attacker));
 //    store.dispatch(CardAction.addStressCount(attacker));
 //
-//    store.dispatch(Action.setTokenAttackDice(attacker.id(), (new MockAttackDice(store, attacker.id())).values()));
-//    store.dispatch(Action.setTokenDefenseDice(attacker.id(), (new MockDefenseDice(store, attacker.id())).values()));
+//    store.dispatch(Action.setTokenAttackDice(attacker.id(), (new MockAttackDice(store,
+// attacker.id())).values()));
+//    store.dispatch(Action.setTokenDefenseDice(attacker.id(), (new MockDefenseDice(store,
+// attacker.id())).values()));
 //    store.dispatch(Action.setTokenInFiringArc(attacker, true));
 //
-//    const combatAction = new CombatAction(store, attacker, weapon, defender, callback, MockAttackDice, MockDefenseDice);
+//    const combatAction = new CombatAction(store, attacker, weapon, defender, callback,
+// MockAttackDice, MockDefenseDice);
 //    store.dispatch(Action.setTokenCombatAction(attacker, combatAction));
 //
 //    return environment;

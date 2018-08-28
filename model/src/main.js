@@ -21,28 +21,27 @@ import SquadUtilities from "./SquadUtilities.js";
 import UpgradeAbility from "./UpgradeAbility.js";
 import XWingMiniaturesModel from "./XWingMiniaturesModel.js";
 
-export
-{
-   ActivationTask,
-   AgentQueryType,
-   AgentUtilities,
-   CombatTask,
-   ConditionAbility,
-   DamageAbility,
-   DamageDeck,
-   DiceUtilities,
-   EndTask,
-   ManeuverComputer,
-   ModifyDiceAbility,
-   PathUtilities,
-   PilotAbility,
-   PilotUtilities,
-   PlanningTask,
-   Selector,
-   SetupTask,
-   ShipActionAbility,
-   SquadBuilder,
-   SquadUtilities,
-   UpgradeAbility,
-   XWingMiniaturesModel
+export {
+  ActivationTask,
+  AgentQueryType,
+  AgentUtilities,
+  CombatTask,
+  ConditionAbility,
+  DamageAbility,
+  DamageDeck,
+  DiceUtilities,
+  EndTask,
+  ManeuverComputer,
+  ModifyDiceAbility,
+  PathUtilities,
+  PilotAbility,
+  PilotUtilities,
+  PlanningTask,
+  Selector,
+  SetupTask,
+  ShipActionAbility,
+  SquadBuilder,
+  SquadUtilities,
+  UpgradeAbility,
+  XWingMiniaturesModel
 };
