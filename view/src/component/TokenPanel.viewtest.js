@@ -1,51 +1,48 @@
 import TokenPanel from "./TokenPanel.js";
 
 const attackerTargetLocks = [
-   {
-      id: "A",
-      defenderName: "36 \u2022 Luke Skywalker (X-Wing)"
-   }
+  {
+    id: "A",
+    defenderName: "36 \u2022 Luke Skywalker (X-Wing)"
+  }
 ];
 const defenderTargetLocks = [
-   {
-      id: "B",
-      attackerName: "36 \u2022 Luke Skywalker (X-Wing)"
-   }
+  {
+    id: "B",
+    attackerName: "36 \u2022 Luke Skywalker (X-Wing)"
+  }
 ];
 
-let i = 1;
 const tokenCounts = {
-   cloak: i++,
-   energy: i++,
-   evade: i++,
-   focus: i++,
-   ion: i++,
-   ordnance: i++,
-   reinforce: i++,
-   shield: i++,
-   stress: i++,
-   tractorBeam: i++,
-   weaponsDisabled: i++,
-   damage: i++,
-   criticalDamage: i++
+  cloak: 1,
+  energy: 2,
+  evade: 3,
+  focus: 4,
+  ion: 5,
+  ordnance: 6,
+  reinforce: 7,
+  shield: 8,
+  stress: 9,
+  tractorBeam: 10,
+  weaponsDisabled: 11,
+  damage: 12,
+  criticalDamage: 13
 };
 
-let j = 1;
 const statBonuses = {
-   pilotSkill: j++,
-   primaryWeapon: j++,
-   energy: j++,
-   agility: j++,
-   hull: j++,
-   shield: j++
+  pilotSkill: 1,
+  primaryWeapon: 2,
+  energy: 3,
+  agility: 4,
+  hull: 5,
+  shield: 6
 };
 
-const element = React.createElement(TokenPanel,
-{
-   statBonuses: statBonuses,
-   tokenCounts: tokenCounts,
-   attackerTargetLocks: attackerTargetLocks,
-   defenderTargetLocks: defenderTargetLocks
+const element = React.createElement(TokenPanel, {
+  statBonuses,
+  tokenCounts,
+  attackerTargetLocks,
+  defenderTargetLocks
 });
 
 ReactDOM.render(element, document.getElementById("panel"));

@@ -2,78 +2,108 @@
  * Provides a React component which emulates a Java
  * <a href="http://docs.oracle.com/javase/6/docs/api/javax/swing/JOptionPane.html">JOptionPane</a>.
  */
-class OptionPane extends React.Component
-{
-   constructor(props)
-   {
-      super(props);
+class OptionPane extends React.Component {
+  constructor(props) {
+    super(props);
 
-      this.state = {
-         input: this.props.initialInput
-      };
-   }
+    const { initialInput } = this.props;
 
-   render()
-   {
-      const rows = [];
+    this.state = {
+      input: initialInput
+    };
+  }
 
-      const cell0 = ReactDOMFactories.td(
-      {
-         colSpan: 2,
-         className: "optionPaneTitle bg-xw-medium tc",
-      }, this.props.title);
-      rows.push(ReactDOMFactories.tr(
-      {
-         key: 0
-      }, cell0));
+  render() {
+    const { buttons, icon, message, title } = this.props;
+    const rows = [];
 
-      const cell10 = ReactDOMFactories.td(
+    const cell0 = ReactDOMFactories.td(
       {
-         key: 0,
-         rowSpan: 2,
-      }, this.props.icon);
-      const cell11 = ReactDOMFactories.td(
-      {
-         key: 1,
-         className: "optionPaneMessage",
-      }, this.props.message);
-      rows.push(ReactDOMFactories.tr(
-      {
-         key: 1
-      }, [cell10, cell11]));
+        colSpan: 2,
+        className: "optionPaneTitle bg-xw-medium tc"
+      },
+      title
+    );
+    rows.push(
+      ReactDOMFactories.tr(
+        {
+          key: 0
+        },
+        cell0
+      )
+    );
 
-      const cell2 = ReactDOMFactories.td(
-      {}, this.state.input);
-      rows.push(ReactDOMFactories.tr(
+    const cell10 = ReactDOMFactories.td(
       {
-         key: 2
-      }, cell2));
+        key: 0,
+        rowSpan: 2
+      },
+      icon
+    );
+    const cell11 = ReactDOMFactories.td(
+      {
+        key: 1,
+        className: "optionPaneMessage"
+      },
+      message
+    );
+    rows.push(
+      ReactDOMFactories.tr(
+        {
+          key: 1
+        },
+        [cell10, cell11]
+      )
+    );
 
-      const cell3 = ReactDOMFactories.td(
-      {
-         colSpan: 2,
-         className: "optionPaneButtons pa2 tr",
-      }, this.props.buttons);
-      rows.push(ReactDOMFactories.tr(
-      {
-         key: 3
-      }, cell3));
+    const { input } = this.state;
+    const cell2 = ReactDOMFactories.td({}, input);
+    rows.push(
+      ReactDOMFactories.tr(
+        {
+          key: 2
+        },
+        cell2
+      )
+    );
 
-      return ReactDOMFactories.table(
+    const cell3 = ReactDOMFactories.td(
       {
-         className: "optionPane ba b--xw-medium bg-xw-light center v-top",
-      }, ReactDOMFactories.tbody(
-      {}, rows));
-   }
+        colSpan: 2,
+        className: "optionPaneButtons pa2 tr"
+      },
+      buttons
+    );
+    rows.push(
+      ReactDOMFactories.tr(
+        {
+          key: 3
+        },
+        cell3
+      )
+    );
+
+    return ReactDOMFactories.table(
+      {
+        className: "optionPane ba b--xw-medium bg-xw-light center v-top"
+      },
+      ReactDOMFactories.tbody({}, rows)
+    );
+  }
 }
 
 OptionPane.propTypes = {
-   buttons: PropTypes.object.isRequired,
-   message: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
-   title: PropTypes.string.isRequired,
+  buttons: PropTypes.shape().isRequired,
+  message: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]).isRequired,
+  title: PropTypes.string.isRequired,
 
-   initialInput: PropTypes.object,
-   icon: PropTypes.object,
+  initialInput: PropTypes.shape(),
+  icon: PropTypes.shape()
+};
+
+OptionPane.defaultProps = {
+  initialInput: undefined,
+  icon: undefined
 };
 
 export default OptionPane;

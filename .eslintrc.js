@@ -4,18 +4,17 @@ module.exports = {
   },
   extends: ["airbnb", "prettier"],
   globals: {
-    XMA: true,
-    // AM: true,
-    XMS: true,
-    // AV: true,
     Immutable: true,
-    // PropTypes: true,
+    PropTypes: true,
     QUnit: true,
     R: true,
-    // React: true,
-    // ReactDOM: true,
-    // ReactDOMFactories: true,
-    Redux: true
+    React: true,
+    ReactDOM: true,
+    ReactDOMFactories: true,
+    Redux: true,
+    XMA: true,
+    XMM: true,
+    XMS: true
   },
   rules: {
     "import/extensions": ["error", { js: "always" }],

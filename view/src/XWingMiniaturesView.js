@@ -4,37 +4,28 @@ import StatusBarContainer from "./container/StatusBarContainer.js";
 
 const XWingMiniaturesView = {};
 
-XWingMiniaturesView.drawView = (
-{
-   gameState,
-   document,
-   resourceBase = "../resource/"
-}) =>
-{
-   const statusBarContainer = StatusBarContainer(gameState);
-   ReactDOM.render(statusBarContainer, document.getElementById("statusBarContainer"));
+XWingMiniaturesView.drawView = ({ gameState, document, resourceBase = "../resource/" }) => {
+  const statusBarContainer = StatusBarContainer(gameState);
+  ReactDOM.render(statusBarContainer, document.getElementById("statusBarContainer"));
 
-   const pilotArea1 = PilotsContainer(gameState,
-   {
-      agentId: 1
-   });
-   ReactDOM.render(pilotArea1, document.getElementById("pilotArea1"));
+  const pilotArea1 = PilotsContainer(gameState, {
+    agentId: 1
+  });
+  ReactDOM.render(pilotArea1, document.getElementById("pilotArea1"));
 
-   // FIXME: display firstPilotInputArea
+  // FIXME: display firstPilotInputArea
 
-   const playAreaContainer = PlayAreaContainer(gameState,
-   {
-      resourceBase: resourceBase
-   });
-   ReactDOM.render(playAreaContainer, document.getElementById("playAreaContainer"));
+  const playAreaContainer = PlayAreaContainer(gameState, {
+    resourceBase
+  });
+  ReactDOM.render(playAreaContainer, document.getElementById("playAreaContainer"));
 
-   // FIXME: display secondPilotInputArea
+  // FIXME: display secondPilotInputArea
 
-   const pilotArea2 = PilotsContainer(gameState,
-   {
-      agentId: 2
-   });
-   ReactDOM.render(pilotArea2, document.getElementById("pilotArea2"));
+  const pilotArea2 = PilotsContainer(gameState, {
+    agentId: 2
+  });
+  ReactDOM.render(pilotArea2, document.getElementById("pilotArea2"));
 };
 
 export default XWingMiniaturesView;

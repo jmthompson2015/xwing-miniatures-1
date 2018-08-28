@@ -1,92 +1,76 @@
 const ReactUtilities = {};
 
-ReactUtilities.createButton = function(element, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: className
-   });
+ReactUtilities.createButton = (element, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className
+  });
 
-   return ReactDOMFactories.button(newProps, element);
+  return ReactDOMFactories.button(newProps, element);
 };
 
-ReactUtilities.createCell = function(element, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: "dtc" + (className ? " " + className : "")
-   });
+ReactUtilities.createCell = (element, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className: `dtc${className ? ` ${className}` : ""}`
+  });
 
-   return ReactDOMFactories.div(newProps, element);
+  return ReactDOMFactories.div(newProps, element);
 };
 
-ReactUtilities.createFlexbox = function(cells, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: "flex" + (className ? " " + className : "")
-   });
+ReactUtilities.createFlexbox = (cells, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className: `flex${className ? ` ${className}` : ""}`
+  });
 
-   return ReactDOMFactories.div(newProps, cells);
+  return ReactDOMFactories.div(newProps, cells);
 };
 
-ReactUtilities.createFlexboxWrap = function(cells, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: "flex flex-wrap" + (className ? " " + className : "")
-   });
+ReactUtilities.createFlexboxWrap = (cells, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className: `flex flex-wrap${className ? ` ${className}` : ""}`
+  });
 
-   return ReactDOMFactories.div(newProps, cells);
+  return ReactDOMFactories.div(newProps, cells);
 };
 
-ReactUtilities.createImg = function(src, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      src: src,
-      key: key,
-      className: className
-   });
+ReactUtilities.createImg = (src, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    src,
+    key,
+    className
+  });
 
-   return ReactDOMFactories.img(newProps);
+  return ReactDOMFactories.img(newProps);
 };
 
-ReactUtilities.createRow = function(cells, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: "dt-row" + (className ? " " + className : "")
-   });
+ReactUtilities.createRow = (cells, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className: `dt-row${className ? ` ${className}` : ""}`
+  });
 
-   return ReactDOMFactories.div(newProps, cells);
+  return ReactDOMFactories.div(newProps, cells);
 };
 
-ReactUtilities.createSpan = function(element, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: className
-   });
+ReactUtilities.createSpan = (element, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className
+  });
 
-   return ReactDOMFactories.span(newProps, element);
+  return ReactDOMFactories.span(newProps, element);
 };
 
-ReactUtilities.createTable = function(rows, key, className, props = {})
-{
-   const newProps = R.merge(props,
-   {
-      key: key,
-      className: "dt" + (className ? " " + className : "")
-   });
+ReactUtilities.createTable = (rows, key, className, props = {}) => {
+  const newProps = R.merge(props, {
+    key,
+    className: `dt${className ? ` ${className}` : ""}`
+  });
 
-   return ReactDOMFactories.div(newProps, rows);
+  return ReactDOMFactories.div(newProps, rows);
 };
 
 export default ReactUtilities;

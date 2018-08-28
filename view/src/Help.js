@@ -7,21 +7,20 @@ const Help = {};
 
 const referenceKeys = XMA.EnumUtilities.keys(XMA.ReferenceCard);
 
-const rows = referenceKeys.map(function(referenceKey)
-{
-   const referenceCard = Selector.referenceCard(referenceKey);
-   const resourceBase = (referenceCard.image.startsWith("reference-card/") ? Endpoint.ARTIFACT_RESOURCE : undefined);
+const rows = referenceKeys.map(referenceKey => {
+  const referenceCard = Selector.referenceCard(referenceKey);
+  const resourceBase = referenceCard.image.startsWith("reference-card/")
+    ? Endpoint.ARTIFACT_RESOURCE
+    : undefined;
 
-   return React.createElement(CardImage,
-   {
-      key: "referenceCard" + referenceKey,
-      card: referenceCard,
-      resourceBase: resourceBase
-   });
+  return React.createElement(CardImage, {
+    key: `referenceCard${referenceKey}`,
+    card: referenceCard,
+    resourceBase
+  });
 });
 
-const mainPanel = ReactDOMFactories.div(
-{}, rows);
+const mainPanel = ReactDOMFactories.div({}, rows);
 ReactDOM.render(mainPanel, document.getElementById("mainPanel"));
 
 export default Help;

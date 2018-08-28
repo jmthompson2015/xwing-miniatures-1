@@ -1,48 +1,49 @@
-class ShipActionUI extends React.Component
-{
-   render()
-   {
-      const shipAction = this.props.shipAction;
-      let className = "center tc v-mid";
-      let src = shipAction.key.toLowerCase();
+class ShipActionUI extends React.Component {
+  render() {
+    const { shipAction, showLabel } = this.props;
+    let className = "center tc v-mid";
+    let src = shipAction.key.toLowerCase();
 
-      if (shipAction.key === XMA.ShipAction.DECLOAK)
+    if (shipAction.key === XMA.ShipAction.DECLOAK) {
+      src = "cloak";
+      className += " silver";
+    }
+
+    const image = ReactDOMFactories.span(
       {
-         src = "cloak";
-         className += " silver";
-      }
+        className,
+        title: shipAction.name
+      },
+      ReactDOMFactories.i({
+        className: `xwing-miniatures-font xwing-miniatures-font-${src}`
+      })
+    );
 
-      const image = ReactDOMFactories.span(
-      {
-         className: className,
-         title: shipAction.name,
-      }, ReactDOMFactories.i(
-      {
-         className: "xwing-miniatures-font xwing-miniatures-font-" + src,
-      }));
+    let answer = image;
 
-      let answer = image;
+    if (showLabel) {
+      answer = ReactDOMFactories.span(
+        {
+          className: "v-mid"
+        },
+        image,
+        " ",
+        shipAction.name
+      );
+    }
 
-      if (this.props.showLabel)
-      {
-         answer = ReactDOMFactories.span(
-         {
-            className: "v-mid",
-         }, image, " ", shipAction.name);
-      }
-
-      return answer;
-   }
+    return answer;
+  }
 }
 
 ShipActionUI.propTypes = {
-   shipAction: PropTypes.object.isRequired,
+  shipAction: PropTypes.shape().isRequired,
 
-   showLabel: PropTypes.bool,
+  showLabel: PropTypes.bool
 };
 
 ShipActionUI.defaultProps = {
-   showLabel: false,
+  showLabel: false
 };
 
 export default ShipActionUI;

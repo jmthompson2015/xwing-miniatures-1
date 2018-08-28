@@ -1,29 +1,27 @@
 import Endpoint from "../Endpoint.js";
 import ImageWithLabelUI from "./ImageWithLabelUI.js";
 
-const UpgradeSlotUI = props =>
-{
-   const upgradeSlot = props.upgradeSlot;
-   const src = props.resourceBase + upgradeSlot.image;
+const UpgradeSlotUI = props => {
+  const { resourceBase, showLabel, upgradeSlot } = props;
+  const src = resourceBase + upgradeSlot.image;
 
-   return React.createElement(ImageWithLabelUI,
-   {
-      src: src,
-      label: upgradeSlot.name,
-      showLabel: props.showLabel
-   });
+  return React.createElement(ImageWithLabelUI, {
+    src,
+    label: upgradeSlot.name,
+    showLabel
+  });
 };
 
 UpgradeSlotUI.propTypes = {
-   upgradeSlot: PropTypes.object.isRequired,
+  upgradeSlot: PropTypes.shape().isRequired,
 
-   resourceBase: PropTypes.string,
-   showLabel: PropTypes.bool
+  resourceBase: PropTypes.string,
+  showLabel: PropTypes.bool
 };
 
 UpgradeSlotUI.defaultProps = {
-   resourceBase: Endpoint.ARTIFACT_RESOURCE,
-   showLabel: false
+  resourceBase: Endpoint.ARTIFACT_RESOURCE,
+  showLabel: false
 };
 
 export default UpgradeSlotUI;

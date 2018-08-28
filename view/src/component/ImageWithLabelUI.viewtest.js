@@ -10,17 +10,15 @@ const typeName = upgradeSlot.name.toLowerCase().replace(/ /g, "-");
 const className = "ba b--silver bg-near-white f6 pa1 tl v-mid";
 const rows = [];
 
-const image0 = React.createElement(ImageWithLabelUI,
-{
-   src: Endpoint.XWING_IMAGES + faction.image,
-   label: faction.name,
+const image0 = React.createElement(ImageWithLabelUI, {
+  src: Endpoint.XWING_IMAGES + faction.image,
+  label: faction.name
 });
 
-const image1 = React.createElement(ImageWithLabelUI,
-{
-   src: Endpoint.XWING_IMAGES + faction.image,
-   label: faction.name,
-   showLabel: true,
+const image1 = React.createElement(ImageWithLabelUI, {
+  src: Endpoint.XWING_IMAGES + faction.image,
+  label: faction.name,
+  showLabel: true
 });
 
 let cells = [];
@@ -30,17 +28,15 @@ cells.push(ReactUtilities.createCell(image1, "standard+label", className));
 
 rows.push(ReactUtilities.createRow(cells, rows.length));
 
-const image2 = React.createElement(ImageWithLabelUI,
-{
-   src: Endpoint.ARTIFACT_RESOURCE + "upgrade-slot/" + typeName + ".png",
-   label: upgradeSlot.name,
+const image2 = React.createElement(ImageWithLabelUI, {
+  src: `${Endpoint.ARTIFACT_RESOURCE}upgrade-slot/${typeName}.png`,
+  label: upgradeSlot.name
 });
 
-const image3 = React.createElement(ImageWithLabelUI,
-{
-   src: Endpoint.ARTIFACT_RESOURCE + "upgrade-slot/" + typeName + ".png",
-   label: upgradeSlot.name,
-   showLabel: true,
+const image3 = React.createElement(ImageWithLabelUI, {
+  src: `${Endpoint.ARTIFACT_RESOURCE}upgrade-slot/${typeName}.png`,
+  label: upgradeSlot.name,
+  showLabel: true
 });
 
 cells = [];
