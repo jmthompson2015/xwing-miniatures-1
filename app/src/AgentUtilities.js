@@ -1,33 +1,32 @@
 const AgentUtilities = {};
 
-AgentUtilities.clearInputArea = inputAreaId => ReactDOM.render(ReactDOMFactories.span(""), document.getElementById(inputAreaId));
+AgentUtilities.clearInputArea = inputAreaId => {
+  ReactDOM.render(ReactDOMFactories.span(""), document.getElementById(inputAreaId));
+};
 
-AgentUtilities.notifyDamage = (
-{
-   attackerInstance,
-   combatInstance,
-   defenderInstance,
-   inputAreaId,
-   phaseKey
-}) => new Promise((resolve) =>
-{
-   const callback = () =>
-   {
+AgentUtilities.notifyDamage = ({
+  attackerInstance,
+  combatInstance,
+  defenderInstance,
+  inputAreaId,
+  phaseKey
+}) =>
+  new Promise(resolve => {
+    const callback = () => {
       AgentUtilities.clearInputArea(inputAreaId);
       resolve();
-   };
+    };
 
-   const dialog = React.createElement(XMV.CombatDialog,
-   {
-      combatInstance: combatInstance,
-      attackerInstance: attackerInstance,
-      defenderInstance: defenderInstance,
-      phaseKey: phaseKey,
+    const dialog = React.createElement(XMV.CombatDialog, {
+      combatInstance,
+      attackerInstance,
+      defenderInstance,
+      phaseKey,
       okFunction: callback
-   });
+    });
 
-   ReactDOM.render(dialog, document.getElementById(inputAreaId));
-});
+    ReactDOM.render(dialog, document.getElementById(inputAreaId));
+  });
 
 Object.freeze(AgentUtilities);
 

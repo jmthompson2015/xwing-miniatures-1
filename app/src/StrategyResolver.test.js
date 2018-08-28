@@ -5,13 +5,12 @@ import StrategyResolver from "./StrategyResolver.js";
 
 QUnit.module("StrategyResolver");
 
-QUnit.test("resolveStrategy()", function(assert)
-{
-   assert.equal(StrategyResolver.resolveStrategy("HumanAgentStrategy"), HumanAgentStrategy);
-   assert.equal(StrategyResolver.resolveStrategy("MediumAgentStrategy"), MediumAgentStrategy);
-   assert.equal(StrategyResolver.resolveStrategy("SimpleAgentStrategy"), SimpleAgentStrategy);
+QUnit.test("resolveStrategy()", assert => {
+  assert.equal(StrategyResolver.resolveStrategy("HumanAgentStrategy"), HumanAgentStrategy);
+  assert.equal(StrategyResolver.resolveStrategy("MediumAgentStrategy"), MediumAgentStrategy);
+  assert.equal(StrategyResolver.resolveStrategy("SimpleAgentStrategy"), SimpleAgentStrategy);
 
-   assert.equal(StrategyResolver.resolveStrategy("ReallyStupidStrategy"), undefined);
+  assert.equal(StrategyResolver.resolveStrategy("ReallyStupidStrategy"), undefined);
 });
 
 const StrategyResolverTest = {};

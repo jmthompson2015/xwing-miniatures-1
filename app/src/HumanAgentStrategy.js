@@ -2,138 +2,117 @@ import AgentUtils from "./AgentUtilities.js";
 
 const HumanAgentStrategy = {};
 
-HumanAgentStrategy.chooseAttackDiceModification = (
-{
-   abilities,
-   attackerInstance,
-   combatInstance,
-   defenderInstance,
-   inputAreaId,
-   phaseKey
-}) => new Promise((resolve) =>
-{
-   const callback = ability =>
-   {
+HumanAgentStrategy.chooseAttackDiceModification = ({
+  abilities,
+  attackerInstance,
+  combatInstance,
+  defenderInstance,
+  inputAreaId,
+  phaseKey
+}) =>
+  new Promise(resolve => {
+    const callback = ability => {
       resolve(ability);
-   };
+    };
 
-   const dialog = React.createElement(XMV.CombatDialog,
-   {
-      abilities: abilities,
-      attackerInstance: attackerInstance,
-      combatInstance: combatInstance,
-      defenderInstance: defenderInstance,
+    const dialog = React.createElement(XMV.CombatDialog, {
+      abilities,
+      attackerInstance,
+      combatInstance,
+      defenderInstance,
       okFunction: callback,
-      phaseKey: phaseKey
-   });
+      phaseKey
+    });
 
-   ReactDOM.render(dialog, document.getElementById(inputAreaId));
-});
+    ReactDOM.render(dialog, document.getElementById(inputAreaId));
+  });
 
-HumanAgentStrategy.chooseDefenseDiceModification = (
-{
-   abilities,
-   attackerInstance,
-   combatInstance,
-   defenderInstance,
-   inputAreaId,
-   phaseKey
-}) => new Promise((resolve) =>
-{
-   const callback = (ability) =>
-   {
+HumanAgentStrategy.chooseDefenseDiceModification = ({
+  abilities,
+  attackerInstance,
+  combatInstance,
+  defenderInstance,
+  inputAreaId,
+  phaseKey
+}) =>
+  new Promise(resolve => {
+    const callback = ability => {
       resolve(ability);
-   };
+    };
 
-   const dialog = React.createElement(XMV.CombatDialog,
-   {
-      abilities: abilities,
-      attackerInstance: attackerInstance,
-      combatInstance: combatInstance,
-      defenderInstance: defenderInstance,
+    const dialog = React.createElement(XMV.CombatDialog, {
+      abilities,
+      attackerInstance,
+      combatInstance,
+      defenderInstance,
       okFunction: callback,
-      phaseKey: phaseKey
-   });
+      phaseKey
+    });
 
-   ReactDOM.render(dialog, document.getElementById(inputAreaId));
-});
+    ReactDOM.render(dialog, document.getElementById(inputAreaId));
+  });
 
-HumanAgentStrategy.chooseManeuvers = (pilotInstances, pilotToValidManeuvers, inputAreaId) => new Promise((resolve) =>
-{
-   const callback = (
-   {
-      pilotToManeuver
-   }) =>
-   {
+HumanAgentStrategy.chooseManeuvers = (pilotInstances, pilotToValidManeuvers, inputAreaId) =>
+  new Promise(resolve => {
+    const callback = ({ pilotToManeuver }) => {
       AgentUtils.clearInputArea(inputAreaId);
       resolve(pilotToManeuver);
-   };
+    };
 
-   const dialog = React.createElement(XMV.PlanningDialog,
-   {
-      pilotInstances: pilotInstances,
+    const dialog = React.createElement(XMV.PlanningDialog, {
+      pilotInstances,
       pilotToValidManeuvers,
-      callback: callback
-   });
+      callback
+    });
 
-   ReactDOM.render(dialog, document.getElementById(inputAreaId));
-});
+    ReactDOM.render(dialog, document.getElementById(inputAreaId));
+  });
 
-HumanAgentStrategy.chooseShipAction = (activePilotName, abilities, inputAreaId) => new Promise((resolve) =>
-{
-   const callback = ability =>
-   {
+HumanAgentStrategy.chooseShipAction = (activePilotName, abilities, inputAreaId) =>
+  new Promise(resolve => {
+    const callback = ability => {
       AgentUtils.clearInputArea(inputAreaId);
       resolve(ability);
-   };
+    };
 
-   const dialog = React.createElement(XMV.AbilityDialog,
-   {
-      abilities: abilities,
-      activePilotName: activePilotName,
+    const dialog = React.createElement(XMV.AbilityDialog, {
+      abilities,
+      activePilotName,
       onChange: callback
-   });
+    });
 
-   ReactDOM.render(dialog, document.getElementById(inputAreaId));
-});
+    ReactDOM.render(dialog, document.getElementById(inputAreaId));
+  });
 
-HumanAgentStrategy.chooseWeaponAndDefender = (attackerInstance, weaponToRangeToDefenders, inputAreaId) => new Promise((resolve) =>
-{
-   const weaponKeys = Object.keys(weaponToRangeToDefenders);
+HumanAgentStrategy.chooseWeaponAndDefender = (
+  attackerInstance,
+  weaponToRangeToDefenders,
+  inputAreaId
+) =>
+  new Promise(resolve => {
+    const weaponKeys = Object.keys(weaponToRangeToDefenders);
 
-   if (weaponKeys.length > 0)
-   {
-      const callback = (
-      {
-         attackerId,
-         weaponKey,
-         defenderId
-      }) =>
-      {
-         AgentUtils.clearInputArea(inputAreaId);
-         resolve(
-         {
-            attackerId: attackerId,
-            weaponKey: weaponKey,
-            defenderId: defenderId
-         });
+    if (weaponKeys.length > 0) {
+      const callback = ({ attackerId, weaponKey, defenderId }) => {
+        AgentUtils.clearInputArea(inputAreaId);
+        resolve({
+          attackerId,
+          weaponKey,
+          defenderId
+        });
       };
 
-      const dialog = React.createElement(XMV.WeaponAndDefenderDialog,
-      {
-         attackerInstance: attackerInstance,
-         callback: callback,
-         weaponToRangeToDefenders: weaponToRangeToDefenders
+      const dialog = React.createElement(XMV.WeaponAndDefenderDialog, {
+        attackerInstance,
+        callback,
+        weaponToRangeToDefenders
       });
 
       ReactDOM.render(dialog, document.getElementById(inputAreaId));
-   }
-   else
-   {
-      resolve(
-      {});
-   }
-});
+    } else {
+      resolve({});
+    }
+  });
 
 HumanAgentStrategy.notifyDamage = props => AgentUtils.notifyDamage(props);
 

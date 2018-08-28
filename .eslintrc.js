@@ -14,7 +14,8 @@ module.exports = {
     Redux: true,
     XMA: true,
     XMM: true,
-    XMS: true
+    XMS: true,
+    XMV: true
   },
   rules: {
     "import/extensions": ["error", { js: "always" }],
