@@ -1,54 +1,56 @@
 import Endpoint from "../Endpoint.js";
 
-const LabeledImage = props => {
-  let answer;
-  const { label } = props;
-  const containerStyle = LabeledImage.createContainerStyle(props);
+class LabeledImage extends React.PureComponent {
+  createContainerStyle() {
+    const { height, image, resourceBase, width } = this.props;
+    const backgroundImage = `url(${resourceBase}${image})`;
+    const backgroundSize = `${width}px ${height}px`;
 
-  if (!props.showOne && label === "1") {
-    answer = ReactDOMFactories.div({
-      title: props.title,
-      style: containerStyle
-    });
-  } else {
-    const cell = ReactDOMFactories.div(
-      {
-        className: props.labelClass,
-        style: {
-          display: "table-cell",
-          verticalAlign: "middle"
-        }
-      },
-      label
-    );
-
-    answer = ReactDOMFactories.div(
-      {
-        title: props.title,
-        style: containerStyle
-      },
-      cell
-    );
+    return {
+      backgroundImage,
+      backgroundPosition: "alignCenter",
+      backgroundRepeat: "no-repeat",
+      backgroundSize,
+      display: "table",
+      minHeight: height,
+      minWidth: width
+    };
   }
 
-  return answer;
-};
+  render() {
+    let answer;
+    const { label, labelClass, showOne, title } = this.props;
+    const containerStyle = this.createContainerStyle(this.props);
 
-LabeledImage.createContainerStyle = props => {
-  const backgroundImage = `url(${props.resourceBase}${props.image})`;
-  const { height, width } = props;
-  const backgroundSize = `${width}px ${height}px`;
+    if (!showOne && label === "1") {
+      answer = ReactDOMFactories.div({
+        title,
+        style: containerStyle
+      });
+    } else {
+      const cell = ReactDOMFactories.div(
+        {
+          className: labelClass,
+          style: {
+            display: "table-cell",
+            verticalAlign: "middle"
+          }
+        },
+        label
+      );
 
-  return {
-    backgroundImage,
-    backgroundPosition: "alignCenter",
-    backgroundRepeat: "no-repeat",
-    backgroundSize,
-    display: "table",
-    minHeight: height,
-    minWidth: width
-  };
-};
+      answer = ReactDOMFactories.div(
+        {
+          title,
+          style: containerStyle
+        },
+        cell
+      );
+    }
+
+    return answer;
+  }
+}
 
 LabeledImage.propTypes = {
   image: PropTypes.string.isRequired,
@@ -64,8 +66,10 @@ LabeledImage.propTypes = {
 
 LabeledImage.defaultProps = {
   height: 32,
+  labelClass: undefined,
   resourceBase: Endpoint.ARTIFACT_RESOURCE,
   showOne: false,
+  title: undefined,
   width: 32
 };
 

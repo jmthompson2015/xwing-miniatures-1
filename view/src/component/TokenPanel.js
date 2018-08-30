@@ -2,91 +2,7 @@ import Endpoint from "../Endpoint.js";
 import LabeledImage from "./LabeledImage.js";
 import ReactUtilities from "../ReactUtilities.js";
 
-const TokenPanel = props => {
-  const rows = [];
-
-  const { attackerTargetLocks, defenderTargetLocks, statBonuses, tokenCounts } = props;
-  TokenPanel.maybeAddBonus(rows, statBonuses.pilotSkill, "elite", "Pilot Skill", "orange");
-  TokenPanel.maybeAddBonus(rows, statBonuses.primaryWeapon, "attack", "Primary Weapon", "red");
-  TokenPanel.maybeAddBonus(rows, statBonuses.energy, "energy", "Energy", "xw-violet");
-  TokenPanel.maybeAddBonus(rows, statBonuses.agility, "agility", "Agility", "xw-green");
-  TokenPanel.maybeAddBonus(rows, statBonuses.hull, "hull", "Hull", "yellow");
-  TokenPanel.maybeAddBonus(rows, statBonuses.shield, "shield", "Shield", "xw-cyan");
-
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.cloak, "token/cloak.png", "Cloak");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.energy, "token/energy.png", "Energy");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.evade, "token/evade.png", "Evade");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.focus, "token/focus.png", "Focus");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.ion, "token/ion.png", "Ion");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.ordnance, "token/ordnance.png", "Ordnance");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.reinforce, "token/reinforce.png", "Reinforce");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.shield, "token/shield.png", "Shield");
-  TokenPanel.maybeAddToken(props, rows, tokenCounts.stress, "token/stress.png", "Stress");
-  TokenPanel.maybeAddToken(
-    props,
-    rows,
-    tokenCounts.tractorBeam,
-    "token/tractor-beam.png",
-    "Tractor Beam"
-  );
-  TokenPanel.maybeAddToken(
-    props,
-    rows,
-    tokenCounts.weaponsDisabled,
-    "token/weapons-disabled.png",
-    "Weapons Disabled"
-  );
-
-  attackerTargetLocks.forEach(targetLock => {
-    const title = `Target Lock to ${targetLock.defenderName}`;
-    TokenPanel.addTargetLock(props, rows, targetLock, "token/target-lock-attack.png", title);
-  });
-
-  defenderTargetLocks.forEach(targetLock => {
-    const title = `Target Lock from ${targetLock.attackerName}`;
-    TokenPanel.addTargetLock(props, rows, targetLock, "token/target-lock-defend.png", title);
-  });
-
-  TokenPanel.maybeAddToken(
-    props,
-    rows,
-    tokenCounts.damage,
-    "token/damage.png",
-    "Damage",
-    "b black"
-  );
-  TokenPanel.maybeAddToken(
-    props,
-    rows,
-    tokenCounts.criticalDamage,
-    "token/critical-damage.png",
-    "Critical Damage",
-    "b black"
-  );
-
-  return ReactUtilities.createFlexboxWrap(
-    rows,
-    props.myKey,
-    "content-center flex-column justify-center"
-  );
-};
-
-TokenPanel.addTargetLock = (props, rows, targetLock, src, title) => {
-  const element = React.createElement(LabeledImage, {
-    image: src,
-    resourceBase: props.resourceBase,
-    label: targetLock.id,
-    labelClass: "b f5 white",
-    title,
-    width: 38
-  });
-
-  const key = `targetLock${targetLock.attackerName}${targetLock.defenderName}`;
-  const cell = ReactUtilities.createCell(element, key, "tc v-mid");
-  rows.push(ReactUtilities.createRow(cell, key, "tc v-mid"));
-};
-
-TokenPanel.maybeAddBonus = (rows, count, src, title, labelClass) => {
+const maybeAddBonus = (rows, count, src, title, labelClass) => {
   if (count !== undefined && count !== 0) {
     const value = (count > 0 ? "+" : "") + count;
     const symbol = ReactDOMFactories.span(
@@ -111,32 +27,113 @@ TokenPanel.maybeAddBonus = (rows, count, src, title, labelClass) => {
   }
 };
 
-TokenPanel.maybeAddToken = (props, rows, count, src, title, labelClassIn) => {
-  if (count !== undefined && count !== 0) {
-    const labelClass = labelClassIn !== undefined ? labelClassIn : "b white";
-    const labeledImage = React.createElement(LabeledImage, {
+class TokenPanel extends React.PureComponent {
+  addTargetLock(rows, targetLock, src, title) {
+    const { resourceBase } = this.props;
+    const element = React.createElement(LabeledImage, {
       image: src,
-      label: `${count}`,
-      labelClass,
-      resourceBase: props.resourceBase,
-      title
+      resourceBase,
+      label: targetLock.id,
+      labelClass: "b f5 white",
+      title,
+      width: 38
     });
 
-    const cell = ReactUtilities.createCell(
-      labeledImage,
-      `tokenCell${title}${rows.length}`,
-      "tc v-mid"
-    );
-    rows.push(ReactUtilities.createRow(cell, `tokenRow${title}${rows.length}`, "tc v-mid"));
+    const key = `targetLock${targetLock.attackerName}${targetLock.defenderName}`;
+    const cell = ReactUtilities.createCell(element, key, "tc v-mid");
+    rows.push(ReactUtilities.createRow(cell, key, "tc v-mid"));
   }
-};
+
+  maybeAddToken(rows, count, src, title, labelClassIn) {
+    const { resourceBase } = this.props;
+
+    if (count !== undefined && count !== 0) {
+      const labelClass = labelClassIn !== undefined ? labelClassIn : "b white";
+      const labeledImage = React.createElement(LabeledImage, {
+        image: src,
+        label: `${count}`,
+        labelClass,
+        resourceBase,
+        title
+      });
+
+      const cell = ReactUtilities.createCell(
+        labeledImage,
+        `tokenCell${title}${rows.length}`,
+        "tc v-mid"
+      );
+
+      rows.push(ReactUtilities.createRow(cell, `tokenRow${title}${rows.length}`, "tc v-mid"));
+    }
+  }
+
+  render() {
+    const {
+      attackerTargetLocks,
+      defenderTargetLocks,
+      myKey,
+      statBonuses,
+      tokenCounts
+    } = this.props;
+
+    const rows = [];
+
+    maybeAddBonus(rows, statBonuses.pilotSkill, "elite", "Pilot Skill", "orange");
+    maybeAddBonus(rows, statBonuses.primaryWeapon, "attack", "Primary Weapon", "red");
+    maybeAddBonus(rows, statBonuses.energy, "energy", "Energy", "xw-violet");
+    maybeAddBonus(rows, statBonuses.agility, "agility", "Agility", "xw-green");
+    maybeAddBonus(rows, statBonuses.hull, "hull", "Hull", "yellow");
+    maybeAddBonus(rows, statBonuses.shield, "shield", "Shield", "xw-cyan");
+
+    this.maybeAddToken(rows, tokenCounts.cloak, "token/cloak.png", "Cloak");
+    this.maybeAddToken(rows, tokenCounts.energy, "token/energy.png", "Energy");
+    this.maybeAddToken(rows, tokenCounts.evade, "token/evade.png", "Evade");
+    this.maybeAddToken(rows, tokenCounts.focus, "token/focus.png", "Focus");
+    this.maybeAddToken(rows, tokenCounts.ion, "token/ion.png", "Ion");
+    this.maybeAddToken(rows, tokenCounts.ordnance, "token/ordnance.png", "Ordnance");
+    this.maybeAddToken(rows, tokenCounts.reinforce, "token/reinforce.png", "Reinforce");
+    this.maybeAddToken(rows, tokenCounts.shield, "token/shield.png", "Shield");
+    this.maybeAddToken(rows, tokenCounts.stress, "token/stress.png", "Stress");
+    this.maybeAddToken(rows, tokenCounts.tractorBeam, "token/tractor-beam.png", "Tractor Beam");
+    this.maybeAddToken(
+      rows,
+      tokenCounts.weaponsDisabled,
+      "token/weapons-disabled.png",
+      "Weapons Disabled"
+    );
+
+    attackerTargetLocks.forEach(targetLock => {
+      const title = `Target Lock to ${targetLock.defenderName}`;
+      this.addTargetLock(rows, targetLock, "token/target-lock-attack.png", title);
+    });
+
+    defenderTargetLocks.forEach(targetLock => {
+      const title = `Target Lock from ${targetLock.attackerName}`;
+      this.addTargetLock(rows, targetLock, "token/target-lock-defend.png", title);
+    });
+
+    this.maybeAddToken(rows, tokenCounts.damage, "token/damage.png", "Damage", "b black");
+    this.maybeAddToken(
+      rows,
+      tokenCounts.criticalDamage,
+      "token/critical-damage.png",
+      "Critical Damage",
+      "b black"
+    );
+
+    return ReactUtilities.createFlexboxWrap(
+      rows,
+      myKey,
+      "content-center flex-column justify-center"
+    );
+  }
+}
 
 TokenPanel.propTypes = {
-  resourceBase: PropTypes.string.isRequired,
-
   attackerTargetLocks: PropTypes.arrayOf(),
   defenderTargetLocks: PropTypes.arrayOf(),
   myKey: PropTypes.string,
+  resourceBase: PropTypes.string,
   statBonuses: PropTypes.shape(),
   tokenCounts: PropTypes.shape()
 };

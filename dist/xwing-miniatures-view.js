@@ -86,22 +86,25 @@
   Endpoint.LOCAL_RESOURCE = "../../resource/";
   Endpoint.XWING_IMAGES = "https://cdn.jsdelivr.net/npm/xwing-data@1.0.1/images/";
 
-  const ImageWithLabelUI = props => {
-    const image = ReactDOMFactories.img({
-      className: "v-mid",
-      src: props.src,
-      title: props.label,
-      width: props.width
-    });
+  class ImageWithLabelUI extends React.PureComponent {
+    render() {
+      const { label, showLabel, src, width } = this.props;
+      const image = ReactDOMFactories.img({
+        className: "v-mid",
+        src,
+        title: label,
+        width
+      });
 
-    let answer = image;
+      let answer = image;
 
-    if (props.showLabel) {
-      answer = ReactDOMFactories.span({}, image, " ", props.label);
+      if (showLabel) {
+        answer = ReactDOMFactories.span({}, image, " ", label);
+      }
+
+      return answer;
     }
-
-    return answer;
-  };
+  }
 
   ImageWithLabelUI.propTypes = {
     src: PropTypes.string.isRequired,
@@ -117,18 +120,20 @@
     width: 24
   };
 
-  const FactionUI = props => {
-    const { faction, isSmall, resourceBase, showLabel } = props;
-    const src = resourceBase + faction.image;
-    const size = isSmall ? 24 : 32;
+  class FactionUI extends React.PureComponent {
+    render() {
+      const { faction, isSmall, resourceBase, showLabel } = this.props;
+      const src = resourceBase + faction.image;
+      const size = isSmall ? 24 : 32;
 
-    return React.createElement(ImageWithLabelUI, {
-      src,
-      label: faction.name,
-      showLabel,
-      width: size
-    });
-  };
+      return React.createElement(ImageWithLabelUI, {
+        src,
+        label: faction.name,
+        showLabel,
+        width: size
+      });
+    }
+  }
 
   FactionUI.propTypes = {
     faction: PropTypes.shape().isRequired,
@@ -222,16 +227,18 @@
     showLabel: false
   };
 
-  const UpgradeSlotUI = props => {
-    const { resourceBase, showLabel, upgradeSlot } = props;
-    const src = resourceBase + upgradeSlot.image;
+  class UpgradeSlotUI extends React.PureComponent {
+    render() {
+      const { resourceBase, showLabel, upgradeSlot } = this.props;
+      const src = resourceBase + upgradeSlot.image;
 
-    return React.createElement(ImageWithLabelUI, {
-      src,
-      label: upgradeSlot.name,
-      showLabel
-    });
-  };
+      return React.createElement(ImageWithLabelUI, {
+        src,
+        label: upgradeSlot.name,
+        showLabel
+      });
+    }
+  }
 
   UpgradeSlotUI.propTypes = {
     upgradeSlot: PropTypes.shape().isRequired,
@@ -710,19 +717,21 @@
     onChange: PropTypes.func.isRequired
   };
 
-  const CardImage = props => {
-    const { card, isFaceUp, width } = props;
-    const canvasId = `CardImageCanvas${card.key}${isFaceUp}${width}`;
-    const src = props.resourceBase + card.image;
+  class CardImage extends React.PureComponent {
+    render() {
+      const { card, isFaceUp, resourceBase, width } = this.props;
+      const canvasId = `CardImageCanvas${card.key}${isFaceUp}${width}`;
+      const src = resourceBase + card.image;
 
-    return ReactDOMFactories.img({
-      key: canvasId,
-      className: "br3",
-      src,
-      title: card.name,
-      width
-    });
-  };
+      return ReactDOMFactories.img({
+        key: canvasId,
+        className: "br3",
+        src,
+        title: card.name,
+        width
+      });
+    }
+  }
 
   CardImage.propTypes = {
     card: PropTypes.shape().isRequired,
@@ -941,55 +950,57 @@
     label: undefined
   };
 
-  const LabeledImage = props => {
-    let answer;
-    const { label } = props;
-    const containerStyle = LabeledImage.createContainerStyle(props);
+  class LabeledImage extends React.PureComponent {
+    createContainerStyle() {
+      const { height, image, resourceBase, width } = this.props;
+      const backgroundImage = `url(${resourceBase}${image})`;
+      const backgroundSize = `${width}px ${height}px`;
 
-    if (!props.showOne && label === "1") {
-      answer = ReactDOMFactories.div({
-        title: props.title,
-        style: containerStyle
-      });
-    } else {
-      const cell = ReactDOMFactories.div(
-        {
-          className: props.labelClass,
-          style: {
-            display: "table-cell",
-            verticalAlign: "middle"
-          }
-        },
-        label
-      );
-
-      answer = ReactDOMFactories.div(
-        {
-          title: props.title,
-          style: containerStyle
-        },
-        cell
-      );
+      return {
+        backgroundImage,
+        backgroundPosition: "alignCenter",
+        backgroundRepeat: "no-repeat",
+        backgroundSize,
+        display: "table",
+        minHeight: height,
+        minWidth: width
+      };
     }
 
-    return answer;
-  };
+    render() {
+      let answer;
+      const { label, labelClass, showOne, title } = this.props;
+      const containerStyle = this.createContainerStyle(this.props);
 
-  LabeledImage.createContainerStyle = props => {
-    const backgroundImage = `url(${props.resourceBase}${props.image})`;
-    const { height, width } = props;
-    const backgroundSize = `${width}px ${height}px`;
+      if (!showOne && label === "1") {
+        answer = ReactDOMFactories.div({
+          title,
+          style: containerStyle
+        });
+      } else {
+        const cell = ReactDOMFactories.div(
+          {
+            className: labelClass,
+            style: {
+              display: "table-cell",
+              verticalAlign: "middle"
+            }
+          },
+          label
+        );
 
-    return {
-      backgroundImage,
-      backgroundPosition: "alignCenter",
-      backgroundRepeat: "no-repeat",
-      backgroundSize,
-      display: "table",
-      minHeight: height,
-      minWidth: width
-    };
-  };
+        answer = ReactDOMFactories.div(
+          {
+            title,
+            style: containerStyle
+          },
+          cell
+        );
+      }
+
+      return answer;
+    }
+  }
 
   LabeledImage.propTypes = {
     image: PropTypes.string.isRequired,
@@ -1005,96 +1016,14 @@
 
   LabeledImage.defaultProps = {
     height: 32,
+    labelClass: undefined,
     resourceBase: Endpoint.ARTIFACT_RESOURCE,
     showOne: false,
+    title: undefined,
     width: 32
   };
 
-  const TokenPanel = props => {
-    const rows = [];
-
-    const { attackerTargetLocks, defenderTargetLocks, statBonuses, tokenCounts } = props;
-    TokenPanel.maybeAddBonus(rows, statBonuses.pilotSkill, "elite", "Pilot Skill", "orange");
-    TokenPanel.maybeAddBonus(rows, statBonuses.primaryWeapon, "attack", "Primary Weapon", "red");
-    TokenPanel.maybeAddBonus(rows, statBonuses.energy, "energy", "Energy", "xw-violet");
-    TokenPanel.maybeAddBonus(rows, statBonuses.agility, "agility", "Agility", "xw-green");
-    TokenPanel.maybeAddBonus(rows, statBonuses.hull, "hull", "Hull", "yellow");
-    TokenPanel.maybeAddBonus(rows, statBonuses.shield, "shield", "Shield", "xw-cyan");
-
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.cloak, "token/cloak.png", "Cloak");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.energy, "token/energy.png", "Energy");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.evade, "token/evade.png", "Evade");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.focus, "token/focus.png", "Focus");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.ion, "token/ion.png", "Ion");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.ordnance, "token/ordnance.png", "Ordnance");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.reinforce, "token/reinforce.png", "Reinforce");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.shield, "token/shield.png", "Shield");
-    TokenPanel.maybeAddToken(props, rows, tokenCounts.stress, "token/stress.png", "Stress");
-    TokenPanel.maybeAddToken(
-      props,
-      rows,
-      tokenCounts.tractorBeam,
-      "token/tractor-beam.png",
-      "Tractor Beam"
-    );
-    TokenPanel.maybeAddToken(
-      props,
-      rows,
-      tokenCounts.weaponsDisabled,
-      "token/weapons-disabled.png",
-      "Weapons Disabled"
-    );
-
-    attackerTargetLocks.forEach(targetLock => {
-      const title = `Target Lock to ${targetLock.defenderName}`;
-      TokenPanel.addTargetLock(props, rows, targetLock, "token/target-lock-attack.png", title);
-    });
-
-    defenderTargetLocks.forEach(targetLock => {
-      const title = `Target Lock from ${targetLock.attackerName}`;
-      TokenPanel.addTargetLock(props, rows, targetLock, "token/target-lock-defend.png", title);
-    });
-
-    TokenPanel.maybeAddToken(
-      props,
-      rows,
-      tokenCounts.damage,
-      "token/damage.png",
-      "Damage",
-      "b black"
-    );
-    TokenPanel.maybeAddToken(
-      props,
-      rows,
-      tokenCounts.criticalDamage,
-      "token/critical-damage.png",
-      "Critical Damage",
-      "b black"
-    );
-
-    return ReactUtilities.createFlexboxWrap(
-      rows,
-      props.myKey,
-      "content-center flex-column justify-center"
-    );
-  };
-
-  TokenPanel.addTargetLock = (props, rows, targetLock, src, title) => {
-    const element = React.createElement(LabeledImage, {
-      image: src,
-      resourceBase: props.resourceBase,
-      label: targetLock.id,
-      labelClass: "b f5 white",
-      title,
-      width: 38
-    });
-
-    const key = `targetLock${targetLock.attackerName}${targetLock.defenderName}`;
-    const cell = ReactUtilities.createCell(element, key, "tc v-mid");
-    rows.push(ReactUtilities.createRow(cell, key, "tc v-mid"));
-  };
-
-  TokenPanel.maybeAddBonus = (rows, count, src, title, labelClass) => {
+  const maybeAddBonus = (rows, count, src, title, labelClass) => {
     if (count !== undefined && count !== 0) {
       const value = (count > 0 ? "+" : "") + count;
       const symbol = ReactDOMFactories.span(
@@ -1119,32 +1048,113 @@
     }
   };
 
-  TokenPanel.maybeAddToken = (props, rows, count, src, title, labelClassIn) => {
-    if (count !== undefined && count !== 0) {
-      const labelClass = labelClassIn !== undefined ? labelClassIn : "b white";
-      const labeledImage = React.createElement(LabeledImage, {
+  class TokenPanel extends React.PureComponent {
+    addTargetLock(rows, targetLock, src, title) {
+      const { resourceBase } = this.props;
+      const element = React.createElement(LabeledImage, {
         image: src,
-        label: `${count}`,
-        labelClass,
-        resourceBase: props.resourceBase,
-        title
+        resourceBase,
+        label: targetLock.id,
+        labelClass: "b f5 white",
+        title,
+        width: 38
       });
 
-      const cell = ReactUtilities.createCell(
-        labeledImage,
-        `tokenCell${title}${rows.length}`,
-        "tc v-mid"
-      );
-      rows.push(ReactUtilities.createRow(cell, `tokenRow${title}${rows.length}`, "tc v-mid"));
+      const key = `targetLock${targetLock.attackerName}${targetLock.defenderName}`;
+      const cell = ReactUtilities.createCell(element, key, "tc v-mid");
+      rows.push(ReactUtilities.createRow(cell, key, "tc v-mid"));
     }
-  };
+
+    maybeAddToken(rows, count, src, title, labelClassIn) {
+      const { resourceBase } = this.props;
+
+      if (count !== undefined && count !== 0) {
+        const labelClass = labelClassIn !== undefined ? labelClassIn : "b white";
+        const labeledImage = React.createElement(LabeledImage, {
+          image: src,
+          label: `${count}`,
+          labelClass,
+          resourceBase,
+          title
+        });
+
+        const cell = ReactUtilities.createCell(
+          labeledImage,
+          `tokenCell${title}${rows.length}`,
+          "tc v-mid"
+        );
+
+        rows.push(ReactUtilities.createRow(cell, `tokenRow${title}${rows.length}`, "tc v-mid"));
+      }
+    }
+
+    render() {
+      const {
+        attackerTargetLocks,
+        defenderTargetLocks,
+        myKey,
+        statBonuses,
+        tokenCounts
+      } = this.props;
+
+      const rows = [];
+
+      maybeAddBonus(rows, statBonuses.pilotSkill, "elite", "Pilot Skill", "orange");
+      maybeAddBonus(rows, statBonuses.primaryWeapon, "attack", "Primary Weapon", "red");
+      maybeAddBonus(rows, statBonuses.energy, "energy", "Energy", "xw-violet");
+      maybeAddBonus(rows, statBonuses.agility, "agility", "Agility", "xw-green");
+      maybeAddBonus(rows, statBonuses.hull, "hull", "Hull", "yellow");
+      maybeAddBonus(rows, statBonuses.shield, "shield", "Shield", "xw-cyan");
+
+      this.maybeAddToken(rows, tokenCounts.cloak, "token/cloak.png", "Cloak");
+      this.maybeAddToken(rows, tokenCounts.energy, "token/energy.png", "Energy");
+      this.maybeAddToken(rows, tokenCounts.evade, "token/evade.png", "Evade");
+      this.maybeAddToken(rows, tokenCounts.focus, "token/focus.png", "Focus");
+      this.maybeAddToken(rows, tokenCounts.ion, "token/ion.png", "Ion");
+      this.maybeAddToken(rows, tokenCounts.ordnance, "token/ordnance.png", "Ordnance");
+      this.maybeAddToken(rows, tokenCounts.reinforce, "token/reinforce.png", "Reinforce");
+      this.maybeAddToken(rows, tokenCounts.shield, "token/shield.png", "Shield");
+      this.maybeAddToken(rows, tokenCounts.stress, "token/stress.png", "Stress");
+      this.maybeAddToken(rows, tokenCounts.tractorBeam, "token/tractor-beam.png", "Tractor Beam");
+      this.maybeAddToken(
+        rows,
+        tokenCounts.weaponsDisabled,
+        "token/weapons-disabled.png",
+        "Weapons Disabled"
+      );
+
+      attackerTargetLocks.forEach(targetLock => {
+        const title = `Target Lock to ${targetLock.defenderName}`;
+        this.addTargetLock(rows, targetLock, "token/target-lock-attack.png", title);
+      });
+
+      defenderTargetLocks.forEach(targetLock => {
+        const title = `Target Lock from ${targetLock.attackerName}`;
+        this.addTargetLock(rows, targetLock, "token/target-lock-defend.png", title);
+      });
+
+      this.maybeAddToken(rows, tokenCounts.damage, "token/damage.png", "Damage", "b black");
+      this.maybeAddToken(
+        rows,
+        tokenCounts.criticalDamage,
+        "token/critical-damage.png",
+        "Critical Damage",
+        "b black"
+      );
+
+      return ReactUtilities.createFlexboxWrap(
+        rows,
+        myKey,
+        "content-center flex-column justify-center"
+      );
+    }
+  }
 
   TokenPanel.propTypes = {
-    resourceBase: PropTypes.string.isRequired,
-
     attackerTargetLocks: PropTypes.arrayOf(),
     defenderTargetLocks: PropTypes.arrayOf(),
     myKey: PropTypes.string,
+    resourceBase: PropTypes.string,
     statBonuses: PropTypes.shape(),
     tokenCounts: PropTypes.shape()
   };
@@ -1839,24 +1849,32 @@
     pilotId: undefined
   };
 
-  const PilotsUI = props => {
-    const { pilotInstances } = props;
+  class PilotsUI extends React.PureComponent {
+    render() {
+      const {
+        pilotInstances,
+        pilotToDamages,
+        pilotToStatBonuses,
+        pilotToTokenCounts,
+        pilotToUpgrades
+      } = this.props;
 
-    const pilotCells = pilotInstances.map((pilotInstance, i) => {
-      const element = React.createElement(CardInstanceUI, {
-        cardInstance: pilotInstance,
-        damageInstances: props.pilotToDamages[pilotInstance.id],
-        statBonuses: props.pilotToStatBonuses[pilotInstance.id],
-        tokenCounts: props.pilotToTokenCounts[pilotInstance.id],
-        upgradeInstances: props.pilotToUpgrades[pilotInstance.id]
+      const pilotCells = pilotInstances.map((pilotInstance, i) => {
+        const element = React.createElement(CardInstanceUI, {
+          cardInstance: pilotInstance,
+          damageInstances: pilotToDamages[pilotInstance.id],
+          statBonuses: pilotToStatBonuses[pilotInstance.id],
+          tokenCounts: pilotToTokenCounts[pilotInstance.id],
+          upgradeInstances: pilotToUpgrades[pilotInstance.id]
+        });
+        return ReactUtilities.createCell(element, `pilotCell${i}`, "alignTop v-top");
       });
-      return ReactUtilities.createCell(element, `pilotCell${i}`, "alignTop v-top");
-    });
 
-    const row = ReactUtilities.createRow(pilotCells);
+      const row = ReactUtilities.createRow(pilotCells);
 
-    return ReactUtilities.createTable(row, "pilotsUITable", "center");
-  };
+      return ReactUtilities.createTable(row, "pilotsUITable", "center");
+    }
+  }
 
   PilotsUI.propTypes = {
     pilotInstances: PropTypes.arrayOf().isRequired,
@@ -2318,45 +2336,48 @@
     maneuver: undefined
   };
 
-  const StatusBarUI = props => {
-    const helpLinkUI = ReactDOMFactories.a(
-      {
-        href: `${props.helpBase}Help.html`,
-        target: "_blank"
-      },
-      "Help"
-    );
+  class StatusBarUI extends React.PureComponent {
+    render() {
+      const { activeShipName, helpBase, phaseName, round, userMessage } = this.props;
+      const helpLinkUI = ReactDOMFactories.a(
+        {
+          href: `${helpBase}Help.html`,
+          target: "_blank"
+        },
+        "Help"
+      );
 
-    const cellClassName = "ba";
+      const cellClassName = "ba";
 
-    const roundCell = ReactUtilities.createCell(["Round: ", props.round], 0, cellClassName, {
-      title: "Round"
-    });
-    const phaseCell = ReactUtilities.createCell(["Phase: ", props.phaseName], 1, cellClassName, {
-      title: "Phase"
-    });
-    const activeShipCell = ReactUtilities.createCell(
-      ["Active Ship: ", props.activeShipName],
-      2,
-      cellClassName,
-      {
-        title: "Active Ship"
-      }
-    );
-    const userMessageCell = ReactUtilities.createCell(props.userMessage, 3, cellClassName, {
-      title: "User Message"
-    });
-    const helpCell = ReactUtilities.createCell(helpLinkUI, 4, cellClassName);
+      const roundCell = ReactUtilities.createCell(["Round: ", round], 0, cellClassName, {
+        title: "Round"
+      });
+      const phaseCell = ReactUtilities.createCell(["Phase: ", phaseName], 1, cellClassName, {
+        title: "Phase"
+      });
+      const activeShipCell = ReactUtilities.createCell(
+        ["Active Ship: ", activeShipName],
+        2,
+        cellClassName,
+        {
+          title: "Active Ship"
+        }
+      );
+      const userMessageCell = ReactUtilities.createCell(userMessage, 3, cellClassName, {
+        title: "User Message"
+      });
+      const helpCell = ReactUtilities.createCell(helpLinkUI, 4, cellClassName);
 
-    const cells = [roundCell, phaseCell, activeShipCell, userMessageCell, helpCell];
-    const row = ReactUtilities.createRow(cells);
+      const cells = [roundCell, phaseCell, activeShipCell, userMessageCell, helpCell];
+      const row = ReactUtilities.createRow(cells);
 
-    return ReactUtilities.createTable(
-      row,
-      "statusBarUITable",
-      "bg-xw-light collapse ma0 tc v-mid w-100"
-    );
-  };
+      return ReactUtilities.createTable(
+        row,
+        "statusBarUITable",
+        "bg-xw-light collapse ma0 tc v-mid w-100"
+      );
+    }
+  }
 
   StatusBarUI.propTypes = {
     activeShipName: PropTypes.string.isRequired,

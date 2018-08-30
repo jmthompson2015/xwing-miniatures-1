@@ -1,19 +1,22 @@
-const ImageWithLabelUI = props => {
-  const image = ReactDOMFactories.img({
-    className: "v-mid",
-    src: props.src,
-    title: props.label,
-    width: props.width
-  });
+class ImageWithLabelUI extends React.PureComponent {
+  render() {
+    const { label, showLabel, src, width } = this.props;
+    const image = ReactDOMFactories.img({
+      className: "v-mid",
+      src,
+      title: label,
+      width
+    });
 
-  let answer = image;
+    let answer = image;
 
-  if (props.showLabel) {
-    answer = ReactDOMFactories.span({}, image, " ", props.label);
+    if (showLabel) {
+      answer = ReactDOMFactories.span({}, image, " ", label);
+    }
+
+    return answer;
   }
-
-  return answer;
-};
+}
 
 ImageWithLabelUI.propTypes = {
   src: PropTypes.string.isRequired,

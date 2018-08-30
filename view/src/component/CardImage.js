@@ -1,18 +1,20 @@
 import Endpoint from "../Endpoint.js";
 
-const CardImage = props => {
-  const { card, isFaceUp, width } = props;
-  const canvasId = `CardImageCanvas${card.key}${isFaceUp}${width}`;
-  const src = props.resourceBase + card.image;
+class CardImage extends React.PureComponent {
+  render() {
+    const { card, isFaceUp, resourceBase, width } = this.props;
+    const canvasId = `CardImageCanvas${card.key}${isFaceUp}${width}`;
+    const src = resourceBase + card.image;
 
-  return ReactDOMFactories.img({
-    key: canvasId,
-    className: "br3",
-    src,
-    title: card.name,
-    width
-  });
-};
+    return ReactDOMFactories.img({
+      key: canvasId,
+      className: "br3",
+      src,
+      title: card.name,
+      width
+    });
+  }
+}
 
 CardImage.propTypes = {
   card: PropTypes.shape().isRequired,

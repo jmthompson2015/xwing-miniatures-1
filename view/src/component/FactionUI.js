@@ -1,18 +1,20 @@
 import Endpoint from "../Endpoint.js";
 import ImageWithLabelUI from "./ImageWithLabelUI.js";
 
-const FactionUI = props => {
-  const { faction, isSmall, resourceBase, showLabel } = props;
-  const src = resourceBase + faction.image;
-  const size = isSmall ? 24 : 32;
+class FactionUI extends React.PureComponent {
+  render() {
+    const { faction, isSmall, resourceBase, showLabel } = this.props;
+    const src = resourceBase + faction.image;
+    const size = isSmall ? 24 : 32;
 
-  return React.createElement(ImageWithLabelUI, {
-    src,
-    label: faction.name,
-    showLabel,
-    width: size
-  });
-};
+    return React.createElement(ImageWithLabelUI, {
+      src,
+      label: faction.name,
+      showLabel,
+      width: size
+    });
+  }
+}
 
 FactionUI.propTypes = {
   faction: PropTypes.shape().isRequired,

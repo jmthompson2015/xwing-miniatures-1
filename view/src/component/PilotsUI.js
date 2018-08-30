@@ -1,24 +1,32 @@
 import CardInstanceUI from "./CardInstanceUI.js";
 import ReactUtilities from "../ReactUtilities.js";
 
-const PilotsUI = props => {
-  const { pilotInstances } = props;
+class PilotsUI extends React.PureComponent {
+  render() {
+    const {
+      pilotInstances,
+      pilotToDamages,
+      pilotToStatBonuses,
+      pilotToTokenCounts,
+      pilotToUpgrades
+    } = this.props;
 
-  const pilotCells = pilotInstances.map((pilotInstance, i) => {
-    const element = React.createElement(CardInstanceUI, {
-      cardInstance: pilotInstance,
-      damageInstances: props.pilotToDamages[pilotInstance.id],
-      statBonuses: props.pilotToStatBonuses[pilotInstance.id],
-      tokenCounts: props.pilotToTokenCounts[pilotInstance.id],
-      upgradeInstances: props.pilotToUpgrades[pilotInstance.id]
+    const pilotCells = pilotInstances.map((pilotInstance, i) => {
+      const element = React.createElement(CardInstanceUI, {
+        cardInstance: pilotInstance,
+        damageInstances: pilotToDamages[pilotInstance.id],
+        statBonuses: pilotToStatBonuses[pilotInstance.id],
+        tokenCounts: pilotToTokenCounts[pilotInstance.id],
+        upgradeInstances: pilotToUpgrades[pilotInstance.id]
+      });
+      return ReactUtilities.createCell(element, `pilotCell${i}`, "alignTop v-top");
     });
-    return ReactUtilities.createCell(element, `pilotCell${i}`, "alignTop v-top");
-  });
 
-  const row = ReactUtilities.createRow(pilotCells);
+    const row = ReactUtilities.createRow(pilotCells);
 
-  return ReactUtilities.createTable(row, "pilotsUITable", "center");
-};
+    return ReactUtilities.createTable(row, "pilotsUITable", "center");
+  }
+}
 
 PilotsUI.propTypes = {
   pilotInstances: PropTypes.arrayOf().isRequired,
