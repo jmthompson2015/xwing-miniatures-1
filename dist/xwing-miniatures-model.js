@@ -1700,9 +1700,51 @@
     Object.freeze(ManeuverComputer);
   }
 
+  const { ActionCreator: ActionCreator$3, Selector: Selector$1 } = XMS;
+
+  const TaskUtilities = {};
+
+  TaskUtilities.processPhase = ({
+    phaseKey,
+    processFunction,
+    responseKey,
+    responseFunction
+  }) => store =>
+    new Promise((resolve, reject) => {
+      const agentQuery = Selector$1.agentQuery(store.getState());
+      const agentResponse = Selector$1.agentResponse(store.getState());
+
+      if (agentQuery !== undefined) {
+        reject(
+          new Error(
+            `Received agentQuery for phaseKey: ${phaseKey}\nagentQuery = ${JSON.stringify(
+            agentQuery,
+            null,
+            "   "
+          )}`
+          )
+        );
+      } else if (agentResponse !== undefined && agentResponse.responseKey === responseKey) {
+        if (responseFunction !== undefined) {
+          responseFunction(store);
+          store.dispatch(ActionCreator$3.clearAgentResponse());
+          resolve(store);
+        } else {
+          reject(new Error(`Missing responseFunction for phaseKey: ${phaseKey}`));
+        }
+      } else if (processFunction !== undefined) {
+        processFunction(store);
+        resolve(store);
+      } else {
+        reject(new Error(`Missing processFunction for phaseKey: ${phaseKey}`));
+      }
+    });
+
+  Object.freeze(TaskUtilities);
+
   const { Phase, Token: Token$2 } = XMA;
 
-  const { ActionCreator: ActionCreator$3 } = XMS;
+  const { ActionCreator: ActionCreator$4 } = XMS;
 
   const ActivationTask = {};
   const PHASE_TO_CONFIG = {};
@@ -1731,10 +1773,10 @@
   const setActivationQueue = store => {
     const pilots = Selector.pilotInstances(store.getState());
     const queue = R.sort(comparator, pilots).map(pilot => pilot.id);
-    store.dispatch(ActionCreator$3.setActivationQueue(queue));
+    store.dispatch(ActionCreator$4.setActivationQueue(queue));
   };
 
-  const setPhase = (store, phaseKey) => store.dispatch(ActionCreator$3.setPhase(phaseKey));
+  const setPhase = (store, phaseKey) => store.dispatch(ActionCreator$4.setPhase(phaseKey));
 
   const start = store =>
     new Promise(resolve => {
@@ -1746,41 +1788,10 @@
 
   const end = store =>
     new Promise(resolve => {
-      store.dispatch(ActionCreator$3.clearDisplayManeuver());
+      store.dispatch(ActionCreator$4.clearDisplayManeuver());
       setPhase(store, Phase.COMBAT_START);
 
       resolve(store);
-    });
-
-  const processPhase = ({ phaseKey, processFunction, responseKey, responseFunction }) => store =>
-    new Promise((resolve, reject) => {
-      const agentQuery = Selector.agentQuery(store.getState());
-      const agentResponse = Selector.agentResponse(store.getState());
-
-      if (agentQuery !== undefined) {
-        reject(
-          new Error(
-            `Received agentQuery for phaseKey: ${phaseKey}\nagentQuery = ${JSON.stringify(
-            agentQuery,
-            null,
-            "   "
-          )}`
-          )
-        );
-      } else if (agentResponse !== undefined && agentResponse.responseKey === responseKey) {
-        if (responseFunction !== undefined) {
-          responseFunction(store);
-          store.dispatch(ActionCreator$3.clearAgentResponse());
-          resolve(store);
-        } else {
-          reject(new Error(`Missing responseFunction for phaseKey: ${phaseKey}`));
-        }
-      } else if (processFunction !== undefined) {
-        processFunction(store);
-        resolve(store);
-      } else {
-        reject(new Error(`Missing processFunction for phaseKey: ${phaseKey}`));
-      }
     });
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1798,7 +1809,7 @@
         break;
       default:
         config = PHASE_TO_CONFIG[phaseKey];
-        answer = processPhase({
+        answer = TaskUtilities.processPhase({
           phaseKey,
           processFunction: config.processFunction,
           responseKey: config.responseKey,
@@ -1815,12 +1826,12 @@
       const activationQueue = Selector.activationQueue(store.getState());
 
       if (activationQueue.length > 0) {
-        store.dispatch(ActionCreator$3.dequeueActivation());
+        store.dispatch(ActionCreator$4.dequeueActivation());
 
         setPhase(store, Phase.ACTIVATION_SET_TEMPLATE);
       } else {
-        store.dispatch(ActionCreator$3.clearActivePilotId());
-        store.dispatch(ActionCreator$3.setPhase(Phase.ACTIVATION_END));
+        store.dispatch(ActionCreator$4.clearActivePilotId());
+        store.dispatch(ActionCreator$4.setPhase(Phase.ACTIVATION_END));
       }
     }
   };
@@ -1839,10 +1850,10 @@
       const fromPosition = Selector.positionByPilot(pilotId, store.getState());
       const shipBase = Selector.shipBaseValueByPilot(pilotId, store.getState());
       const toPosition = ManeuverComputer.computeToPosition(maneuver, fromPosition, shipBase);
-      store.dispatch(ActionCreator$3.movePilot(pilotId, toPosition));
+      store.dispatch(ActionCreator$4.movePilot(pilotId, toPosition));
       const color = R.defaultTo("white", R.prop(maneuver.difficulty, DIFFICULTY_TO_COLOR));
       store.dispatch(
-        ActionCreator$3.setDisplayManeuver(
+        ActionCreator$4.setDisplayManeuver(
           XMS.ManeuverState.create({
             color,
             fromPolygon: ManeuverComputer.computeFromPolygon(fromPosition, shipBase),
@@ -1867,10 +1878,10 @@
         const stressCount = Selector.countByPilotToken(pilotId, Token$2.STRESS, store.getState());
 
         if (stressCount > 0) {
-          store.dispatch(ActionCreator$3.addPilotTokenCount(pilotId, Token$2.STRESS, -1));
+          store.dispatch(ActionCreator$4.addPilotTokenCount(pilotId, Token$2.STRESS, -1));
         }
       } else if (difficulty === "Hard") {
-        store.dispatch(ActionCreator$3.addPilotTokenCount(pilotId, Token$2.STRESS, 1));
+        store.dispatch(ActionCreator$4.addPilotTokenCount(pilotId, Token$2.STRESS, 1));
       }
       setPhase(store, Phase.ACTIVATION_CLEAN_UP);
     }
@@ -1912,7 +1923,7 @@
           abilities
         }
       });
-      store.dispatch(ActionCreator$3.setAgentQuery(agentQuery));
+      store.dispatch(ActionCreator$4.setAgentQuery(agentQuery));
     },
     responseKey: AgentQueryType.CHOOSE_SHIP_ACTION,
     responseFunction: store => {
@@ -1925,7 +1936,7 @@
 
   const { AttackDiceValue: AttackDiceValue$2, DefenseDiceValue: DefenseDiceValue$2, Phase: Phase$1, Token: Token$3 } = XMA;
 
-  const { ActionCreator: ActionCreator$4 } = XMS;
+  const { ActionCreator: ActionCreator$5 } = XMS;
 
   const CombatTask = {};
 
@@ -1948,43 +1959,12 @@
     return pilotSkillA > pilotSkillB;
   });
 
-  const processPhase$1 = ({ phaseKey, processFunction, responseKey, responseFunction }) => store =>
-    new Promise((resolve, reject) => {
-      const agentQuery = Selector.agentQuery(store.getState());
-      const agentResponse = Selector.agentResponse(store.getState());
-
-      if (agentQuery !== undefined) {
-        reject(
-          new Error(
-            `Received agentQuery for phaseKey: ${phaseKey}\nagentQuery = ${JSON.stringify(
-            agentQuery,
-            null,
-            "   "
-          )}`
-          )
-        );
-      } else if (agentResponse !== undefined && agentResponse.responseKey === responseKey) {
-        if (responseFunction !== undefined) {
-          responseFunction(store);
-          store.dispatch(ActionCreator$4.clearAgentResponse());
-          resolve(store);
-        } else {
-          reject(new Error(`Missing responseFunction for phaseKey: ${phaseKey}`));
-        }
-      } else if (processFunction !== undefined) {
-        processFunction(store);
-        resolve(store);
-      } else {
-        reject(new Error(`Missing processFunction for phaseKey: ${phaseKey}`));
-      }
-    });
-
-  const setPhase$1 = (store, phaseKey) => store.dispatch(ActionCreator$4.setPhase(phaseKey));
+  const setPhase$1 = (store, phaseKey) => store.dispatch(ActionCreator$5.setPhase(phaseKey));
 
   const setCombatQueue = store => {
     const pilots = Selector.pilotInstances(store.getState());
     const queue = R.sort(comparator$1, pilots).map(pilot => pilot.id);
-    store.dispatch(ActionCreator$4.setCombatQueue(queue));
+    store.dispatch(ActionCreator$5.setCombatQueue(queue));
   };
 
   const start$1 = store =>
@@ -2016,7 +1996,7 @@
         break;
       default:
         config = PHASE_TO_CONFIG$1[phaseKey];
-        answer = processPhase$1({
+        answer = TaskUtilities.processPhase({
           phaseKey,
           responseKey: config.responseKey,
           responseFunction: config.responseFunction,
@@ -2033,7 +2013,7 @@
       const combatQueue = Selector.combatQueue(store.getState());
 
       if (combatQueue.length > 0) {
-        store.dispatch(ActionCreator$4.dequeueCombat());
+        store.dispatch(ActionCreator$5.dequeueCombat());
         const activePilotId = Selector.activePilotId(store.getState());
         const agent = Selector.agentInstanceByPilot(activePilotId, store.getState());
         const pilot = Selector.pilotInstance(activePilotId, store.getState());
@@ -2050,9 +2030,9 @@
             weaponToRangeToDefenders
           }
         });
-        store.dispatch(ActionCreator$4.setAgentQuery(agentQuery));
+        store.dispatch(ActionCreator$5.setAgentQuery(agentQuery));
       } else {
-        store.dispatch(ActionCreator$4.clearActivePilotId());
+        store.dispatch(ActionCreator$5.clearActivePilotId());
         setPhase$1(store, Phase$1.COMBAT_END);
       }
     },
@@ -2063,7 +2043,7 @@
 
       if (defenderId !== undefined) {
         const combatId = XMS.Selector.nextCombatId(store.getState());
-        store.dispatch(ActionCreator$4.setActiveCombatId(combatId));
+        store.dispatch(ActionCreator$5.setActiveCombatId(combatId));
 
         const combatInstance = XMS.CombatState.create({
           id: combatId,
@@ -2072,7 +2052,7 @@
           rangeKey,
           weaponKey
         });
-        store.dispatch(ActionCreator$4.setCombatInstance(combatInstance));
+        store.dispatch(ActionCreator$5.setCombatInstance(combatInstance));
 
         const attackerFaction = Selector.factionValueByPilot(attackerId, store.getState());
         const attackerPosition = Selector.positionByPilot(attackerId, store.getState());
@@ -2083,28 +2063,28 @@
           isPrimary: weaponKey === "primary",
           toPosition: defenderPosition
         });
-        store.dispatch(ActionCreator$4.setDisplayLaserBeam(laserBeam));
+        store.dispatch(ActionCreator$5.setDisplayLaserBeam(laserBeam));
         setPhase$1(store, Phase$1.COMBAT_ROLL_ATTACK_DICE);
       } else {
         // No attack.
         setPhase$1(store, Phase$1.COMBAT_DECLARE_TARGET);
       }
 
-      store.dispatch(ActionCreator$4.clearAgentResponse());
+      store.dispatch(ActionCreator$5.clearAgentResponse());
     }
   };
 
   PHASE_TO_CONFIG$1[Phase$1.COMBAT_ROLL_ATTACK_DICE] = {
     processFunction: store => {
       if (store.getState().displayLaserBeam !== undefined) {
-        store.dispatch(ActionCreator$4.clearDisplayLaserBeam());
+        store.dispatch(ActionCreator$5.clearDisplayLaserBeam());
       }
 
       const combatId = Selector.activeCombatId(store.getState());
       const diceCount = DiceUtilities.computeAttackDiceCount(combatId, store.getState());
       const attackDice = DiceUtilities.rollAttackDice(diceCount);
-      store.dispatch(ActionCreator$4.setCombatAttackDice(combatId, attackDice));
-      store.dispatch(ActionCreator$4.setPhase(Phase$1.COMBAT_MODIFY_ATTACK_DICE));
+      store.dispatch(ActionCreator$5.setCombatAttackDice(combatId, attackDice));
+      store.dispatch(ActionCreator$5.setPhase(Phase$1.COMBAT_MODIFY_ATTACK_DICE));
     }
   };
 
@@ -2136,12 +2116,12 @@
           abilities
         }
       });
-      store.dispatch(ActionCreator$4.setAgentQuery(agentQuery));
+      store.dispatch(ActionCreator$5.setAgentQuery(agentQuery));
     },
     responseKey: AgentQueryType.CHOOSE_ATTACK_DICE_MODIFICATION,
     responseFunction: store => {
       AbilityUtilities.processAgentResponse(store);
-      store.dispatch(ActionCreator$4.setPhase(Phase$1.COMBAT_ROLL_DEFENSE_DICE));
+      store.dispatch(ActionCreator$5.setPhase(Phase$1.COMBAT_ROLL_DEFENSE_DICE));
     }
   };
 
@@ -2150,8 +2130,8 @@
       const combatId = Selector.activeCombatId(store.getState());
       const diceCount = DiceUtilities.computeDefenseDiceCount(combatId, store.getState());
       const defenseDice = DiceUtilities.rollDefenseDice(diceCount);
-      store.dispatch(ActionCreator$4.setCombatDefenseDice(combatId, defenseDice));
-      store.dispatch(ActionCreator$4.setPhase(Phase$1.COMBAT_MODIFY_DEFENSE_DICE));
+      store.dispatch(ActionCreator$5.setCombatDefenseDice(combatId, defenseDice));
+      store.dispatch(ActionCreator$5.setPhase(Phase$1.COMBAT_MODIFY_DEFENSE_DICE));
     }
   };
 
@@ -2183,7 +2163,7 @@
           abilities
         }
       });
-      store.dispatch(ActionCreator$4.setAgentQuery(agentQuery));
+      store.dispatch(ActionCreator$5.setAgentQuery(agentQuery));
     },
     responseKey: AgentQueryType.CHOOSE_DEFENSE_DICE_MODIFICATION,
     responseFunction: store => {
@@ -2222,19 +2202,19 @@
         const count = Math.min(hits, Selector.shieldByPilot(defenderId, store.getState()));
         hits -= count;
         shieldDamage += count;
-        store.dispatch(ActionCreator$4.addPilotTokenCount(defenderId, Token$3.SHIELD, -count));
+        store.dispatch(ActionCreator$5.addPilotTokenCount(defenderId, Token$3.SHIELD, -count));
       }
 
       if (Selector.shieldByPilot(defenderId, store.getState()) > 0) {
         const count = Math.min(criticals, Selector.shieldByPilot(defenderId, store.getState()));
         criticals -= count;
         shieldDamage += count;
-        store.dispatch(ActionCreator$4.addPilotTokenCount(defenderId, Token$3.SHIELD, -count));
+        store.dispatch(ActionCreator$5.addPilotTokenCount(defenderId, Token$3.SHIELD, -count));
       }
 
-      store.dispatch(ActionCreator$4.setCombatShieldDamage(combatId, shieldDamage));
-      store.dispatch(ActionCreator$4.setCombatHitDamage(combatId, hits));
-      store.dispatch(ActionCreator$4.setCombatCriticalDamage(combatId, criticals));
+      store.dispatch(ActionCreator$5.setCombatShieldDamage(combatId, shieldDamage));
+      store.dispatch(ActionCreator$5.setCombatHitDamage(combatId, hits));
+      store.dispatch(ActionCreator$5.setCombatCriticalDamage(combatId, criticals));
       setPhase$1(store, Phase$1.COMBAT_NOTIFY_DAMAGE);
     }
   };
@@ -2252,13 +2232,13 @@
           combatId
         }
       });
-      store.dispatch(ActionCreator$4.setAgentQuery(agentQuery));
+      store.dispatch(ActionCreator$5.setAgentQuery(agentQuery));
     },
     responseKey: AgentQueryType.NOTIFY_DAMAGE,
     responseFunction: store => {
       // FIXME: process agent response
-      store.dispatch(ActionCreator$4.clearAgentResponse());
-      store.dispatch(ActionCreator$4.setPhase(Phase$1.COMBAT_DEAL_DAMAGE));
+      store.dispatch(ActionCreator$5.clearAgentResponse());
+      store.dispatch(ActionCreator$5.setPhase(Phase$1.COMBAT_DEAL_DAMAGE));
     }
   };
 
@@ -2271,11 +2251,11 @@
       const criticals = combatInstance.criticalDamage;
 
       for (let i = 0; i < hits; i += 1) {
-        store.dispatch(ActionCreator$4.dealDamage(defenderId));
+        store.dispatch(ActionCreator$5.dealDamage(defenderId));
       }
 
       for (let i = 0; i < criticals; i += 1) {
-        store.dispatch(ActionCreator$4.dealCritical(defenderId));
+        store.dispatch(ActionCreator$5.dealCritical(defenderId));
       }
 
       // Next pilot.
@@ -2326,43 +2306,12 @@
 
   const { Phase: Phase$2, Token: Token$4 } = XMA;
 
-  const { ActionCreator: ActionCreator$5 } = XMS;
+  const { ActionCreator: ActionCreator$6 } = XMS;
 
   const EndTask = {};
   const PHASE_TO_CONFIG$2 = {};
 
-  const processPhase$2 = ({ phaseKey, processFunction, responseKey, responseFunction }) => store =>
-    new Promise((resolve, reject) => {
-      const agentQuery = Selector.agentQuery(store.getState());
-      const agentResponse = Selector.agentResponse(store.getState());
-
-      if (agentQuery !== undefined) {
-        reject(
-          new Error(
-            `Received agentQuery for phaseKey: ${phaseKey}\nagentQuery = ${JSON.stringify(
-            agentQuery,
-            null,
-            "   "
-          )}`
-          )
-        );
-      } else if (agentResponse !== undefined && agentResponse.responseKey === responseKey) {
-        if (responseFunction !== undefined) {
-          responseFunction(store);
-          store.dispatch(ActionCreator$5.clearAgentResponse());
-          resolve(store);
-        } else {
-          reject(new Error(`Missing responseFunction for phaseKey: ${phaseKey}`));
-        }
-      } else if (processFunction !== undefined) {
-        processFunction(store);
-        resolve(store);
-      } else {
-        reject(new Error(`Missing processFunction for phaseKey: ${phaseKey}`));
-      }
-    });
-
-  const setPhase$2 = (store, phaseKey) => store.dispatch(ActionCreator$5.setPhase(phaseKey));
+  const setPhase$2 = (store, phaseKey) => store.dispatch(ActionCreator$6.setPhase(phaseKey));
 
   const start$2 = store =>
     new Promise(resolve => {
@@ -2391,7 +2340,7 @@
         break;
       default:
         config = PHASE_TO_CONFIG$2[phaseKey];
-        answer = processPhase$2({
+        answer = TaskUtilities.processPhase({
           phaseKey,
           responseKey: config.responseKey,
           responseFunction: config.responseFunction,
@@ -2406,16 +2355,16 @@
   PHASE_TO_CONFIG$2[Phase$2.END_CLEAN_UP] = {
     processFunction: store => {
       const pilotIds = Selector.pilotIds(store.getState()).sort();
-      store.dispatch(ActionCreator$5.setEndQueue(pilotIds));
+      store.dispatch(ActionCreator$6.setEndQueue(pilotIds));
 
       while (Selector.endQueue(store.getState()).length > 0) {
-        store.dispatch(ActionCreator$5.dequeueEnd());
+        store.dispatch(ActionCreator$6.dequeueEnd());
         const pilotId = Selector.activePilotId(store.getState());
-        store.dispatch(ActionCreator$5.clearPilotTokenCount(pilotId, Token$4.EVADE));
-        store.dispatch(ActionCreator$5.clearPilotTokenCount(pilotId, Token$4.FOCUS));
-        store.dispatch(ActionCreator$5.clearPilotTokenCount(pilotId, Token$4.REINFORCE));
-        store.dispatch(ActionCreator$5.clearPilotTokenCount(pilotId, Token$4.TRACTOR_BEAM));
-        store.dispatch(ActionCreator$5.clearPilotTokenCount(pilotId, Token$4.WEAPONS_DISABLED));
+        store.dispatch(ActionCreator$6.clearPilotTokenCount(pilotId, Token$4.EVADE));
+        store.dispatch(ActionCreator$6.clearPilotTokenCount(pilotId, Token$4.FOCUS));
+        store.dispatch(ActionCreator$6.clearPilotTokenCount(pilotId, Token$4.REINFORCE));
+        store.dispatch(ActionCreator$6.clearPilotTokenCount(pilotId, Token$4.TRACTOR_BEAM));
+        store.dispatch(ActionCreator$6.clearPilotTokenCount(pilotId, Token$4.WEAPONS_DISABLED));
       }
 
       setPhase$2(store, Phase$2.END_ROUND_END);
@@ -2432,22 +2381,22 @@
 
   const { Phase: Phase$3 } = XMA;
 
-  const { ActionCreator: ActionCreator$6 } = XMS;
+  const { ActionCreator: ActionCreator$7 } = XMS;
 
   const PlanningTask = {};
   const PHASE_TO_CONFIG$3 = {};
 
-  const setPhase$3 = (store, phaseKey) => store.dispatch(ActionCreator$6.setPhase(phaseKey));
+  const setPhase$3 = (store, phaseKey) => store.dispatch(ActionCreator$7.setPhase(phaseKey));
 
   const setPlanningQueue = store => {
     const agents = Selector.agentInstances(store.getState());
     const queue = R.map(agent => agent.id, agents);
-    store.dispatch(ActionCreator$6.setPlanningQueue(queue));
+    store.dispatch(ActionCreator$7.setPlanningQueue(queue));
   };
 
   const start$3 = store =>
     new Promise(resolve => {
-      store.dispatch(ActionCreator$6.incrementRound());
+      store.dispatch(ActionCreator$7.incrementRound());
       setPlanningQueue(store);
       setPhase$3(store, Phase$3.PLANNING);
 
@@ -2459,37 +2408,6 @@
       setPhase$3(store, Phase$3.ACTIVATION_START);
 
       resolve(store);
-    });
-
-  const processPhase$3 = ({ phaseKey, processFunction, responseKey, responseFunction }) => store =>
-    new Promise((resolve, reject) => {
-      const agentQuery = Selector.agentQuery(store.getState());
-      const agentResponse = Selector.agentResponse(store.getState());
-
-      if (agentQuery !== undefined) {
-        reject(
-          new Error(
-            `Received agentQuery for phaseKey: ${phaseKey}\nagentQuery = ${JSON.stringify(
-            agentQuery,
-            null,
-            "   "
-          )}`
-          )
-        );
-      } else if (agentResponse !== undefined && agentResponse.responseKey === responseKey) {
-        if (responseFunction !== undefined) {
-          responseFunction(store);
-          store.dispatch(ActionCreator$6.clearAgentResponse());
-          resolve(store);
-        } else {
-          reject(new Error(`Missing responseFunction for phaseKey: ${phaseKey}`));
-        }
-      } else if (processFunction !== undefined) {
-        processFunction(store);
-        resolve(store);
-      } else {
-        reject(new Error(`Missing processFunction for phaseKey: ${phaseKey}`));
-      }
     });
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2507,7 +2425,7 @@
         break;
       default:
         config = PHASE_TO_CONFIG$3[phaseKey];
-        answer = processPhase$3({
+        answer = TaskUtilities.processPhase({
           phaseKey,
           responseKey: config.responseKey,
           responseFunction: config.responseFunction,
@@ -2524,7 +2442,7 @@
       const planningQueue = Selector.planningQueue(store.getState());
 
       if (planningQueue.length > 0) {
-        store.dispatch(ActionCreator$6.dequeuePlanning());
+        store.dispatch(ActionCreator$7.dequeuePlanning());
         const activeAgentId = Selector.activeAgentId(store.getState());
         const pilots = Selector.pilotInstancesByAgent(activeAgentId, store.getState());
         const reducerFunction = (accumulator, pilot) => {
@@ -2540,10 +2458,10 @@
             pilotToValidManeuvers
           }
         });
-        store.dispatch(ActionCreator$6.setAgentQuery(newAgentQuery));
+        store.dispatch(ActionCreator$7.setAgentQuery(newAgentQuery));
       } else {
-        store.dispatch(ActionCreator$6.clearActiveAgentId());
-        store.dispatch(ActionCreator$6.setPhase(Phase$3.PLANNING_END));
+        store.dispatch(ActionCreator$7.clearActiveAgentId());
+        store.dispatch(ActionCreator$7.setPhase(Phase$3.PLANNING_END));
       }
     },
     responseKey: AgentQueryType.CHOOSE_MANEUVERS,
@@ -2552,27 +2470,27 @@
       const pilotToManeuver0 = Selector.pilotToManeuver(store.getState());
       const pilotToManeuver1 = agentResponse.payload.pilotToManeuver;
       const pilotToManeuver = R.merge(pilotToManeuver0, pilotToManeuver1);
-      store.dispatch(ActionCreator$6.setPilotToManeuver(pilotToManeuver));
-      store.dispatch(ActionCreator$6.clearAgentResponse());
+      store.dispatch(ActionCreator$7.setPilotToManeuver(pilotToManeuver));
+      store.dispatch(ActionCreator$7.clearAgentResponse());
     }
   };
 
   Object.freeze(PlanningTask);
 
-  const { ActionCreator: ActionCreator$7 } = XMS;
+  const { ActionCreator: ActionCreator$8 } = XMS;
 
   const SetupTask = {};
 
   SetupTask.doIt = store =>
     new Promise(resolve => {
-      store.dispatch(ActionCreator$7.setPhase(XMA.Phase.PLANNING_START));
+      store.dispatch(ActionCreator$8.setPhase(XMA.Phase.PLANNING_START));
 
       resolve(store);
     });
 
   Object.freeze(SetupTask);
 
-  const { ActionCreator: ActionCreator$8 } = XMS;
+  const { ActionCreator: ActionCreator$9 } = XMS;
 
   const PC = XMA.PilotCard;
   const UC = XMA.UpgradeCard;
@@ -2618,8 +2536,8 @@
 
     // Side effects.
     const upgrade = createUpgrade(store, upgradeKey);
-    store.dispatch(ActionCreator$8.setUpgradeInstance(upgrade));
-    store.dispatch(ActionCreator$8.setUpgradeTokenCounts(upgrade.id, tokenCounts));
+    store.dispatch(ActionCreator$9.setUpgradeInstance(upgrade));
+    store.dispatch(ActionCreator$9.setUpgradeTokenCounts(upgrade.id, tokenCounts));
 
     return R.append(upgrade.id, accumulator);
   };
@@ -2637,9 +2555,9 @@
 
     // Side effects.
     const pilot = createPilot(store, pilotKey);
-    store.dispatch(ActionCreator$8.setPilotInstance(pilot));
-    store.dispatch(ActionCreator$8.setPilotTokenCounts(pilot.id, tokenCounts));
-    store.dispatch(ActionCreator$8.setPilotUpgrades(pilot.id, upgradeIds));
+    store.dispatch(ActionCreator$9.setPilotInstance(pilot));
+    store.dispatch(ActionCreator$9.setPilotTokenCounts(pilot.id, tokenCounts));
+    store.dispatch(ActionCreator$9.setPilotUpgrades(pilot.id, upgradeIds));
 
     return R.append(pilot.id, accumulator);
   };
@@ -2659,8 +2577,8 @@
       pilots: pilotIds
     });
 
-    store.dispatch(ActionCreator$8.setSquadInstance(answer));
-    store.dispatch(ActionCreator$8.setSquadPilots(squadId, pilotIds));
+    store.dispatch(ActionCreator$9.setSquadInstance(answer));
+    store.dispatch(ActionCreator$9.setSquadPilots(squadId, pilotIds));
 
     return answer;
   };
@@ -2998,7 +2916,7 @@
 
   Object.freeze(SquadUtils);
 
-  const { ActionCreator: ActionCreator$9, Reducer } = XMS;
+  const { ActionCreator: ActionCreator$a, Reducer } = XMS;
 
   const XWingMiniaturesModel = {};
 
@@ -3036,10 +2954,10 @@
 
   const processGameOver = store => {
     const winner = determineWinner(store);
-    store.dispatch(ActionCreator$9.setGameOver(winner));
+    store.dispatch(ActionCreator$a.setGameOver(winner));
 
     const message = winner === undefined ? "Game is a draw." : `${winner.name()} won! `;
-    store.dispatch(ActionCreator$9.setUserMessage(message));
+    store.dispatch(ActionCreator$a.setUserMessage(message));
   };
 
   // /////////////////////////////////////////////////////////////////////////////////////////////////

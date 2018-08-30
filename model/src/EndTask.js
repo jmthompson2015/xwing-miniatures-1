@@ -1,4 +1,5 @@
 import Selector from "./Selector.js";
+import TaskUtils from "./TaskUtilities.js";
 
 const { Phase, Token } = XMA;
 
@@ -6,37 +7,6 @@ const { ActionCreator } = XMS;
 
 const EndTask = {};
 const PHASE_TO_CONFIG = {};
-
-const processPhase = ({ phaseKey, processFunction, responseKey, responseFunction }) => store =>
-  new Promise((resolve, reject) => {
-    const agentQuery = Selector.agentQuery(store.getState());
-    const agentResponse = Selector.agentResponse(store.getState());
-
-    if (agentQuery !== undefined) {
-      reject(
-        new Error(
-          `Received agentQuery for phaseKey: ${phaseKey}\nagentQuery = ${JSON.stringify(
-            agentQuery,
-            null,
-            "   "
-          )}`
-        )
-      );
-    } else if (agentResponse !== undefined && agentResponse.responseKey === responseKey) {
-      if (responseFunction !== undefined) {
-        responseFunction(store);
-        store.dispatch(ActionCreator.clearAgentResponse());
-        resolve(store);
-      } else {
-        reject(new Error(`Missing responseFunction for phaseKey: ${phaseKey}`));
-      }
-    } else if (processFunction !== undefined) {
-      processFunction(store);
-      resolve(store);
-    } else {
-      reject(new Error(`Missing processFunction for phaseKey: ${phaseKey}`));
-    }
-  });
 
 const setPhase = (store, phaseKey) => store.dispatch(ActionCreator.setPhase(phaseKey));
 
@@ -67,7 +37,7 @@ EndTask.doIt = store => {
       break;
     default:
       config = PHASE_TO_CONFIG[phaseKey];
-      answer = processPhase({
+      answer = TaskUtils.processPhase({
         phaseKey,
         responseKey: config.responseKey,
         responseFunction: config.responseFunction,
