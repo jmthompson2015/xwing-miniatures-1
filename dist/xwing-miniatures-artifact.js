@@ -9051,9 +9051,9 @@
            "5FW"
         ],
         "images": [
-           "ship/galactic-empire/tie-adv-prototype.png"
+           "ship/galactic-empire/tie-advanced-prototype.png"
         ],
-        "silhouette": "silhouette/tie-adv-prototype.png",
+        "silhouette": "silhouette/tie-advanced-prototype.png",
         "key": "tieAdvPrototype"
      },
      "tieAdvanced": {
@@ -17970,8 +17970,13 @@
 
   const dialToManeuver = dial => ManeuverUtilities.dialToManeuver(dial);
 
-  const keysByName = (enumClass, names) =>
-    R.map(name => Selector.findEnumValueByName(name, enumClass).key, names);
+  const keysByName = (enumClass, names) => {
+    const mapFunction = name => {
+      const enumValue = Selector.findEnumValueByName(name, enumClass);
+      return enumValue !== undefined ? enumValue.key : undefined;
+    };
+    return R.map(mapFunction, names);
+  };
 
   const valueByKey = (enumClass, key) => enumClass.properties[key];
 

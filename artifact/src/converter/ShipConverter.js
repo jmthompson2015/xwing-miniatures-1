@@ -10,6 +10,7 @@ const createData = card => key => {
   let answer = card;
   const shipName = card.name
     .toLowerCase()
+    .replace("adv.", "advanced")
     .replace(/[.()]/g, "")
     .replace(/[ /]/g, "-");
 

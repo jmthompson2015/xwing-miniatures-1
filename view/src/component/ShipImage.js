@@ -111,6 +111,9 @@ ShipImage.drawFiringArc = (context, firingArcKey, width, height) => {
       context.fill();
       context.stroke();
       break;
+    case XMA.FiringArc.MOBILE:
+    case XMA.FiringArc.TURRET:
+      break;
     default:
       throw new Error(`Unknown firingArc: ${firingArcKey}`);
   }

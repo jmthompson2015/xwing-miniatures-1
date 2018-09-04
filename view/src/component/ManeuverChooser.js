@@ -203,11 +203,11 @@ class ManeuverChooser extends React.Component {
     const table = ReactUtils.createTable(
       rows,
       rows0.length,
-      "b--xw-medium bg-black tc w-100 white"
+      "b--xw-medium ba bg-black bw1 tc w-100 white"
     );
     rows0.push(table);
 
-    return ReactUtils.createTable(rows0, undefined, "b--xw-medium bg-black center tc white");
+    return ReactUtils.createTable(rows0, undefined, "b--xw-medium ba bg-black bw1 center tc white");
   }
 }
 

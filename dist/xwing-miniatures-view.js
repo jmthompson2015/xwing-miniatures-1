@@ -82,7 +82,7 @@
   const Endpoint = {};
 
   Endpoint.ARTIFACT_RESOURCE =
-    "https://cdn.jsdelivr.net/gh/jmthompson2015/xwing-miniatures-artifact@0.0.2/resource/";
+    "https://cdn.jsdelivr.net/gh/jmthompson2015/xwing-miniatures-1/artifact/resource/";
   Endpoint.LOCAL_RESOURCE = "../../resource/";
   Endpoint.XWING_IMAGES = "https://cdn.jsdelivr.net/npm/xwing-data@1.0.1/images/";
 
@@ -1824,11 +1824,11 @@
       const table = ReactUtilities.createTable(
         rows,
         rows0.length,
-        "b--xw-medium bg-black tc w-100 white"
+        "b--xw-medium ba bg-black bw1 tc w-100 white"
       );
       rows0.push(table);
 
-      return ReactUtilities.createTable(rows0, undefined, "b--xw-medium bg-black center tc white");
+      return ReactUtilities.createTable(rows0, undefined, "b--xw-medium ba bg-black bw1 center tc white");
     }
   }
 
@@ -2081,6 +2081,9 @@
         context.lineTo(width / 2, height / 2);
         context.fill();
         context.stroke();
+        break;
+      case XMA.FiringArc.MOBILE:
+      case XMA.FiringArc.TURRET:
         break;
       default:
         throw new Error(`Unknown firingArc: ${firingArcKey}`);

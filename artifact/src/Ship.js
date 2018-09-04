@@ -1656,9 +1656,9 @@ Ship.properties =
          "5FW"
       ],
       "images": [
-         "ship/galactic-empire/tie-adv-prototype.png"
+         "ship/galactic-empire/tie-advanced-prototype.png"
       ],
-      "silhouette": "silhouette/tie-adv-prototype.png",
+      "silhouette": "silhouette/tie-advanced-prototype.png",
       "key": "tieAdvPrototype"
    },
    "tieAdvanced": {
