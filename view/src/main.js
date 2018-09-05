@@ -17,6 +17,7 @@ import ShipActionUI from "./component/ShipActionUI.js";
 import ShipImage from "./component/ShipImage.js";
 import ShipSilhouetteUI from "./component/ShipSilhouetteUI.js";
 import StatusBarUI from "./component/StatusBarUI.js";
+import TacticalView from "./component/TacticalView.js";
 import TokenPanel from "./component/TokenPanel.js";
 import UpgradeSlotUI from "./component/UpgradeSlotUI.js";
 import WeaponAndDefenderDialog from "./component/WeaponAndDefenderDialog.js";
@@ -51,6 +52,7 @@ export {
   ShipImage,
   ShipSilhouetteUI,
   StatusBarUI,
+  TacticalView,
   TokenPanel,
   UpgradeSlotUI,
   WeaponAndDefenderDialog,

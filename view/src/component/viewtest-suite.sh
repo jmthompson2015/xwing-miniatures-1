@@ -21,6 +21,7 @@ open ${BASE}/ShipActionUI.viewtest.html
 open ${BASE}/ShipImage.viewtest.html
 open ${BASE}/ShipSilhouetteUI.viewtest.html
 open ${BASE}/StatusBarUI.viewtest.html
+open ${BASE}/TacticalView.viewtest.html
 open ${BASE}/TokenPanel.viewtest.html
 open ${BASE}/UpgradeSlotUI.viewtest.html
 open ${BASE}/WeaponAndDefenderDialog.viewtest.html
