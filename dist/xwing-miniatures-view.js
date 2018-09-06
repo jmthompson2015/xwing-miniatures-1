@@ -2395,27 +2395,32 @@
     helpBase: "./"
   };
 
-  const DEG_TO_RADIANS$1 = Math.PI / 180.0;
+  const { Range, Selector: Selector$1 } = XMA;
+  const { PositionState } = XMS;
 
-  const drawCircle = (context0, radius) => {
+  const DEG_TO_RADIANS$1 = Math.PI / 180.0;
+  const SIZE = 300;
+
+  const drawDiameter = (context0, angle) => {
+    const a = angle * DEG_TO_RADIANS$1;
+    const x = SIZE * Math.cos(a);
+    const y = SIZE * Math.sin(a);
+    const context = context0;
+    context.beginPath();
+    context.moveTo(-x, -y);
+    context.lineTo(x, y);
+    context.stroke();
+  };
+
+  const drawDisc = (context0, radius) => {
     const context = context0;
     context.beginPath();
     context.arc(0, 0, radius, 0, 2 * Math.PI);
     context.fill();
   };
 
-  const drawLine = (context0, angle) => {
-    const r = 300;
-    const a = angle * DEG_TO_RADIANS$1;
-    const context = context0;
-    context.beginPath();
-    context.moveTo(-r * Math.cos(a), -r * Math.sin(a));
-    context.lineTo(r * Math.cos(a), r * Math.sin(a));
-    context.stroke();
-  };
-
-  const subtract = (position1, position2) =>
-    XMS.PositionState.create({
+  const subtract = position1 => position2 =>
+    PositionState.create({
       x: position2.x - position1.x,
       y: position2.y - position1.y,
       heading: position2.heading
@@ -2426,8 +2431,9 @@
     constructor(props) {
       super(props);
 
-      this.explosionImage = undefined;
-      this.factionShipToImage = {};
+      this.state = {
+        factionShipToImage: {}
+      };
     }
 
     componentDidMount() {
@@ -2451,83 +2457,96 @@
     }
 
     drawShips(context) {
-      const { activePilotId, pilotInstances, pilotToPosition } = this.props;
-      const position0 = pilotToPosition[activePilotId];
+      const { factionShipToImage } = this.state;
 
-      Object.values(pilotInstances).forEach(pilotInstance => {
-        const { id } = pilotInstance;
-        const scale = 1.0;
-        const faction = XMA.Selector.factionValueByPilot(pilotInstance.pilotKey);
-        const shipKey = XMA.Selector.shipKeyByPilot(pilotInstance.pilotKey);
-        const image = this.factionShipToImage[`${faction.key}|${shipKey}`];
-        const position = subtract(position0, pilotToPosition[pilotInstance.id]);
-        const shipBase = XMA.Selector.shipBaseValueByShip(shipKey);
-        const factionColor = faction.color;
-        const firingArcs = XMA.Selector.firingArcKeysByShip(shipKey);
-        const primaryFiringArcKey = firingArcs.length > 0 ? firingArcs[0] : undefined;
-        const auxiliaryFiringArcKey = firingArcs.length > 1 ? firingArcs[1] : undefined;
+      if (Object.keys(factionShipToImage).length > 0) {
+        const { activePilotId, pilotInstances } = this.props;
+        const position0 = pilotInstances[activePilotId].position;
+        const mySubtract = subtract(position0);
+        const forEachFunction = pilotInstance => {
+          const { id, pilotKey, position: myPosition } = pilotInstance;
+          const faction = Selector$1.factionValueByPilot(pilotKey);
+          const shipKey = Selector$1.shipKeyByPilot(pilotKey);
+          const image = factionShipToImage[`${faction.key}|${shipKey}`];
+          const shipBase = Selector$1.shipBaseValueByShip(shipKey);
+          const firingArcs = Selector$1.firingArcKeysByShip(shipKey);
+          const primaryFiringArcKey = firingArcs.length > 0 ? firingArcs[0] : undefined;
+          const auxiliaryFiringArcKey = firingArcs.length > 1 ? firingArcs[1] : undefined;
 
-        ShipImage.draw(
-          context,
-          scale,
-          id,
-          image,
-          position,
-          shipBase,
-          factionColor,
-          primaryFiringArcKey,
-          auxiliaryFiringArcKey
-        );
-      }, this);
+          ShipImage.draw(
+            context,
+            1.0,
+            id,
+            image,
+            mySubtract(myPosition),
+            shipBase,
+            faction.color,
+            primaryFiringArcKey,
+            auxiliaryFiringArcKey
+          );
+        };
+        R.forEach(forEachFunction, Object.values(pilotInstances));
+      }
     }
 
     loadImages() {
       const { pilotInstances } = this.props;
-      const factionShips = [];
 
-      Object.values(pilotInstances).forEach(pilotInstance => {
-        const faction = XMA.Selector.factionValueByPilot(pilotInstance.pilotKey);
-        const shipKey = XMA.Selector.shipKeyByPilot(pilotInstance.pilotKey);
+      const reduceFunction1 = (accum, pilotInstance) => {
+        const { pilotKey } = pilotInstance;
+        const faction = Selector$1.factionValueByPilot(pilotKey);
+        const shipKey = Selector$1.shipKeyByPilot(pilotKey);
         const factionShip = `${faction.key}|${shipKey}`;
-        if (!factionShips.includes(factionShip)) {
-          factionShips.push(factionShip);
-        }
-      });
+        return accum.includes(factionShip) ? accum : R.append(factionShip, accum);
+      };
+      const factionShips = R.reduce(reduceFunction1, [], Object.values(pilotInstances));
 
-      for (let i = 0; i < factionShips.length; i += 1) {
-        const factionShip = factionShips[i];
-        const faction = XMA.Selector.faction(factionShip.split("|")[0]);
-        const ship = XMA.Selector.ship(factionShip.split("|")[1]);
-        this.factionShipToImage[factionShip] = this.createShipIcon(faction, ship);
-      }
+      const reduceFunction2 = (accum, factionShip) => {
+        const faction = Selector$1.faction(factionShip.split("|")[0]);
+        const ship = Selector$1.ship(factionShip.split("|")[1]);
+        const image = this.createShipIcon(faction, ship);
+        return R.assoc(factionShip, image, accum);
+      };
+      const factionShipToImage = R.reduce(reduceFunction2, {}, factionShips);
+      this.setState({ factionShipToImage });
     }
 
     paint() {
-      const { activePilotId, pilotInstances, pilotToPosition, scale } = this.props;
+      const { activePilotId, pilotInstances, scale } = this.props;
       const activePilotInstance = pilotInstances[activePilotId];
-      const faction = XMA.Selector.factionValueByPilot(activePilotInstance.pilotKey);
+      const faction = Selector$1.factionValueByPilot(activePilotInstance.pilotKey);
       const factionColor = faction.color;
-      const position0 = pilotToPosition[activePilotId];
+      const position0 = activePilotInstance.position;
       const size = this.size();
-      const canvas = document.getElementById("playAreaCanvas");
+      const canvas = document.getElementById("tacticalViewCanvas");
       const context = canvas.getContext("2d");
 
       context.save();
       context.clearRect(0, 0, 2 * size, 2 * size);
       context.scale(scale, scale);
-      context.translate(300, 300);
+      context.translate(SIZE, SIZE);
       context.rotate((270 - position0.heading) * DEG_TO_RADIANS$1);
-      context.fillStyle = `${factionColor}30`;
-      drawCircle(context, 300);
-      drawCircle(context, 200);
-      drawCircle(context, 100);
-      context.strokeStyle = "#FFFFFFC0";
-      drawLine(context, 0);
-      drawLine(context, 90);
-      context.setLineDash([5, 4]);
-      drawLine(context, 45);
-      drawLine(context, 135);
 
+      // Range discs.
+      context.fillStyle = `${factionColor}30`;
+      const forEachFunction = rangeKey => {
+        const range = Selector$1.range(rangeKey);
+        drawDisc(context, range.maxDistance);
+      };
+      R.forEach(forEachFunction, [Range.THREE, Range.TWO, Range.ONE]);
+
+      // Solid lines.
+      context.strokeStyle = "#FFFFFFC0";
+      drawDiameter(context, 0);
+      drawDiameter(context, 90);
+
+      // Dotted lines.
+      context.setLineDash([5, 4]);
+      drawDiameter(context, 45);
+      drawDiameter(context, 135);
+      context.setLineDash([]);
+
+      // Ships.
       this.drawShips(context);
 
       // Cleanup.
@@ -2537,27 +2556,34 @@
     size() {
       const { scale } = this.props;
 
-      return scale * 300;
+      return scale * SIZE;
     }
 
     render() {
       const size = this.size();
 
       return ReactDOMFactories.canvas({
-        id: "playAreaCanvas",
+        id: "tacticalViewCanvas",
         width: 2 * size,
         height: 2 * size,
-        style: {
-          background: "black"
-        }
+        style: { background: "black" }
       });
     }
   }
 
+  const positionPropType = PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired,
+    heading: PropTypes.number.isRequired
+  });
+
   TacticalView.propTypes = {
     activePilotId: PropTypes.number.isRequired,
-    pilotInstances: PropTypes.shape().isRequired,
-    pilotToPosition: PropTypes.shape().isRequired,
+    pilotInstances: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      pilotKey: PropTypes.string.isRequired,
+      position: positionPropType.isRequired
+    }).isRequired,
 
     scale: PropTypes.number
   };
