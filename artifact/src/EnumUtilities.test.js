@@ -18,7 +18,7 @@ QUnit.test("findByName() Faction Galactic Empire", assert => {
 
 QUnit.test("findByProp() Faction color red", assert => {
   // Setup.
-  const color = "red";
+  const color = "#FF0000";
 
   // Run.
   const result = EnumUtilities.findByProp("color", color, Faction);
