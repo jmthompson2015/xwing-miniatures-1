@@ -1851,20 +1851,14 @@
 
   class PilotsUI extends React.PureComponent {
     render() {
-      const {
-        pilotInstances,
-        pilotToDamages,
-        pilotToStatBonuses,
-        pilotToTokenCounts,
-        pilotToUpgrades
-      } = this.props;
+      const { pilotInstances, pilotToDamages, pilotToUpgrades } = this.props;
 
       const pilotCells = pilotInstances.map((pilotInstance, i) => {
         const element = React.createElement(CardInstanceUI, {
           cardInstance: pilotInstance,
           damageInstances: pilotToDamages[pilotInstance.id],
-          statBonuses: pilotToStatBonuses[pilotInstance.id],
-          tokenCounts: pilotToTokenCounts[pilotInstance.id],
+          statBonuses: pilotInstance.statBonuses,
+          tokenCounts: pilotInstance.tokenCounts,
           upgradeInstances: pilotToUpgrades[pilotInstance.id]
         });
         return ReactUtilities.createCell(element, `pilotCell${i}`, "alignTop v-top");
@@ -1880,15 +1874,11 @@
     pilotInstances: PropTypes.arrayOf().isRequired,
 
     pilotToDamages: PropTypes.shape(),
-    pilotToStatBonuses: PropTypes.shape(),
-    pilotToTokenCounts: PropTypes.shape(),
     pilotToUpgrades: PropTypes.shape()
   };
 
   PilotsUI.defaultProps = {
     pilotToDamages: {},
-    pilotToStatBonuses: {},
-    pilotToTokenCounts: {},
     pilotToUpgrades: {}
   };
 
@@ -2221,14 +2211,13 @@
     }
 
     drawShips(context) {
-      const { pilotInstances, pilotToPosition, scale } = this.props;
+      const { pilotInstances, scale } = this.props;
 
-      Object.values(pilotInstances).forEach(pilotInstance => {
-        const { id } = pilotInstance;
-        const faction = Selector.factionValueByPilot(pilotInstance.pilotKey);
-        const shipKey = Selector.shipKeyByPilot(pilotInstance.pilotKey);
+      Object.values(pilotInstances).forEach(instance => {
+        const { id, pilotKey, position } = instance;
+        const faction = Selector.factionValueByPilot(pilotKey);
+        const shipKey = Selector.shipKeyByPilot(pilotKey);
         const image = this.factionShipToImage[`${faction.key}|${shipKey}`];
-        const position = pilotToPosition[pilotInstance.id];
         const shipBase = Selector.shipBaseValueByShip(shipKey);
         const factionColor = faction.color;
         const firingArcs = Selector.firingArcKeysByShip(shipKey);
@@ -2253,9 +2242,10 @@
       const { pilotInstances } = this.props;
       const factionShips = [];
 
-      Object.values(pilotInstances).forEach(pilotInstance => {
-        const faction = Selector.factionValueByPilot(pilotInstance.pilotKey);
-        const shipKey = Selector.shipKeyByPilot(pilotInstance.pilotKey);
+      Object.values(pilotInstances).forEach(instance => {
+        const { pilotKey } = instance;
+        const faction = Selector.factionValueByPilot(pilotKey);
+        const shipKey = Selector.shipKeyByPilot(pilotKey);
         const factionShip = `${faction.key}|${shipKey}`;
         if (!factionShips.includes(factionShip)) {
           factionShips.push(factionShip);
@@ -2273,7 +2263,8 @@
     }
 
     paint() {
-      const { height, width } = this.props;
+      const height = this.height();
+      const width = this.width();
       const canvas = document.getElementById("playAreaCanvas");
       const context = canvas.getContext("2d");
 
@@ -2285,9 +2276,23 @@
       this.drawExplosion(context);
     }
 
+    height() {
+      const { scale } = this.props;
+
+      return scale * 915;
+    }
+
+    width() {
+      const { playFormatKey, scale } = this.props;
+
+      return scale * (playFormatKey === "standard" ? 915 : 1830);
+    }
+
     render() {
-      const { height, image, resourceBase, width } = this.props;
+      const { image, resourceBase } = this.props;
       const imageSrc = resourceBase + image;
+      const height = this.height();
+      const width = this.width();
 
       return ReactDOMFactories.canvas({
         id: "playAreaCanvas",
@@ -2314,13 +2319,11 @@
 
   PlayAreaUI.propTypes = {
     pilotInstances: PropTypes.shape().isRequired,
-    pilotToPosition: PropTypes.shape().isRequired,
 
-    height: PropTypes.number,
     image: PropTypes.string,
+    playFormatKey: PropTypes.string,
     resourceBase: PropTypes.string,
     scale: PropTypes.number,
-    width: PropTypes.number,
 
     explosion: PropTypes.shape(),
     laserBeam: PropTypes.shape(),
@@ -2328,11 +2331,10 @@
   };
 
   PlayAreaUI.defaultProps = {
-    height: 915,
     image: "background/pia13845.jpg",
+    playFormatKey: "standard",
     resourceBase: Endpoint.LOCAL_RESOURCE,
     scale: 1.0,
-    width: 915,
 
     explosion: undefined,
     laserBeam: undefined,
@@ -2399,7 +2401,7 @@
   const { PositionState } = XMS;
 
   const DEG_TO_RADIANS$1 = Math.PI / 180.0;
-  const SIZE = 300;
+  const SIZE = Selector$1.range(Range.THREE).maxDistance;
 
   const drawDiameter = (context0, angle) => {
     const a = angle * DEG_TO_RADIANS$1;
@@ -2463,8 +2465,8 @@
         const { activePilotId, pilotInstances } = this.props;
         const position0 = pilotInstances[activePilotId].position;
         const mySubtract = subtract(position0);
-        const forEachFunction = pilotInstance => {
-          const { id, pilotKey, position: myPosition } = pilotInstance;
+        const forEachFunction = instance => {
+          const { id, pilotKey, position } = instance;
           const faction = Selector$1.factionValueByPilot(pilotKey);
           const shipKey = Selector$1.shipKeyByPilot(pilotKey);
           const image = factionShipToImage[`${faction.key}|${shipKey}`];
@@ -2478,7 +2480,7 @@
             1.0,
             id,
             image,
-            mySubtract(myPosition),
+            mySubtract(position),
             shipBase,
             faction.color,
             primaryFiringArcKey,
@@ -2492,8 +2494,8 @@
     loadImages() {
       const { pilotInstances } = this.props;
 
-      const reduceFunction1 = (accum, pilotInstance) => {
-        const { pilotKey } = pilotInstance;
+      const reduceFunction1 = (accum, instance) => {
+        const { pilotKey } = instance;
         const faction = Selector$1.factionValueByPilot(pilotKey);
         const shipKey = Selector$1.shipKeyByPilot(pilotKey);
         const factionShip = `${faction.key}|${shipKey}`;
@@ -2513,10 +2515,9 @@
 
     paint() {
       const { activePilotId, pilotInstances, scale } = this.props;
-      const activePilotInstance = pilotInstances[activePilotId];
-      const faction = Selector$1.factionValueByPilot(activePilotInstance.pilotKey);
-      const factionColor = faction.color;
-      const position0 = activePilotInstance.position;
+      const activeInstance = pilotInstances[activePilotId];
+      const { pilotKey, position } = activeInstance;
+      const faction = Selector$1.factionValueByPilot(pilotKey);
       const size = this.size();
       const canvas = document.getElementById("tacticalViewCanvas");
       const context = canvas.getContext("2d");
@@ -2525,10 +2526,10 @@
       context.clearRect(0, 0, 2 * size, 2 * size);
       context.scale(scale, scale);
       context.translate(SIZE, SIZE);
-      context.rotate((270 - position0.heading) * DEG_TO_RADIANS$1);
+      context.rotate((270 - position.heading) * DEG_TO_RADIANS$1);
 
       // Range discs.
-      context.fillStyle = `${factionColor}30`;
+      context.fillStyle = `${faction.color}30`;
       const forEachFunction = rangeKey => {
         const range = Selector$1.range(rangeKey);
         drawDisc(context, range.maxDistance);
@@ -2564,9 +2565,9 @@
 
       return ReactDOMFactories.canvas({
         id: "tacticalViewCanvas",
-        width: 2 * size,
         height: 2 * size,
-        style: { background: "black" }
+        style: { background: "black" },
+        width: 2 * size
       });
     }
   }

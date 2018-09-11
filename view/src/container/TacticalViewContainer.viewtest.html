@@ -1,8 +1,7 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>PilotsUI</title>
+	<title>TacticalViewContainer</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tachyons@4.10.0/css/tachyons.min.css">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xwing-miniatures-font@2.0.1/dist/xwing-miniatures.css">
 	<link rel="stylesheet" href="../style.css">
@@ -12,16 +11,23 @@
 	<script src="https://cdn.jsdelivr.net/npm/react-dom@16.4.1/umd/react-dom.development.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/prop-types@15.6.2/prop-types.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/react-dom-factories@1.0.2/index.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/seamless-immutable@7.1.3/seamless-immutable.development.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/redux@4.0.0/dist/redux.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/seamless-immutable@7.1.3/seamless-immutable.development.js"></script>
-	<script src="../../../dist/xwing-miniatures-artifact.js"></script>
 	<script src="../../../dist/xwing-miniatures-state.js"></script>
+	<script src="../../../dist/xwing-miniatures-artifact.js"></script>
+	<script src="../../../dist/xwing-miniatures-model.js"></script>
 
-	<script src="PilotsUI.viewtest.js" type="module">></script>
+	<script src="TacticalViewContainer.viewtest.js" type="module"></script>
 </head>
 <body>
-	<div id="pilots1"></div>
-	<div id="pilots2"></div>
+	<div id="panel"></div>
+
+	<audio id="explosionAudio" src="../../resource/audio/Explosion.wav" preload="auto"></audio>
+	<audio id="millenniumFalconLaserAudio" src="../../resource/audio/MillenniumFalconLaser.wav" preload="auto"></audio>
+	<audio id="slave1LaserAudio" src="../../resource/audio/Slave1Laser.wav" preload="auto"></audio>
+	<audio id="tieFighterLaserAudio" src="../../resource/audio/TIEFighterLaser.wav" preload="auto"></audio>
+	<audio id="xWingLaserAudio" src="../../resource/audio/XWingLaser.wav" preload="auto"></audio>
 </body>
 
 </html>

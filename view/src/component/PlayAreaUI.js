@@ -134,14 +134,13 @@ class PlayAreaUI extends React.Component {
   }
 
   drawShips(context) {
-    const { pilotInstances, pilotToPosition, scale } = this.props;
+    const { pilotInstances, scale } = this.props;
 
-    Object.values(pilotInstances).forEach(pilotInstance => {
-      const { id } = pilotInstance;
-      const faction = Selector.factionValueByPilot(pilotInstance.pilotKey);
-      const shipKey = Selector.shipKeyByPilot(pilotInstance.pilotKey);
+    Object.values(pilotInstances).forEach(instance => {
+      const { id, pilotKey, position } = instance;
+      const faction = Selector.factionValueByPilot(pilotKey);
+      const shipKey = Selector.shipKeyByPilot(pilotKey);
       const image = this.factionShipToImage[`${faction.key}|${shipKey}`];
-      const position = pilotToPosition[pilotInstance.id];
       const shipBase = Selector.shipBaseValueByShip(shipKey);
       const factionColor = faction.color;
       const firingArcs = Selector.firingArcKeysByShip(shipKey);
@@ -166,9 +165,10 @@ class PlayAreaUI extends React.Component {
     const { pilotInstances } = this.props;
     const factionShips = [];
 
-    Object.values(pilotInstances).forEach(pilotInstance => {
-      const faction = Selector.factionValueByPilot(pilotInstance.pilotKey);
-      const shipKey = Selector.shipKeyByPilot(pilotInstance.pilotKey);
+    Object.values(pilotInstances).forEach(instance => {
+      const { pilotKey } = instance;
+      const faction = Selector.factionValueByPilot(pilotKey);
+      const shipKey = Selector.shipKeyByPilot(pilotKey);
       const factionShip = `${faction.key}|${shipKey}`;
       if (!factionShips.includes(factionShip)) {
         factionShips.push(factionShip);
@@ -186,7 +186,8 @@ class PlayAreaUI extends React.Component {
   }
 
   paint() {
-    const { height, width } = this.props;
+    const height = this.height();
+    const width = this.width();
     const canvas = document.getElementById("playAreaCanvas");
     const context = canvas.getContext("2d");
 
@@ -198,9 +199,23 @@ class PlayAreaUI extends React.Component {
     this.drawExplosion(context);
   }
 
+  height() {
+    const { scale } = this.props;
+
+    return scale * 915;
+  }
+
+  width() {
+    const { playFormatKey, scale } = this.props;
+
+    return scale * (playFormatKey === "standard" ? 915 : 1830);
+  }
+
   render() {
-    const { height, image, resourceBase, width } = this.props;
+    const { image, resourceBase } = this.props;
     const imageSrc = resourceBase + image;
+    const height = this.height();
+    const width = this.width();
 
     return ReactDOMFactories.canvas({
       id: "playAreaCanvas",
@@ -227,13 +242,11 @@ PlayAreaUI.HARD_COLOR = "red";
 
 PlayAreaUI.propTypes = {
   pilotInstances: PropTypes.shape().isRequired,
-  pilotToPosition: PropTypes.shape().isRequired,
 
-  height: PropTypes.number,
   image: PropTypes.string,
+  playFormatKey: PropTypes.string,
   resourceBase: PropTypes.string,
   scale: PropTypes.number,
-  width: PropTypes.number,
 
   explosion: PropTypes.shape(),
   laserBeam: PropTypes.shape(),
@@ -241,11 +254,10 @@ PlayAreaUI.propTypes = {
 };
 
 PlayAreaUI.defaultProps = {
-  height: 915,
   image: "background/pia13845.jpg",
+  playFormatKey: "standard",
   resourceBase: Endpoint.LOCAL_RESOURCE,
   scale: 1.0,
-  width: 915,
 
   explosion: undefined,
   laserBeam: undefined,

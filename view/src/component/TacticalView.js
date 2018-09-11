@@ -6,7 +6,7 @@ const { Range, Selector } = XMA;
 const { PositionState } = XMS;
 
 const DEG_TO_RADIANS = Math.PI / 180.0;
-const SIZE = 300;
+const SIZE = Selector.range(Range.THREE).maxDistance;
 
 const drawDiameter = (context0, angle) => {
   const a = angle * DEG_TO_RADIANS;
@@ -70,8 +70,8 @@ class TacticalView extends React.Component {
       const { activePilotId, pilotInstances } = this.props;
       const position0 = pilotInstances[activePilotId].position;
       const mySubtract = subtract(position0);
-      const forEachFunction = pilotInstance => {
-        const { id, pilotKey, position: myPosition } = pilotInstance;
+      const forEachFunction = instance => {
+        const { id, pilotKey, position } = instance;
         const faction = Selector.factionValueByPilot(pilotKey);
         const shipKey = Selector.shipKeyByPilot(pilotKey);
         const image = factionShipToImage[`${faction.key}|${shipKey}`];
@@ -85,7 +85,7 @@ class TacticalView extends React.Component {
           1.0,
           id,
           image,
-          mySubtract(myPosition),
+          mySubtract(position),
           shipBase,
           faction.color,
           primaryFiringArcKey,
@@ -99,8 +99,8 @@ class TacticalView extends React.Component {
   loadImages() {
     const { pilotInstances } = this.props;
 
-    const reduceFunction1 = (accum, pilotInstance) => {
-      const { pilotKey } = pilotInstance;
+    const reduceFunction1 = (accum, instance) => {
+      const { pilotKey } = instance;
       const faction = Selector.factionValueByPilot(pilotKey);
       const shipKey = Selector.shipKeyByPilot(pilotKey);
       const factionShip = `${faction.key}|${shipKey}`;
@@ -120,10 +120,9 @@ class TacticalView extends React.Component {
 
   paint() {
     const { activePilotId, pilotInstances, scale } = this.props;
-    const activePilotInstance = pilotInstances[activePilotId];
-    const faction = Selector.factionValueByPilot(activePilotInstance.pilotKey);
-    const factionColor = faction.color;
-    const position0 = activePilotInstance.position;
+    const activeInstance = pilotInstances[activePilotId];
+    const { pilotKey, position } = activeInstance;
+    const faction = Selector.factionValueByPilot(pilotKey);
     const size = this.size();
     const canvas = document.getElementById("tacticalViewCanvas");
     const context = canvas.getContext("2d");
@@ -132,10 +131,10 @@ class TacticalView extends React.Component {
     context.clearRect(0, 0, 2 * size, 2 * size);
     context.scale(scale, scale);
     context.translate(SIZE, SIZE);
-    context.rotate((270 - position0.heading) * DEG_TO_RADIANS);
+    context.rotate((270 - position.heading) * DEG_TO_RADIANS);
 
     // Range discs.
-    context.fillStyle = `${factionColor}30`;
+    context.fillStyle = `${faction.color}30`;
     const forEachFunction = rangeKey => {
       const range = Selector.range(rangeKey);
       drawDisc(context, range.maxDistance);
@@ -171,9 +170,9 @@ class TacticalView extends React.Component {
 
     return ReactDOMFactories.canvas({
       id: "tacticalViewCanvas",
-      width: 2 * size,
       height: 2 * size,
-      style: { background: "black" }
+      style: { background: "black" },
+      width: 2 * size
     });
   }
 }

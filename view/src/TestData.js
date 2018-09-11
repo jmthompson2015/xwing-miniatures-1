@@ -14,11 +14,7 @@ const { StatBonusesState, TokenCountsState } = XMS;
 const TestData = {};
 
 const createAbility = (sourceName, sourceKey, context) =>
-  XMS.AbilityState.create({
-    sourceName,
-    sourceKey,
-    context
-  });
+  XMS.AbilityState.create({ sourceName, sourceKey, context });
 
 TestData.createAbilities = () => {
   const conditionKeys = [ConditionCard.A_DEBT_TO_PAY];
@@ -49,24 +45,12 @@ TestData.createAbilities = () => {
 };
 
 TestData.createAgentImperial = (id, squadId, strategy) =>
-  XMS.AgentState.create({
-    id,
-    strategy,
-    squad: squadId
-  });
+  XMS.AgentState.create({ id, strategy, squad: squadId });
 
 TestData.createAgentRebel = (id, squadId, strategy) =>
-  XMS.AgentState.create({
-    id,
-    strategy,
-    squad: squadId
-  });
+  XMS.AgentState.create({ id, strategy, squad: squadId });
 
-TestData.createDamage = (id, damageKey) =>
-  XMS.DamageState.create({
-    id,
-    damageKey
-  });
+TestData.createDamage = (id, damageKey) => XMS.DamageState.create({ id, damageKey });
 
 TestData.createDamageDeck = () => {
   // There are two of each, except seven of Direct Hit!
@@ -106,10 +90,7 @@ TestData.createDamageDeck = () => {
   // Shuffle.
   damageDeck.sort(() => Math.random() - 0.5);
 
-  return {
-    damageInstances,
-    damageDeck
-  };
+  return { damageInstances, damageDeck };
 };
 
 TestData.createGameState = () => {
@@ -233,12 +214,7 @@ TestData.createPilot = (
     upgrades: upgradeIds
   });
 
-TestData.createPosition = (x, y, heading) =>
-  XMS.PositionState.create({
-    x,
-    y,
-    heading
-  });
+TestData.createPosition = (x, y, heading) => XMS.PositionState.create({ x, y, heading });
 
 TestData.createSquadCoreSetImperial = (squadId, pilotIds) =>
   XMS.SquadState.create({
@@ -260,18 +236,16 @@ TestData.createSquadCoreSetRebel = (squadId, pilotIds) =>
     pilots: pilotIds
   });
 
+TestData.createStore = () => {
+  const store = Redux.createStore(XMS.Reducer.root, TestData.createGameState());
+
+  return store;
+};
+
 TestData.createTargetLock = (id, attackerId, defenderId) =>
-  XMS.TargetLockState.create({
-    id,
-    attackerId,
-    defenderId
-  });
+  XMS.TargetLockState.create({ id, attackerId, defenderId });
 
 TestData.createUpgrade = (id, upgradeKey, tokenCounts) =>
-  XMS.UpgradeState.create({
-    id,
-    upgradeKey,
-    tokenCounts
-  });
+  XMS.UpgradeState.create({ id, upgradeKey, tokenCounts });
 
 export default TestData;

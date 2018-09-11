@@ -10,4 +10,4 @@ const position1 = {
 gameState = R.assocPath(["pilotInstances", 1, "position"], position1, gameState);
 gameState = R.assoc("userMessage", "Initialized.", gameState);
 
-XWingMiniaturesView.drawView(gameState, document);
+XWingMiniaturesView.drawView({ gameState, document });

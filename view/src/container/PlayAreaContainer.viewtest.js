@@ -1,42 +1,41 @@
-import Selector from "../Selector.js";
 import TestData from "../TestData.js";
 
 import PlayAreaContainer from "./PlayAreaContainer.js";
 
-let gameState = TestData.createGameState();
-const position1 = {
-  x: 305 + 78,
-  y: 120,
-  heading: 360 - 45
-};
-gameState = R.assocPath(["pilotInstances", 1, "position"], position1, gameState);
-const position2 = Selector.positionByPilot(2, gameState);
-const position3 = Selector.positionByPilot(3, gameState);
+const { ActionCreator, ExplosionState, LaserBeamState, ManeuverState, PositionState } = XMS;
 
-const explosion = XMS.ExplosionState.create({
-  position: XMS.PositionState.create({
+const store = TestData.createStore();
+
+const position1 = { x: 305 + 78, y: 120, heading: 360 - 45 };
+store.dispatch(ActionCreator.movePilot(1, position1));
+
+const position2 = XMS.Selector.positionByPilot(2, store.getState());
+const position3 = XMS.Selector.positionByPilot(3, store.getState());
+
+const explosion = ExplosionState.create({
+  position: PositionState.create({
     x: 400,
     y: 400,
     heading: 0
   })
 });
-gameState = R.assoc("displayExplosion", explosion, gameState);
+store.dispatch(ActionCreator.setDisplayExplosion(explosion));
 
-const laserBeam = XMS.LaserBeamState.create({
+const laserBeam = LaserBeamState.create({
   color: "red",
   fromPosition: position3,
   toPosition: position2
 });
-gameState = R.assoc("displayLaserBeam", laserBeam, gameState);
+store.dispatch(ActionCreator.setDisplayLaserBeam(laserBeam));
 
-const maneuver0 = Selector.maneuver(XMA.Maneuver.TURN_LEFT_1_EASY_1TG);
+const maneuver0 = XMA.Selector.maneuver(XMA.Maneuver.TURN_LEFT_1_EASY_1TG);
 const maneuverFromPosition = {
   x: 305,
   y: 120,
   heading: 45
 };
-const maneuverShipBase = Selector.shipBase(XMA.ShipBase.SMALL);
-const maneuver = XMS.ManeuverState.create({
+const maneuverShipBase = XMA.Selector.shipBase(XMA.ShipBase.SMALL);
+const maneuver = ManeuverState.create({
   color: "rgb(0, 255, 0)",
   fromPolygon: XMM.ManeuverComputer.computeFromPolygon(maneuverFromPosition, maneuverShipBase),
   fromPosition: maneuverFromPosition,
@@ -47,8 +46,8 @@ const maneuver = XMS.ManeuverState.create({
     maneuverShipBase
   )
 });
-gameState = R.assoc("displayManeuver", maneuver, gameState);
+store.dispatch(ActionCreator.setDisplayManeuver(maneuver));
 
-const container = PlayAreaContainer(gameState);
+const container = PlayAreaContainer(store.getState());
 
 ReactDOM.render(container, document.getElementById("panel"));
