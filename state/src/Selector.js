@@ -140,9 +140,13 @@ Selector.pilotToManeuver = state => R.prop("pilotToManeuver", state);
 
 Selector.planningQueue = state => R.prop("planningQueue", state);
 
+Selector.playArea = state => R.prop("playArea", state);
+
 Selector.playFormatKey = state => R.prop("playFormatKey", state);
 
 Selector.round = state => R.prop("round", state);
+
+Selector.tacticalView = state => R.prop("tacticalView", state);
 
 Selector.targetLocks = state => R.prop("targetLocks", state);
 

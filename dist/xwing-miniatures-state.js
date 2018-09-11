@@ -70,10 +70,17 @@
   ActionType.SET_PILOT_TOKEN_COUNTS = "setPilotTokenCounts";
   ActionType.SET_PILOT_UPGRADES = "setPilotUpgrades";
   ActionType.SET_PLANNING_QUEUE = "setPlanningQueue";
+  ActionType.SET_PLAY_AREA_SCALE = "setPlayAreaScale";
+  ActionType.SET_PLAY_AREA_ZOOM_IN_ENABLED = "setPlayAreaZoomInEnabled";
+  ActionType.SET_PLAY_AREA_ZOOM_OUT_ENABLED = "setPlayAreaZoomOutEnabled";
   ActionType.SET_SQUAD_INSTANCE = "setSquadInstance";
   ActionType.SET_SQUAD_PILOTS = "setSquadPilots";
+  ActionType.SET_TACTICAL_VIEW_SCALE = "setTacticalViewScale";
+  ActionType.SET_TACTICAL_VIEW_ZOOM_IN_ENABLED = "setTacticalViewZoomInEnabled";
+  ActionType.SET_TACTICAL_VIEW_ZOOM_OUT_ENABLED = "setTacticalViewZoomOutEnabled";
   ActionType.SET_UPGRADE_INSTANCE = "setUpgradeInstance";
   ActionType.SET_UPGRADE_TOKEN_COUNTS = "setUpgradeTokenCounts";
+  ActionType.SET_USER_MESSAGE = "setUserMessage";
 
   Object.freeze(ActionType);
 
@@ -245,12 +252,36 @@
 
   ActionCreator.setPlanningQueue = makeActionCreator(ActionType.SET_PLANNING_QUEUE, "planningQueue");
 
+  ActionCreator.setPlayAreaScale = makeActionCreator(ActionType.SET_PLAY_AREA_SCALE, "scale");
+
+  ActionCreator.setPlayAreaZoomInEnabled = makeActionCreator(
+    ActionType.SET_PLAY_AREA_ZOOM_IN_ENABLED,
+    "enabled"
+  );
+
+  ActionCreator.setPlayAreaZoomOutEnabled = makeActionCreator(
+    ActionType.SET_PLAY_AREA_ZOOM_OUT_ENABLED,
+    "enabled"
+  );
+
   ActionCreator.setSquadInstance = makeActionCreator(ActionType.SET_SQUAD_INSTANCE, "squadInstance");
 
   ActionCreator.setSquadPilots = makeActionCreator(
     ActionType.SET_SQUAD_PILOTS,
     "squadId",
     "pilotIds"
+  );
+
+  ActionCreator.setTacticalViewScale = makeActionCreator(ActionType.SET_TACTICAL_VIEW_SCALE, "scale");
+
+  ActionCreator.setTacticalViewZoomInEnabled = makeActionCreator(
+    ActionType.SET_TACTICAL_VIEW_ZOOM_IN_ENABLED,
+    "enabled"
+  );
+
+  ActionCreator.setTacticalViewZoomOutEnabled = makeActionCreator(
+    ActionType.SET_TACTICAL_VIEW_ZOOM_OUT_ENABLED,
+    "enabled"
   );
 
   ActionCreator.setUpgradeInstance = makeActionCreator(
@@ -263,6 +294,8 @@
     "upgradeId",
     "tokenCounts"
   );
+
+  ActionCreator.setUserMessage = makeActionCreator(ActionType.SET_USER_MESSAGE, "userMessage");
 
   Object.freeze(ActionCreator);
 
@@ -332,6 +365,20 @@
 
   Object.freeze(ExplosionState);
 
+  const PlayAreaState = {};
+
+  PlayAreaState.create = ({ scale = 1.0, zoomInEnabled = false, zoomOutEnabled = true } = {}) =>
+    Immutable({ scale, zoomInEnabled, zoomOutEnabled });
+
+  Object.freeze(PlayAreaState);
+
+  const TacticalViewState = {};
+
+  TacticalViewState.create = ({ scale = 1.0, zoomInEnabled = false, zoomOutEnabled = true } = {}) =>
+    Immutable({ scale, zoomInEnabled, zoomOutEnabled });
+
+  Object.freeze(TacticalViewState);
+
   const GameState = {};
 
   GameState.create = ({
@@ -350,6 +397,8 @@
     displayLaserBeam,
     displayManeuver,
     pilotToManeuver = {},
+    playArea = PlayAreaState.create(),
+    tacticalView = TacticalViewState.create(),
 
     activationQueue = [],
     combatQueue = [],
@@ -383,6 +432,8 @@
       displayLaserBeam: Immutable(displayLaserBeam),
       displayManeuver: Immutable(displayManeuver),
       pilotToManeuver: Immutable(pilotToManeuver),
+      playArea: Immutable(playArea),
+      tacticalView: Immutable(tacticalView),
 
       activationQueue: Immutable(activationQueue),
       combatQueue: Immutable(combatQueue),
@@ -706,6 +757,12 @@
         return assocPath(["pilotInstances", action.pilotId, "upgrades"], action.upgradeIds, state);
       case ActionType.SET_PLANNING_QUEUE:
         return assoc("planningQueue", action.planningQueue, state);
+      case ActionType.SET_PLAY_AREA_SCALE:
+        return assocPath(["playArea", "scale"], action.scale, state);
+      case ActionType.SET_PLAY_AREA_ZOOM_IN_ENABLED:
+        return assocPath(["playArea", "zoomInEnabled"], action.enabled, state);
+      case ActionType.SET_PLAY_AREA_ZOOM_OUT_ENABLED:
+        return assocPath(["playArea", "zoomOutEnabled"], action.enabled, state);
       case ActionType.SET_SQUAD_INSTANCE:
         newSquadInstances = assoc(
           action.squadInstance.id,
@@ -715,6 +772,12 @@
         return assoc("squadInstances", newSquadInstances, state);
       case ActionType.SET_SQUAD_PILOTS:
         return assocPath(["squadInstances", action.squadId, "pilots"], action.pilotIds, state);
+      case ActionType.SET_TACTICAL_VIEW_SCALE:
+        return assocPath(["tacticalView", "scale"], action.scale, state);
+      case ActionType.SET_TACTICAL_VIEW_ZOOM_IN_ENABLED:
+        return assocPath(["tacticalView", "zoomInEnabled"], action.enabled, state);
+      case ActionType.SET_TACTICAL_VIEW_ZOOM_OUT_ENABLED:
+        return assocPath(["tacticalView", "zoomOutEnabled"], action.enabled, state);
       case ActionType.SET_UPGRADE_INSTANCE:
         newUpgradeInstances = assoc(
           action.upgradeInstance.id,
@@ -728,6 +791,8 @@
           action.tokenCounts,
           state
         );
+      case ActionType.SET_USER_MESSAGE:
+        return assoc("userMessage", action.userMessage, state);
 
       default:
         // console.warn("Reducer.root: Unhandled action type: " + action.type);
@@ -879,9 +944,13 @@
 
   Selector.planningQueue = state => R.prop("planningQueue", state);
 
+  Selector.playArea = state => R.prop("playArea", state);
+
   Selector.playFormatKey = state => R.prop("playFormatKey", state);
 
   Selector.round = state => R.prop("round", state);
+
+  Selector.tacticalView = state => R.prop("tacticalView", state);
 
   Selector.targetLocks = state => R.prop("targetLocks", state);
 

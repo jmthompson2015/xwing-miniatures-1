@@ -741,6 +741,45 @@ QUnit.test("setPlanningQueue()", assert => {
   assert.equal(store.getState().planningQueue.length, 2);
 });
 
+QUnit.test("setPlayAreaScale()", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const scale = 0.5;
+  assert.equal(store.getState().playArea.scale, 1.0);
+
+  // Run.
+  store.dispatch(ActionCreator.setPlayAreaScale(scale));
+
+  // Verify.
+  assert.equal(store.getState().playArea.scale, scale);
+});
+
+QUnit.test("setPlayAreaZoomInEnabled()", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const enabled = true;
+  assert.equal(store.getState().playArea.zoomInEnabled, false);
+
+  // Run.
+  store.dispatch(ActionCreator.setPlayAreaZoomInEnabled(enabled));
+
+  // Verify.
+  assert.equal(store.getState().playArea.zoomInEnabled, enabled);
+});
+
+QUnit.test("setPlayAreaZoomOutEnabled()", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const enabled = false;
+  assert.equal(store.getState().playArea.zoomOutEnabled, true);
+
+  // Run.
+  store.dispatch(ActionCreator.setPlayAreaZoomOutEnabled(enabled));
+
+  // Verify.
+  assert.equal(store.getState().playArea.zoomOutEnabled, enabled);
+});
+
 QUnit.test("setSquadInstance()", assert => {
   // Setup.
   const store = Redux.createStore(Reducer.root, TestData.createGameState());
@@ -776,6 +815,45 @@ QUnit.test("setSquadPilots()", assert => {
   assert.ok(result);
   assert.equal(result.length, pilotIds.length);
   assert.equal(result.join(), pilotIds.join());
+});
+
+QUnit.test("setTacticalViewScale()", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const scale = 0.5;
+  assert.equal(store.getState().tacticalView.scale, 1.0);
+
+  // Run.
+  store.dispatch(ActionCreator.setTacticalViewScale(scale));
+
+  // Verify.
+  assert.equal(store.getState().tacticalView.scale, scale);
+});
+
+QUnit.test("setTacticalViewZoomInEnabled()", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const enabled = true;
+  assert.equal(store.getState().tacticalView.zoomInEnabled, false);
+
+  // Run.
+  store.dispatch(ActionCreator.setTacticalViewZoomInEnabled(enabled));
+
+  // Verify.
+  assert.equal(store.getState().tacticalView.zoomInEnabled, enabled);
+});
+
+QUnit.test("setTacticalViewZoomOutEnabled()", assert => {
+  // Setup.
+  const store = Redux.createStore(Reducer.root);
+  const enabled = false;
+  assert.equal(store.getState().tacticalView.zoomOutEnabled, true);
+
+  // Run.
+  store.dispatch(ActionCreator.setTacticalViewZoomOutEnabled(enabled));
+
+  // Verify.
+  assert.equal(store.getState().tacticalView.zoomOutEnabled, enabled);
 });
 
 QUnit.test("setUpgradeInstance()", assert => {

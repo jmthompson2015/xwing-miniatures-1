@@ -257,6 +257,12 @@ Reducer.root = (state, action) => {
       return assocPath(["pilotInstances", action.pilotId, "upgrades"], action.upgradeIds, state);
     case ActionType.SET_PLANNING_QUEUE:
       return assoc("planningQueue", action.planningQueue, state);
+    case ActionType.SET_PLAY_AREA_SCALE:
+      return assocPath(["playArea", "scale"], action.scale, state);
+    case ActionType.SET_PLAY_AREA_ZOOM_IN_ENABLED:
+      return assocPath(["playArea", "zoomInEnabled"], action.enabled, state);
+    case ActionType.SET_PLAY_AREA_ZOOM_OUT_ENABLED:
+      return assocPath(["playArea", "zoomOutEnabled"], action.enabled, state);
     case ActionType.SET_SQUAD_INSTANCE:
       newSquadInstances = assoc(
         action.squadInstance.id,
@@ -266,6 +272,12 @@ Reducer.root = (state, action) => {
       return assoc("squadInstances", newSquadInstances, state);
     case ActionType.SET_SQUAD_PILOTS:
       return assocPath(["squadInstances", action.squadId, "pilots"], action.pilotIds, state);
+    case ActionType.SET_TACTICAL_VIEW_SCALE:
+      return assocPath(["tacticalView", "scale"], action.scale, state);
+    case ActionType.SET_TACTICAL_VIEW_ZOOM_IN_ENABLED:
+      return assocPath(["tacticalView", "zoomInEnabled"], action.enabled, state);
+    case ActionType.SET_TACTICAL_VIEW_ZOOM_OUT_ENABLED:
+      return assocPath(["tacticalView", "zoomOutEnabled"], action.enabled, state);
     case ActionType.SET_UPGRADE_INSTANCE:
       newUpgradeInstances = assoc(
         action.upgradeInstance.id,
@@ -279,6 +291,8 @@ Reducer.root = (state, action) => {
         action.tokenCounts,
         state
       );
+    case ActionType.SET_USER_MESSAGE:
+      return assoc("userMessage", action.userMessage, state);
 
     default:
       // console.warn("Reducer.root: Unhandled action type: " + action.type);

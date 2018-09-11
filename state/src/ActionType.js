@@ -52,10 +52,17 @@ ActionType.SET_PILOT_TO_MANEUVER = "setPilotToManeuver";
 ActionType.SET_PILOT_TOKEN_COUNTS = "setPilotTokenCounts";
 ActionType.SET_PILOT_UPGRADES = "setPilotUpgrades";
 ActionType.SET_PLANNING_QUEUE = "setPlanningQueue";
+ActionType.SET_PLAY_AREA_SCALE = "setPlayAreaScale";
+ActionType.SET_PLAY_AREA_ZOOM_IN_ENABLED = "setPlayAreaZoomInEnabled";
+ActionType.SET_PLAY_AREA_ZOOM_OUT_ENABLED = "setPlayAreaZoomOutEnabled";
 ActionType.SET_SQUAD_INSTANCE = "setSquadInstance";
 ActionType.SET_SQUAD_PILOTS = "setSquadPilots";
+ActionType.SET_TACTICAL_VIEW_SCALE = "setTacticalViewScale";
+ActionType.SET_TACTICAL_VIEW_ZOOM_IN_ENABLED = "setTacticalViewZoomInEnabled";
+ActionType.SET_TACTICAL_VIEW_ZOOM_OUT_ENABLED = "setTacticalViewZoomOutEnabled";
 ActionType.SET_UPGRADE_INSTANCE = "setUpgradeInstance";
 ActionType.SET_UPGRADE_TOKEN_COUNTS = "setUpgradeTokenCounts";
+ActionType.SET_USER_MESSAGE = "setUserMessage";
 
 Object.freeze(ActionType);
 

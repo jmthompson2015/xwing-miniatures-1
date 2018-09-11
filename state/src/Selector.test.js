@@ -931,6 +931,20 @@ QUnit.test("planningQueue()", assert => {
   assert.equal(result.length, 0);
 });
 
+QUnit.test("playArea()", assert => {
+  // Setup.
+  const gameState = TestData.createGameState();
+
+  // Run.
+  const result = Selector.playArea(gameState);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.scale, 1.0);
+  assert.equal(result.zoomInEnabled, false);
+  assert.equal(result.zoomOutEnabled, true);
+});
+
 QUnit.test("playFormatKey()", assert => {
   // Setup.
   const gameState = TestData.createGameState();
@@ -1088,6 +1102,20 @@ QUnit.test("squadInstanceByPilot() 3", assert => {
   assert.equal(result.id, 2);
   assert.equal(result.name, "Rebel Core Set: 36 Points");
   assert.equal(result.year, 2012);
+});
+
+QUnit.test("tacticalView()", assert => {
+  // Setup.
+  const gameState = TestData.createGameState();
+
+  // Run.
+  const result = Selector.tacticalView(gameState);
+
+  // Verify.
+  assert.ok(result);
+  assert.equal(result.scale, 1.0);
+  assert.equal(result.zoomInEnabled, false);
+  assert.equal(result.zoomOutEnabled, true);
 });
 
 QUnit.test("targetLocks()", assert => {

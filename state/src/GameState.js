@@ -1,3 +1,6 @@
+import PlayAreaState from "./PlayAreaState.js";
+import TacticalViewState from "./TacticalViewState.js";
+
 const GameState = {};
 
 GameState.create = ({
@@ -16,6 +19,8 @@ GameState.create = ({
   displayLaserBeam,
   displayManeuver,
   pilotToManeuver = {},
+  playArea = PlayAreaState.create(),
+  tacticalView = TacticalViewState.create(),
 
   activationQueue = [],
   combatQueue = [],
@@ -49,6 +54,8 @@ GameState.create = ({
     displayLaserBeam: Immutable(displayLaserBeam),
     displayManeuver: Immutable(displayManeuver),
     pilotToManeuver: Immutable(pilotToManeuver),
+    playArea: Immutable(playArea),
+    tacticalView: Immutable(tacticalView),
 
     activationQueue: Immutable(activationQueue),
     combatQueue: Immutable(combatQueue),

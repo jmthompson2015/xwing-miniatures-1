@@ -168,12 +168,36 @@ ActionCreator.setPilotUpgrades = makeActionCreator(
 
 ActionCreator.setPlanningQueue = makeActionCreator(ActionType.SET_PLANNING_QUEUE, "planningQueue");
 
+ActionCreator.setPlayAreaScale = makeActionCreator(ActionType.SET_PLAY_AREA_SCALE, "scale");
+
+ActionCreator.setPlayAreaZoomInEnabled = makeActionCreator(
+  ActionType.SET_PLAY_AREA_ZOOM_IN_ENABLED,
+  "enabled"
+);
+
+ActionCreator.setPlayAreaZoomOutEnabled = makeActionCreator(
+  ActionType.SET_PLAY_AREA_ZOOM_OUT_ENABLED,
+  "enabled"
+);
+
 ActionCreator.setSquadInstance = makeActionCreator(ActionType.SET_SQUAD_INSTANCE, "squadInstance");
 
 ActionCreator.setSquadPilots = makeActionCreator(
   ActionType.SET_SQUAD_PILOTS,
   "squadId",
   "pilotIds"
+);
+
+ActionCreator.setTacticalViewScale = makeActionCreator(ActionType.SET_TACTICAL_VIEW_SCALE, "scale");
+
+ActionCreator.setTacticalViewZoomInEnabled = makeActionCreator(
+  ActionType.SET_TACTICAL_VIEW_ZOOM_IN_ENABLED,
+  "enabled"
+);
+
+ActionCreator.setTacticalViewZoomOutEnabled = makeActionCreator(
+  ActionType.SET_TACTICAL_VIEW_ZOOM_OUT_ENABLED,
+  "enabled"
 );
 
 ActionCreator.setUpgradeInstance = makeActionCreator(
@@ -186,6 +210,8 @@ ActionCreator.setUpgradeTokenCounts = makeActionCreator(
   "upgradeId",
   "tokenCounts"
 );
+
+ActionCreator.setUserMessage = makeActionCreator(ActionType.SET_USER_MESSAGE, "userMessage");
 
 Object.freeze(ActionCreator);
 
