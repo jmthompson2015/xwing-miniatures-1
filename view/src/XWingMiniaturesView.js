@@ -1,31 +1,45 @@
-import PilotsContainer from "./container/PilotsContainer.js";
-import PlayAreaContainer from "./container/PlayAreaContainer.js";
-import StatusBarContainer from "./container/StatusBarContainer.js";
+import GamePanelContainer from "./container/GamePanelContainer.js";
+
+const { ActionCreator, Reducer } = XMS;
 
 const XWingMiniaturesView = {};
 
 XWingMiniaturesView.drawView = ({ gameState, document, resourceBase = "../resource/" }) => {
-  const statusBarContainer = StatusBarContainer(gameState);
-  ReactDOM.render(statusBarContainer, document.getElementById("statusBarContainer"));
+  const store = Redux.createStore(Reducer.root, gameState);
 
-  const pilotArea1 = PilotsContainer(gameState, {
-    agentId: 1
-  });
-  ReactDOM.render(pilotArea1, document.getElementById("pilotArea1"));
+  const createContainer = () => {
+    const playAreaZoom = (scale, zoomOutEnabled, zoomInEnabled) => () => {
+      store.dispatch(ActionCreator.setPlayAreaScale(scale));
+      store.dispatch(ActionCreator.setPlayAreaZoomOutEnabled(zoomOutEnabled));
+      store.dispatch(ActionCreator.setPlayAreaZoomInEnabled(zoomInEnabled));
+      createContainer();
+    };
 
-  // FIXME: display firstPilotInputArea
+    const playAreaZoomIn = playAreaZoom(1.0, true, false);
+    const playAreaZoomOut = playAreaZoom(0.104918033, false, true); // 96 px / 915 px
 
-  const playAreaContainer = PlayAreaContainer(gameState, {
-    resourceBase
-  });
-  ReactDOM.render(playAreaContainer, document.getElementById("playAreaContainer"));
+    const tacticalViewZoom = (scale, zoomOutEnabled, zoomInEnabled) => () => {
+      store.dispatch(ActionCreator.setTacticalViewScale(scale));
+      store.dispatch(ActionCreator.setTacticalViewZoomOutEnabled(zoomOutEnabled));
+      store.dispatch(ActionCreator.setTacticalViewZoomInEnabled(zoomInEnabled));
+      createContainer();
+    };
 
-  // FIXME: display secondPilotInputArea
+    const tacticalViewZoomIn = tacticalViewZoom(1.0, true, false);
+    const tacticalViewZoomOut = tacticalViewZoom(0.16, false, true); // 96 px / 600 px
 
-  const pilotArea2 = PilotsContainer(gameState, {
-    agentId: 2
-  });
-  ReactDOM.render(pilotArea2, document.getElementById("pilotArea2"));
+    const container = GamePanelContainer(store.getState(), {
+      playAreaZoomIn,
+      playAreaZoomOut,
+      resourceBase,
+      tacticalViewZoomIn,
+      tacticalViewZoomOut
+    });
+
+    ReactDOM.render(container, document.getElementById("panel"));
+  };
+
+  createContainer();
 };
 
 export default XWingMiniaturesView;

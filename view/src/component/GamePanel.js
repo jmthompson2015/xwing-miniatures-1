@@ -60,12 +60,13 @@ class GamePanel extends React.Component {
   }
 
   createPlayAreaUI() {
-    const { explosion, laserBeam, maneuver, playAreaState, image } = this.props;
+    const { explosion, image, laserBeam, maneuver, playAreaState, resourceBase } = this.props;
     const pilotMap = this.createPilotMap();
 
     return React.createElement(PlayAreaUI, {
       image,
       pilotInstances: pilotMap,
+      resourceBase,
       scale: playAreaState.scale,
       explosion,
       laserBeam,

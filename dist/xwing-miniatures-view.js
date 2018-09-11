@@ -2156,31 +2156,34 @@
 
       if (Object.keys(factionShipToImage).length > 0) {
         const { activePilotId, pilotInstances } = this.props;
-        const position0 = pilotInstances[activePilotId].position;
-        const mySubtract = subtract(position0);
-        const forEachFunction = instance => {
-          const { id, pilotKey, position } = instance;
-          const faction = Selector$1.factionValueByPilot(pilotKey);
-          const shipKey = Selector$1.shipKeyByPilot(pilotKey);
-          const image = factionShipToImage[`${faction.key}|${shipKey}`];
-          const shipBase = Selector$1.shipBaseValueByShip(shipKey);
-          const firingArcs = Selector$1.firingArcKeysByShip(shipKey);
-          const primaryFiringArcKey = firingArcs.length > 0 ? firingArcs[0] : undefined;
-          const auxiliaryFiringArcKey = firingArcs.length > 1 ? firingArcs[1] : undefined;
 
-          ShipImage.draw(
-            context,
-            1.0,
-            id,
-            image,
-            mySubtract(position),
-            shipBase,
-            faction.color,
-            primaryFiringArcKey,
-            auxiliaryFiringArcKey
-          );
-        };
-        R.forEach(forEachFunction, Object.values(pilotInstances));
+        if (activePilotId !== undefined) {
+          const position0 = pilotInstances[activePilotId].position;
+          const mySubtract = subtract(position0);
+          const forEachFunction = instance => {
+            const { id, pilotKey, position } = instance;
+            const faction = Selector$1.factionValueByPilot(pilotKey);
+            const shipKey = Selector$1.shipKeyByPilot(pilotKey);
+            const image = factionShipToImage[`${faction.key}|${shipKey}`];
+            const shipBase = Selector$1.shipBaseValueByShip(shipKey);
+            const firingArcs = Selector$1.firingArcKeysByShip(shipKey);
+            const primaryFiringArcKey = firingArcs.length > 0 ? firingArcs[0] : undefined;
+            const auxiliaryFiringArcKey = firingArcs.length > 1 ? firingArcs[1] : undefined;
+
+            ShipImage.draw(
+              context,
+              1.0,
+              id,
+              image,
+              mySubtract(position),
+              shipBase,
+              faction.color,
+              primaryFiringArcKey,
+              auxiliaryFiringArcKey
+            );
+          };
+          R.forEach(forEachFunction, Object.values(pilotInstances));
+        }
       }
     }
 
@@ -2208,9 +2211,6 @@
 
     paint() {
       const { activePilotId, pilotInstances, scale } = this.props;
-      const activeInstance = pilotInstances[activePilotId];
-      const { pilotKey, position } = activeInstance;
-      const faction = Selector$1.factionValueByPilot(pilotKey);
       const size = this.size();
       const canvas = document.getElementById("tacticalViewCanvas");
       const context = canvas.getContext("2d");
@@ -2219,15 +2219,21 @@
       context.clearRect(0, 0, 2 * size, 2 * size);
       context.scale(scale, scale);
       context.translate(SIZE, SIZE);
-      context.rotate((270 - position.heading) * DEG_TO_RADIANS$1);
 
-      // Range discs.
-      context.fillStyle = `${faction.color}30`;
-      const forEachFunction = rangeKey => {
-        const range = Selector$1.range(rangeKey);
-        drawDisc(context, range.maxDistance);
-      };
-      R.forEach(forEachFunction, [Range.THREE, Range.TWO, Range.ONE]);
+      if (activePilotId !== undefined) {
+        const activeInstance = pilotInstances[activePilotId];
+        const { pilotKey, position } = activeInstance;
+        const faction = Selector$1.factionValueByPilot(pilotKey);
+        context.rotate((270 - position.heading) * DEG_TO_RADIANS$1);
+
+        // Range discs.
+        context.fillStyle = `${faction.color}30`;
+        const forEachFunction = rangeKey => {
+          const range = Selector$1.range(rangeKey);
+          drawDisc(context, range.maxDistance);
+        };
+        R.forEach(forEachFunction, [Range.THREE, Range.TWO, Range.ONE]);
+      }
 
       // Solid lines.
       context.strokeStyle = "#FFFFFFC0";
@@ -2341,12 +2347,13 @@
     }
 
     createPlayAreaUI() {
-      const { explosion, laserBeam, maneuver, playAreaState, image } = this.props;
+      const { explosion, image, laserBeam, maneuver, playAreaState, resourceBase } = this.props;
       const pilotMap = this.createPilotMap();
 
       return React.createElement(PlayAreaUI, {
         image,
         pilotInstances: pilotMap,
+        resourceBase,
         scale: playAreaState.scale,
         explosion,
         laserBeam,
@@ -3163,30 +3170,46 @@
     });
   };
 
+  const { ActionCreator, Reducer } = XMS;
+
   const XWingMiniaturesView = {};
 
   XWingMiniaturesView.drawView = ({ gameState, document, resourceBase = "../resource/" }) => {
-    const statusBarContainer = StatusBarContainer(gameState);
-    ReactDOM.render(statusBarContainer, document.getElementById("statusBarContainer"));
+    const store = Redux.createStore(Reducer.root, gameState);
 
-    const pilotArea1 = PilotsContainer(gameState, {
-      agentId: 1
-    });
-    ReactDOM.render(pilotArea1, document.getElementById("pilotArea1"));
+    const createContainer = () => {
+      const playAreaZoom = (scale, zoomOutEnabled, zoomInEnabled) => () => {
+        store.dispatch(ActionCreator.setPlayAreaScale(scale));
+        store.dispatch(ActionCreator.setPlayAreaZoomOutEnabled(zoomOutEnabled));
+        store.dispatch(ActionCreator.setPlayAreaZoomInEnabled(zoomInEnabled));
+        createContainer();
+      };
 
-    // FIXME: display firstPilotInputArea
+      const playAreaZoomIn = playAreaZoom(1.0, true, false);
+      const playAreaZoomOut = playAreaZoom(0.104918033, false, true); // 96 px / 915 px
 
-    const playAreaContainer = PlayAreaContainer(gameState, {
-      resourceBase
-    });
-    ReactDOM.render(playAreaContainer, document.getElementById("playAreaContainer"));
+      const tacticalViewZoom = (scale, zoomOutEnabled, zoomInEnabled) => () => {
+        store.dispatch(ActionCreator.setTacticalViewScale(scale));
+        store.dispatch(ActionCreator.setTacticalViewZoomOutEnabled(zoomOutEnabled));
+        store.dispatch(ActionCreator.setTacticalViewZoomInEnabled(zoomInEnabled));
+        createContainer();
+      };
 
-    // FIXME: display secondPilotInputArea
+      const tacticalViewZoomIn = tacticalViewZoom(1.0, true, false);
+      const tacticalViewZoomOut = tacticalViewZoom(0.16, false, true); // 96 px / 600 px
 
-    const pilotArea2 = PilotsContainer(gameState, {
-      agentId: 2
-    });
-    ReactDOM.render(pilotArea2, document.getElementById("pilotArea2"));
+      const container = GamePanelContainer(store.getState(), {
+        playAreaZoomIn,
+        playAreaZoomOut,
+        resourceBase,
+        tacticalViewZoomIn,
+        tacticalViewZoomOut
+      });
+
+      ReactDOM.render(container, document.getElementById("panel"));
+    };
+
+    createContainer();
   };
 
   exports.AbilityChooser = AbilityChooser;

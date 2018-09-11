@@ -68,31 +68,34 @@ class TacticalView extends React.Component {
 
     if (Object.keys(factionShipToImage).length > 0) {
       const { activePilotId, pilotInstances } = this.props;
-      const position0 = pilotInstances[activePilotId].position;
-      const mySubtract = subtract(position0);
-      const forEachFunction = instance => {
-        const { id, pilotKey, position } = instance;
-        const faction = Selector.factionValueByPilot(pilotKey);
-        const shipKey = Selector.shipKeyByPilot(pilotKey);
-        const image = factionShipToImage[`${faction.key}|${shipKey}`];
-        const shipBase = Selector.shipBaseValueByShip(shipKey);
-        const firingArcs = Selector.firingArcKeysByShip(shipKey);
-        const primaryFiringArcKey = firingArcs.length > 0 ? firingArcs[0] : undefined;
-        const auxiliaryFiringArcKey = firingArcs.length > 1 ? firingArcs[1] : undefined;
 
-        ShipImage.draw(
-          context,
-          1.0,
-          id,
-          image,
-          mySubtract(position),
-          shipBase,
-          faction.color,
-          primaryFiringArcKey,
-          auxiliaryFiringArcKey
-        );
-      };
-      R.forEach(forEachFunction, Object.values(pilotInstances));
+      if (activePilotId !== undefined) {
+        const position0 = pilotInstances[activePilotId].position;
+        const mySubtract = subtract(position0);
+        const forEachFunction = instance => {
+          const { id, pilotKey, position } = instance;
+          const faction = Selector.factionValueByPilot(pilotKey);
+          const shipKey = Selector.shipKeyByPilot(pilotKey);
+          const image = factionShipToImage[`${faction.key}|${shipKey}`];
+          const shipBase = Selector.shipBaseValueByShip(shipKey);
+          const firingArcs = Selector.firingArcKeysByShip(shipKey);
+          const primaryFiringArcKey = firingArcs.length > 0 ? firingArcs[0] : undefined;
+          const auxiliaryFiringArcKey = firingArcs.length > 1 ? firingArcs[1] : undefined;
+
+          ShipImage.draw(
+            context,
+            1.0,
+            id,
+            image,
+            mySubtract(position),
+            shipBase,
+            faction.color,
+            primaryFiringArcKey,
+            auxiliaryFiringArcKey
+          );
+        };
+        R.forEach(forEachFunction, Object.values(pilotInstances));
+      }
     }
   }
 
@@ -120,9 +123,6 @@ class TacticalView extends React.Component {
 
   paint() {
     const { activePilotId, pilotInstances, scale } = this.props;
-    const activeInstance = pilotInstances[activePilotId];
-    const { pilotKey, position } = activeInstance;
-    const faction = Selector.factionValueByPilot(pilotKey);
     const size = this.size();
     const canvas = document.getElementById("tacticalViewCanvas");
     const context = canvas.getContext("2d");
@@ -131,15 +131,21 @@ class TacticalView extends React.Component {
     context.clearRect(0, 0, 2 * size, 2 * size);
     context.scale(scale, scale);
     context.translate(SIZE, SIZE);
-    context.rotate((270 - position.heading) * DEG_TO_RADIANS);
 
-    // Range discs.
-    context.fillStyle = `${faction.color}30`;
-    const forEachFunction = rangeKey => {
-      const range = Selector.range(rangeKey);
-      drawDisc(context, range.maxDistance);
-    };
-    R.forEach(forEachFunction, [Range.THREE, Range.TWO, Range.ONE]);
+    if (activePilotId !== undefined) {
+      const activeInstance = pilotInstances[activePilotId];
+      const { pilotKey, position } = activeInstance;
+      const faction = Selector.factionValueByPilot(pilotKey);
+      context.rotate((270 - position.heading) * DEG_TO_RADIANS);
+
+      // Range discs.
+      context.fillStyle = `${faction.color}30`;
+      const forEachFunction = rangeKey => {
+        const range = Selector.range(rangeKey);
+        drawDisc(context, range.maxDistance);
+      };
+      R.forEach(forEachFunction, [Range.THREE, Range.TWO, Range.ONE]);
+    }
 
     // Solid lines.
     context.strokeStyle = "#FFFFFFC0";

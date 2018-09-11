@@ -347,6 +347,9 @@
 
   /* eslint no-console: ["error", { allow: ["log"] }] */
 
+  const { ActionCreator, AgentResponseState, AgentState, PositionState, Reducer } = XMS;
+  const { AgentQueryType } = XMM;
+
   const XWingMiniaturesApp = {};
 
   const DELAY = 500;
@@ -401,17 +404,14 @@
         phaseKey
       })
       .then(ability => {
-        const agentResponse = XMS.AgentResponseState.create({
+        const agentResponse = AgentResponseState.create({
           agentId,
-          responseKey: XMM.AgentQueryType.CHOOSE_ATTACK_DICE_MODIFICATION,
-          payload: {
-            pilotId: attackerInstance.id,
-            ability
-          }
+          responseKey: AgentQueryType.CHOOSE_ATTACK_DICE_MODIFICATION,
+          payload: { pilotId: attackerInstance.id, ability }
         });
 
-        store.dispatch(XMS.ActionCreator.clearAgentQuery());
-        store.dispatch(XMS.ActionCreator.setAgentResponse(agentResponse));
+        store.dispatch(ActionCreator.clearAgentQuery());
+        store.dispatch(ActionCreator.setAgentResponse(agentResponse));
         const callback = store2 => XWingMiniaturesApp.drawView(store2);
         XMM.XWingMiniaturesModel.nextGameState({
           gameState: store.getState()
@@ -443,17 +443,14 @@
         phaseKey
       })
       .then(ability => {
-        const agentResponse = XMS.AgentResponseState.create({
+        const agentResponse = AgentResponseState.create({
           agentId,
-          responseKey: XMM.AgentQueryType.CHOOSE_DEFENSE_DICE_MODIFICATION,
-          payload: {
-            pilotId: defenderInstance.id,
-            ability
-          }
+          responseKey: AgentQueryType.CHOOSE_DEFENSE_DICE_MODIFICATION,
+          payload: { pilotId: defenderInstance.id, ability }
         });
 
-        store.dispatch(XMS.ActionCreator.clearAgentQuery());
-        store.dispatch(XMS.ActionCreator.setAgentResponse(agentResponse));
+        store.dispatch(ActionCreator.clearAgentQuery());
+        store.dispatch(ActionCreator.setAgentResponse(agentResponse));
         const callback = store2 => XWingMiniaturesApp.drawView(store2);
         XMM.XWingMiniaturesModel.nextGameState({
           gameState: store.getState()
@@ -474,20 +471,16 @@
     strategy
       .chooseManeuvers(pilotInstances, pilotToValidManeuvers, inputAreaId)
       .then(pilotToManeuver => {
-        const agentResponse = XMS.AgentResponseState.create({
+        const agentResponse = AgentResponseState.create({
           agentId,
-          responseKey: XMM.AgentQueryType.CHOOSE_MANEUVERS,
-          payload: {
-            pilotToManeuver
-          }
+          responseKey: AgentQueryType.CHOOSE_MANEUVERS,
+          payload: { pilotToManeuver }
         });
 
-        store.dispatch(XMS.ActionCreator.clearAgentQuery());
-        store.dispatch(XMS.ActionCreator.setAgentResponse(agentResponse));
+        store.dispatch(ActionCreator.clearAgentQuery());
+        store.dispatch(ActionCreator.setAgentResponse(agentResponse));
         const callback = store2 => XWingMiniaturesApp.drawView(store2);
-        XMM.XWingMiniaturesModel.nextGameState({
-          gameState: store.getState()
-        }).then(callback);
+        XMM.XWingMiniaturesModel.nextGameState({ gameState: store.getState() }).then(callback);
       });
   };
 
@@ -506,21 +499,16 @@
       console.log(
         `XWingMiniaturesApp.chooseShipAction() callback ability = ${JSON.stringify(ability)}`
       );
-      const agentResponse = XMS.AgentResponseState.create({
+      const agentResponse = AgentResponseState.create({
         agentId,
-        responseKey: XMM.AgentQueryType.CHOOSE_SHIP_ACTION,
-        payload: {
-          pilotId,
-          ability
-        }
+        responseKey: AgentQueryType.CHOOSE_SHIP_ACTION,
+        payload: { pilotId, ability }
       });
 
-      store.dispatch(XMS.ActionCreator.clearAgentQuery());
-      store.dispatch(XMS.ActionCreator.setAgentResponse(agentResponse));
+      store.dispatch(ActionCreator.clearAgentQuery());
+      store.dispatch(ActionCreator.setAgentResponse(agentResponse));
       const callback = store2 => XWingMiniaturesApp.drawView(store2);
-      XMM.XWingMiniaturesModel.nextGameState({
-        gameState: store.getState()
-      }).then(callback);
+      XMM.XWingMiniaturesModel.nextGameState({ gameState: store.getState() }).then(callback);
     });
   };
 
@@ -542,93 +530,56 @@
     strategy
       .chooseWeaponAndDefender(attackerInstance, weaponToRangeToDefenders, inputAreaId)
       .then(({ attackerId2, weaponKey, defenderId }) => {
-        const agentResponse = XMS.AgentResponseState.create({
+        const agentResponse = AgentResponseState.create({
           agentId,
-          responseKey: XMM.AgentQueryType.CHOOSE_WEAPON_AND_DEFENDER,
-          payload: {
-            attackerId: attackerId2,
-            weaponKey,
-            defenderId
-          }
+          responseKey: AgentQueryType.CHOOSE_WEAPON_AND_DEFENDER,
+          payload: { attackerId: attackerId2, weaponKey, defenderId }
         });
 
-        store.dispatch(XMS.ActionCreator.clearAgentQuery());
-        store.dispatch(XMS.ActionCreator.setAgentResponse(agentResponse));
+        store.dispatch(ActionCreator.clearAgentQuery());
+        store.dispatch(ActionCreator.setAgentResponse(agentResponse));
         const callback = store2 => XWingMiniaturesApp.drawView(store2);
-        XMM.XWingMiniaturesModel.nextGameState({
-          gameState: store.getState()
-        }).then(callback);
+        XMM.XWingMiniaturesModel.nextGameState({ gameState: store.getState() }).then(callback);
       });
   };
 
   const createStore = () => {
-    const store = Redux.createStore(XMS.Reducer.root);
+    const store = Redux.createStore(Reducer.root);
     const agentId1 = XMS.Selector.nextAgentId(store.getState());
     store.dispatch(
-      XMS.ActionCreator.setAgentInstance(
-        XMS.AgentState.create({
-          id: agentId1,
-          name: "Imperial Agent",
-          strategy: "HumanAgentStrategy"
-        })
+      ActionCreator.setAgentInstance(
+        AgentState.create({ id: agentId1, name: "Imperial Agent", strategy: "HumanAgentStrategy" })
       )
     );
     const agentId2 = XMS.Selector.nextAgentId(store.getState());
     store.dispatch(
-      XMS.ActionCreator.setAgentInstance(
-        XMS.AgentState.create({
-          id: agentId2,
-          name: "Rebel Agent"
-        })
-      )
+      ActionCreator.setAgentInstance(AgentState.create({ id: agentId2, name: "Rebel Agent" }))
     );
     const squadId1 = XMS.Selector.nextSquadId(store.getState());
     store.dispatch(
-      XMS.ActionCreator.setSquadInstance(XMM.SquadBuilder.buildCoreSetImperial(store, squadId1))
+      ActionCreator.setSquadInstance(XMM.SquadBuilder.buildCoreSetImperial(store, squadId1))
     );
     const squadId2 = XMS.Selector.nextSquadId(store.getState());
     store.dispatch(
-      XMS.ActionCreator.setSquadInstance(XMM.SquadBuilder.buildCoreSetRebel(store, squadId2))
+      ActionCreator.setSquadInstance(XMM.SquadBuilder.buildCoreSetRebel(store, squadId2))
     );
 
-    store.dispatch(XMS.ActionCreator.setAgentSquad(agentId1, squadId1));
-    store.dispatch(XMS.ActionCreator.setAgentSquad(agentId2, squadId2));
+    store.dispatch(ActionCreator.setAgentSquad(agentId1, squadId1));
+    store.dispatch(ActionCreator.setAgentSquad(agentId2, squadId2));
 
     store.dispatch(
-      XMS.ActionCreator.movePilot(
-        1,
-        XMS.PositionState.create({
-          x: 915 / 3,
-          y: 20,
-          heading: 90
-        })
-      )
+      ActionCreator.movePilot(1, PositionState.create({ x: 915 / 3, y: 20, heading: 90 }))
     );
     store.dispatch(
-      XMS.ActionCreator.movePilot(
-        2,
-        XMS.PositionState.create({
-          x: (915 * 2) / 3,
-          y: 20,
-          heading: 90
-        })
-      )
+      ActionCreator.movePilot(2, PositionState.create({ x: (915 * 2) / 3, y: 20, heading: 90 }))
     );
     store.dispatch(
-      XMS.ActionCreator.movePilot(
-        3,
-        XMS.PositionState.create({
-          x: 915 / 2,
-          // y: 915 - 20,
-          y: 400,
-          heading: 270
-        })
-      )
+      ActionCreator.movePilot(3, PositionState.create({ x: 915 / 2, y: 400, heading: 270 }))
     );
 
     const damageObj = XMM.DamageDeck.create(XMA.DamageCardTFA);
-    store.dispatch(XMS.ActionCreator.setDamageDeck(damageObj.damageDeck));
-    store.dispatch(XMS.ActionCreator.setDamageInstances(damageObj.damageInstances));
+    store.dispatch(ActionCreator.setDamageDeck(damageObj.damageDeck));
+    store.dispatch(ActionCreator.setDamageInstances(damageObj.damageInstances));
 
     // console.log("XWingMiniaturesApp.createGameState() gameState = \n" +
     //  JSON.stringify(store.getState(), null, "   "));
@@ -659,20 +610,16 @@
         inputAreaId
       })
       .then(() => {
-        const agentResponse = XMS.AgentResponseState.create({
+        const agentResponse = AgentResponseState.create({
           agentId,
-          responseKey: XMM.AgentQueryType.NOTIFY_DAMAGE,
-          payload: {
-            combatId
-          }
+          responseKey: AgentQueryType.NOTIFY_DAMAGE,
+          payload: { combatId }
         });
 
-        store.dispatch(XMS.ActionCreator.clearAgentQuery());
-        store.dispatch(XMS.ActionCreator.setAgentResponse(agentResponse));
+        store.dispatch(ActionCreator.clearAgentQuery());
+        store.dispatch(ActionCreator.setAgentResponse(agentResponse));
         const callback = store2 => XWingMiniaturesApp.drawView(store2);
-        XMM.XWingMiniaturesModel.nextGameState({
-          gameState: store.getState()
-        }).then(callback);
+        XMM.XWingMiniaturesModel.nextGameState({ gameState: store.getState() }).then(callback);
       });
   };
 
@@ -696,36 +643,34 @@
     const { agentQuery } = store.getState();
 
     if (agentQuery !== undefined) {
-      if (agentQuery.queryKey === XMM.AgentQueryType.CHOOSE_MANEUVERS) {
+      if (agentQuery.queryKey === AgentQueryType.CHOOSE_MANEUVERS) {
         chooseManeuvers(store);
         return;
       }
-      if (agentQuery.queryKey === XMM.AgentQueryType.CHOOSE_SHIP_ACTION) {
+      if (agentQuery.queryKey === AgentQueryType.CHOOSE_SHIP_ACTION) {
         chooseShipAction(store);
         return;
       }
-      if (agentQuery.queryKey === XMM.AgentQueryType.CHOOSE_WEAPON_AND_DEFENDER) {
+      if (agentQuery.queryKey === AgentQueryType.CHOOSE_WEAPON_AND_DEFENDER) {
         chooseWeaponAndDefender(store);
         return;
       }
-      if (agentQuery.queryKey === XMM.AgentQueryType.CHOOSE_ATTACK_DICE_MODIFICATION) {
+      if (agentQuery.queryKey === AgentQueryType.CHOOSE_ATTACK_DICE_MODIFICATION) {
         chooseAttackDiceModification(store);
         return;
       }
-      if (agentQuery.queryKey === XMM.AgentQueryType.CHOOSE_DEFENSE_DICE_MODIFICATION) {
+      if (agentQuery.queryKey === AgentQueryType.CHOOSE_DEFENSE_DICE_MODIFICATION) {
         chooseDefenseDiceModification(store);
         return;
       }
-      if (agentQuery.queryKey === XMM.AgentQueryType.NOTIFY_DAMAGE) {
+      if (agentQuery.queryKey === AgentQueryType.NOTIFY_DAMAGE) {
         notifyDamage(store);
         return;
       }
     }
 
     const callback = store2 => XWingMiniaturesApp.drawView(store2);
-    XMM.XWingMiniaturesModel.nextGameState({
-      gameState: store.getState()
-    }).then(callback);
+    XMM.XWingMiniaturesModel.nextGameState({ gameState: store.getState() }).then(callback);
   };
 
   XWingMiniaturesApp.initialize();
