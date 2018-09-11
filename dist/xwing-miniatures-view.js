@@ -2772,13 +2772,6 @@
     return R.merge(accumulator, newPilotToDamages);
   };
 
-  const reduceTokenCounts = gameState => (accumulator, pilotInstance) => {
-    const pilotId = pilotInstance.id;
-    const newPilotToTokenCounts = {};
-    newPilotToTokenCounts[pilotId] = Selector.countsByPilot(pilotId, gameState);
-    return R.merge(accumulator, newPilotToTokenCounts);
-  };
-
   const reduceUpgrade = gameState => (accumulator, pilotInstance) => {
     const pilotId = pilotInstance.id;
     const newPilotToUpgrades = {};
@@ -2791,13 +2784,11 @@
     const { agentId } = ownProps;
     const pilotInstances = Selector.pilotInstancesByAgent(agentId, gameState);
     const pilotToDamages = R.reduce(reduceDamage(gameState), {}, pilotInstances);
-    const pilotToTokenCounts = R.reduce(reduceTokenCounts(gameState), {}, pilotInstances);
     const pilotToUpgrades = R.reduce(reduceUpgrade(gameState), {}, pilotInstances);
 
     return React.createElement(PilotsUI, {
       pilotInstances,
       pilotToDamages,
-      pilotToTokenCounts,
       pilotToUpgrades
     });
   };
@@ -2812,34 +2803,31 @@
   };
 
   const PlayAreaContainer = (gameState, ownProps = {}) => {
-    const playFormat = Selector.playFormat(gameState);
+    const {
+      displayExplosion,
+      displayLaserBeam,
+      displayManeuver,
+      pilotInstances,
+      playAreaScale,
+      playFormatKey
+    } = gameState;
+    const { resourceBase } = ownProps;
+
     const image = `background/${
-    playFormat.key === XMA.PlayFormat.STANDARD ? "pia13845.jpg" : "horsehead_nebula_02092008.jpg"
+    playFormatKey === XMA.PlayFormat.STANDARD ? "pia13845.jpg" : "horsehead_nebula_02092008.jpg"
   }`;
-    const scale = ownProps !== undefined ? ownProps.scale : 1.0;
-
-    const pilotToPosition = R.reduce(
-      (accum, pilot) => R.assoc(pilot.id, pilot.position, accum),
-      {},
-      Selector.pilotInstances(gameState)
-    );
-
-    const { displayExplosion, displayLaserBeam, displayManeuver } = gameState;
-
     const laserBeam = displayLaserBeam !== undefined ? createLaserBeam(displayLaserBeam) : undefined;
 
     return React.createElement(PlayAreaUI, {
-      height: playFormat.height,
       image,
-      pilotInstances: gameState.pilotInstances,
-      pilotToPosition,
-      scale,
-      width: playFormat.width,
+      pilotInstances,
+      playFormatKey,
+      resourceBase,
+      scale: playAreaScale,
 
       explosion: displayExplosion,
       laserBeam,
-      maneuver: displayManeuver,
-      resourceBase: ownProps.resourceBase
+      maneuver: displayManeuver
     });
   };
 
