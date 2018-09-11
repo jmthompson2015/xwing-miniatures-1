@@ -1102,11 +1102,13 @@
   exports.LaserBeamState = LaserBeamState;
   exports.ManeuverState = ManeuverState;
   exports.PilotState = PilotState;
+  exports.PlayAreaState = PlayAreaState;
   exports.PositionState = PositionState;
   exports.Reducer = Reducer;
   exports.Selector = Selector;
   exports.SquadState = SquadState;
   exports.StatBonusesState = StatBonusesState;
+  exports.TacticalViewState = TacticalViewState;
   exports.TargetLockState = TargetLockState;
   exports.TokenCountsState = TokenCountsState;
   exports.UpgradeState = UpgradeState;

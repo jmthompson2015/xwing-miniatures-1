@@ -7,6 +7,7 @@ import CombatDialog from "./component/CombatDialog.js";
 import DicePanel from "./component/DicePanel.js";
 import EntityUI from "./component/EntityUI.js";
 import FactionUI from "./component/FactionUI.js";
+import GamePanel from "./component/GamePanel.js";
 import ImageWithLabelUI from "./component/ImageWithLabelUI.js";
 import LabeledImage from "./component/LabeledImage.js";
 import ManeuverChooser from "./component/ManeuverChooser.js";
@@ -22,6 +23,7 @@ import TokenPanel from "./component/TokenPanel.js";
 import UpgradeSlotUI from "./component/UpgradeSlotUI.js";
 import WeaponAndDefenderDialog from "./component/WeaponAndDefenderDialog.js";
 
+import GamePanelContainer from "./container/GamePanelContainer.js";
 import PilotsContainer from "./container/PilotsContainer.js";
 import PlayAreaContainer from "./container/PlayAreaContainer.js";
 import StatusBarContainer from "./container/StatusBarContainer.js";
@@ -42,6 +44,7 @@ export {
   DicePanel,
   EntityUI,
   FactionUI,
+  GamePanel,
   ImageWithLabelUI,
   LabeledImage,
   ManeuverChooser,
@@ -56,6 +59,7 @@ export {
   TokenPanel,
   UpgradeSlotUI,
   WeaponAndDefenderDialog,
+  GamePanelContainer,
   PilotsContainer,
   PlayAreaContainer,
   StatusBarContainer,

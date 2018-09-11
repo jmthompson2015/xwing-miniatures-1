@@ -1621,234 +1621,6 @@
     resourceBase: undefined
   };
 
-  const BEARING_TO_FONT = {
-    "Turn Left": "turnleft",
-    "Turn Right": "turnright",
-    "Segnor's Loop Left": "sloopleft",
-    "Segnor's Loop Right": "sloopright",
-    "Tallon Roll Left": "trollleft",
-    "Tallon Roll Right": "trollright",
-    "Koiogran Turn": "kturn"
-  };
-
-  const STATIONARY_MANEUVER = XMA.Selector.maneuver(XMA.Maneuver.STATIONARY_0_HARD_0OR);
-
-  const regex = cls => new RegExp(`(\\s|^)${cls}(\\s|$)`);
-
-  const hasClass = (element, cls) => element.className.match(regex(cls));
-
-  const addClass = (element, cls) => element.className + (hasClass(element, cls) ? "" : ` ${cls}`);
-
-  const removeClass = (element, cls) =>
-    element.className +
-    (hasClass(element, cls) ? element.className.replace(regex(cls), " ") : element.className);
-
-  const createManeuverIcon = (bearing0, speed0, difficulty) => {
-    const defaultSrc = (bearing, speed) =>
-      speed === 0
-        ? "stop"
-        : (speed === -1 ? "reverse" : "") + bearing.toLowerCase().replace(/ /g, "");
-    const src = R.defaultTo(defaultSrc(bearing0, speed0), BEARING_TO_FONT[bearing0]);
-    let difficultyClass = "";
-    if (difficulty === "Easy") {
-      difficultyClass = " green";
-    } else if (difficulty === "Hard") {
-      difficultyClass = " red";
-    }
-    const className = `xw-f8${difficultyClass}`;
-
-    return ReactDOMFactories.span(
-      {
-        className
-      },
-      ReactDOMFactories.i({
-        className: `xwing-miniatures-font xwing-miniatures-font-${src}`
-      })
-    );
-  };
-
-  const maneuverBearing = maneuver =>
-    maneuver.bearing.startsWith("Reverse")
-      ? maneuver.bearing.substring("Reverse ".length)
-      : maneuver.bearing;
-
-  const maneuverSpeed = maneuver =>
-    (maneuver.bearing.startsWith("Reverse") ? -1 : 1) * maneuver.speed;
-
-  const findManeuver = (maneuvers, bearingIn, speedIn) => {
-    const isBearing = maneuver => R.equals(maneuverBearing(maneuver), bearingIn);
-    const isSpeed = maneuver => R.equals(maneuverSpeed(maneuver), speedIn);
-
-    return R.find(R.both(isBearing, isSpeed), maneuvers);
-  };
-
-  const determineMaximumSpeed = maneuvers =>
-    R.reduce(
-      (accum, maneuver) => Math.max(accum, maneuverSpeed(maneuver)),
-      Number.NEGATIVE_INFINITY,
-      maneuvers
-    );
-
-  const determineMinimumSpeed = maneuvers =>
-    R.reduce(
-      (accum, maneuver) => Math.min(accum, maneuverSpeed(maneuver)),
-      Number.POSITIVE_INFINITY,
-      maneuvers
-    );
-
-  // /////////////////////////////////////////////////////////////////////////////////////////////////
-  class ManeuverChooser extends React.Component {
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        element: undefined
-      };
-
-      this.selectionChanged = this.selectionChangedFunction.bind(this);
-    }
-
-    bearingFunction0(cells, speed) {
-      const { isEditable, pilotId } = this.props;
-      const maneuver = STATIONARY_MANEUVER;
-      const { difficulty } = maneuver;
-      const image = createManeuverIcon(undefined, speed, difficulty);
-
-      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
-      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
-      cells.push(
-        ReactUtilities.createCell(image, cells.length, "b--xw-medium xw-min-w1-5", {
-          onClick: isEditable ? this.selectionChanged : undefined,
-          "data-pilotid": pilotId,
-          "data-maneuverkey": maneuver.key
-        })
-      );
-      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
-      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
-    }
-
-    bearingFunction(maneuverBearings, cells, speed, bearingValue) {
-      if (maneuverBearings.includes(bearingValue)) {
-        const { isEditable, maneuvers, pilotId } = this.props;
-        const maneuver = findManeuver(maneuvers, bearingValue, speed);
-
-        if (maneuver !== undefined) {
-          const { difficulty } = maneuver;
-          const image = createManeuverIcon(bearingValue, speed, difficulty);
-          cells.push(
-            ReactUtilities.createCell(image, cells.length, "b--xw-medium tc xw-min-w1-5", {
-              onClick: isEditable ? this.selectionChanged : undefined,
-              "data-pilotid": pilotId,
-              "data-maneuverkey": maneuver.key
-            })
-          );
-        } else {
-          cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium xw-min-w1-5"));
-        }
-      }
-    }
-
-    selectionChangedFunction(event) {
-      const { element: oldElement } = this.state;
-
-      if (oldElement) {
-        oldElement.className = removeClass(oldElement, "bg-xw-medium");
-      }
-
-      const element = event.currentTarget;
-      const pilotId = element.dataset.pilotid;
-      const maneuverKey = element.dataset.maneuverkey;
-      this.setState({
-        element
-      });
-      element.className = addClass(element, "bg-xw-medium");
-
-      const { callback } = this.props;
-
-      if (callback) {
-        callback({
-          pilotId,
-          maneuverKey
-        });
-      }
-    }
-
-    render() {
-      const { maneuvers, pilotName, shipName } = this.props;
-      const minSpeed = determineMinimumSpeed(maneuvers);
-      const maxSpeed = determineMaximumSpeed(maneuvers);
-      const bearingValues = [
-        "Turn Left",
-        "Bank Left",
-        "Straight",
-        "Bank Right",
-        "Turn Right",
-        "Segnor's Loop Left",
-        "Tallon Roll Left",
-        "Koiogran Turn",
-        "Segnor's Loop Right",
-        "Tallon Roll Right"
-      ];
-      const maneuverBearings = R.map(R.prop("bearing"), maneuvers);
-      const rows0 = [];
-
-      if (pilotName !== undefined) {
-        rows0.push(
-          ReactUtilities.createRow(ReactUtilities.createCell(pilotName), rows0.length, "bg-xw-light black f6")
-        );
-      }
-
-      if (shipName !== undefined) {
-        rows0.push(
-          ReactUtilities.createRow(ReactUtilities.createCell(shipName), rows0.length, "bg-xw-light black f6")
-        );
-      }
-
-      const rows = [];
-
-      for (let speed = maxSpeed; speed >= minSpeed; speed -= 1) {
-        const cells = [];
-        cells.push(ReactUtilities.createCell(speed, cells.length, "b--xw-medium center"));
-
-        if (speed === 0 && maneuvers.includes(STATIONARY_MANEUVER)) {
-          this.bearingFunction0(cells, speed);
-        } else {
-          bearingValues.forEach(bearingValue =>
-            this.bearingFunction(maneuverBearings, cells, speed, bearingValue)
-          );
-        }
-
-        rows.push(ReactUtilities.createRow(cells, rows.length));
-      }
-
-      const table = ReactUtilities.createTable(
-        rows,
-        rows0.length,
-        "b--xw-medium ba bg-black bw1 tc w-100 white"
-      );
-      rows0.push(table);
-
-      return ReactUtilities.createTable(rows0, undefined, "b--xw-medium ba bg-black bw1 center tc white");
-    }
-  }
-
-  ManeuverChooser.propTypes = {
-    maneuvers: PropTypes.arrayOf().isRequired,
-    shipName: PropTypes.string.isRequired,
-
-    callback: PropTypes.func,
-    isEditable: PropTypes.bool,
-    pilotName: PropTypes.string,
-    pilotId: PropTypes.number
-  };
-
-  ManeuverChooser.defaultProps = {
-    callback: undefined,
-    isEditable: true,
-    pilotName: undefined,
-    pilotId: undefined
-  };
-
   class PilotsUI extends React.PureComponent {
     render() {
       const { pilotInstances, pilotToDamages, pilotToUpgrades } = this.props;
@@ -1880,85 +1652,6 @@
   PilotsUI.defaultProps = {
     pilotToDamages: {},
     pilotToUpgrades: {}
-  };
-
-  class PlanningDialog extends React.Component {
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        pilotToManeuver: {}
-      };
-
-      this.ok = this.okFunction.bind(this);
-      this.selectionChanged = this.selectionChangedFunction.bind(this);
-    }
-
-    okFunction() {
-      const { pilotToManeuver } = this.state;
-      const { callback } = this.props;
-
-      callback({
-        pilotToManeuver
-      });
-    }
-
-    selectionChangedFunction({ pilotId, maneuverKey }) {
-      const { pilotInstances } = this.props;
-      const pilotInstance = R.find(R.propEq("id", parseInt(pilotId, 10)))(pilotInstances);
-      const { pilotToManeuver } = this.state;
-      pilotToManeuver[pilotInstance.id] = maneuverKey;
-
-      this.setState({
-        pilotToManeuver
-      });
-    }
-
-    render() {
-      const { pilotInstances, pilotToValidManeuvers } = this.props;
-      const pilotIds = R.map(parseInt, Object.keys(pilotToValidManeuvers));
-      const cells = [];
-      const maneuverMap = maneuverKey => XMA.Selector.maneuver(maneuverKey);
-
-      pilotIds.forEach(pilotId => {
-        const pilotInstance = R.find(R.propEq("id", pilotId))(pilotInstances);
-        const maneuverKeys = pilotToValidManeuvers[pilotId];
-        const pilotCard = XMA.Selector.pilotCard(pilotInstance.pilotKey);
-        const maneuvers = R.map(maneuverMap, maneuverKeys);
-        const element = React.createElement(ManeuverChooser, {
-          maneuvers,
-          pilotName: PilotUtilities.name(pilotInstance, true),
-          shipName: pilotCard.ship,
-          pilotId: pilotInstance.id,
-          callback: this.selectionChanged
-        });
-        cells.push(ReactUtilities.createCell(element, cells.length, "v-top"));
-      });
-
-      const initialInput = ReactUtilities.createTable(ReactUtilities.createRow(cells));
-      const { pilotToManeuver } = this.state;
-      const disabled = Object.getOwnPropertyNames(pilotToManeuver).length < pilotIds.length;
-      const buttons = ReactDOMFactories.button(
-        {
-          onClick: this.ok,
-          disabled
-        },
-        "OK"
-      );
-
-      return React.createElement(OptionPane, {
-        title: "Planning: Select Maneuvers",
-        message: "",
-        initialInput,
-        buttons
-      });
-    }
-  }
-
-  PlanningDialog.propTypes = {
-    pilotInstances: PropTypes.arrayOf().isRequired,
-    pilotToValidManeuvers: PropTypes.shape().isRequired,
-    callback: PropTypes.func.isRequired
   };
 
   const ShipImage = {};
@@ -2593,6 +2286,543 @@
     scale: 1.0
   };
 
+  const { Selector: Selector$2 } = XMA;
+  const { PlayAreaState, TacticalViewState } = XMS;
+
+  class GamePanel extends React.Component {
+    createPilotMap() {
+      const { pilotInstances1, pilotInstances2 } = this.props;
+      const instances = R.concat(pilotInstances1, pilotInstances2);
+      const reduceFunction = (accum, instance) => R.assoc(instance.id, instance, accum);
+
+      return R.reduce(reduceFunction, {}, instances);
+    }
+
+    createPilotsUI1() {
+      const { pilotInstances1, pilotToDamages1, pilotToUpgrades1 } = this.props;
+
+      return React.createElement(PilotsUI, {
+        pilotInstances: pilotInstances1,
+        pilotToDamages: pilotToDamages1,
+        pilotToUpgrades: pilotToUpgrades1
+      });
+    }
+
+    createPilotsUI2() {
+      const { pilotInstances2, pilotToDamages2, pilotToUpgrades2 } = this.props;
+
+      return React.createElement(PilotsUI, {
+        pilotInstances: pilotInstances2,
+        pilotToDamages: pilotToDamages2,
+        pilotToUpgrades: pilotToUpgrades2
+      });
+    }
+
+    createPlayAreaButtons() {
+      const { playAreaState, playAreaZoomIn, playAreaZoomOut, resourceBase } = this.props;
+      const zoomInButton = ReactDOMFactories.button(
+        {
+          disabled: !playAreaState.zoomInEnabled,
+          onClick: playAreaZoomIn,
+          title: "Zoom In"
+        },
+        ReactDOMFactories.img({ src: `${resourceBase}/icon/zoom_in.png` })
+      );
+      const zoomOutButton = ReactDOMFactories.button(
+        {
+          disabled: !playAreaState.zoomOutEnabled,
+          onClick: playAreaZoomOut,
+          title: "Zoom Out"
+        },
+        ReactDOMFactories.img({ src: `${resourceBase}/icon/zoom_out.png` })
+      );
+
+      return ReactDOMFactories.span({}, zoomOutButton, zoomInButton);
+    }
+
+    createPlayAreaUI() {
+      const { explosion, laserBeam, maneuver, playAreaState, image } = this.props;
+      const pilotMap = this.createPilotMap();
+
+      return React.createElement(PlayAreaUI, {
+        image,
+        pilotInstances: pilotMap,
+        scale: playAreaState.scale,
+        explosion,
+        laserBeam,
+        maneuver
+      });
+    }
+
+    createStatusBarUI() {
+      const { activeShipName, phaseKey, round, userMessage } = this.props;
+
+      return React.createElement(StatusBarUI, {
+        activeShipName,
+        phaseName: Selector$2.phase(phaseKey).name,
+        round,
+        userMessage
+      });
+    }
+
+    createTacticalViewButtons() {
+      const { resourceBase, tacticalViewState, tacticalViewZoomIn, tacticalViewZoomOut } = this.props;
+      const zoomInButton = ReactDOMFactories.button(
+        {
+          disabled: !tacticalViewState.zoomInEnabled,
+          onClick: tacticalViewZoomIn,
+          title: "Zoom In"
+        },
+        ReactDOMFactories.img({ src: `${resourceBase}/icon/zoom_in.png` })
+      );
+      const zoomOutButton = ReactDOMFactories.button(
+        {
+          disabled: !tacticalViewState.zoomOutEnabled,
+          onClick: tacticalViewZoomOut,
+          title: "Zoom Out"
+        },
+        ReactDOMFactories.img({ src: `${resourceBase}/icon/zoom_out.png` })
+      );
+
+      return ReactDOMFactories.span({}, zoomOutButton, zoomInButton);
+    }
+
+    createTacticalView() {
+      const { activePilotId, tacticalViewState } = this.props;
+      const pilotMap = this.createPilotMap();
+
+      return React.createElement(TacticalView, {
+        activePilotId,
+        pilotInstances: pilotMap,
+        scale: tacticalViewState.scale
+      });
+    }
+
+    createViewTable() {
+      const playAreaButtons = this.createPlayAreaButtons();
+      const tacticalViewButtons = this.createTacticalViewButtons();
+      const playAreaUI = this.createPlayAreaUI();
+      const tacticalView = this.createTacticalView();
+
+      const buttonCells = [
+        ReactUtilities.createCell(playAreaButtons, "playAreaButtons", "tc"),
+        ReactUtilities.createCell(tacticalViewButtons, "tacticalViewButtons", "tc")
+      ];
+
+      const canvasCells = [
+        ReactUtilities.createCell(playAreaUI, "playAreaUI", "pa1 v-top"),
+        ReactUtilities.createCell(tacticalView, "tacticalView", "pa1 v-top")
+      ];
+
+      const viewRows = [
+        ReactUtilities.createRow(buttonCells, "buttonCellsRow"),
+        ReactUtilities.createRow(canvasCells, "canvasCellsRow")
+      ];
+
+      return ReactUtilities.createTable(viewRows, "viewTable", "center");
+    }
+
+    render() {
+      const statusBar = this.createStatusBarUI();
+      const pilotArea1 = this.createPilotsUI1();
+      const agentInputArea1 = ReactDOMFactories.div({ id: "agentInputArea1" });
+      const viewTable = this.createViewTable();
+      const agentInputArea2 = ReactDOMFactories.div({ id: "agentInputArea2" });
+      const pilotArea2 = this.createPilotsUI2();
+
+      const rows = [
+        ReactUtilities.createRow(
+          ReactUtilities.createCell(statusBar, "statusBarContainer"),
+          "statusBarContainerRow"
+        ),
+        ReactUtilities.createRow(ReactUtilities.createCell(pilotArea1, "pilotArea1"), "pilotArea1Row"),
+        ReactUtilities.createRow(
+          ReactUtilities.createCell(agentInputArea1, "agentInputArea1"),
+          "agentInputArea1Row"
+        ),
+        ReactUtilities.createRow(ReactUtilities.createCell(viewTable, "viewTable"), "viewTableRow"),
+        ReactUtilities.createRow(
+          ReactUtilities.createCell(agentInputArea2, "agentInputArea2"),
+          "agentInputArea2Row"
+        ),
+        ReactUtilities.createRow(ReactUtilities.createCell(pilotArea2, "pilotArea2"), "pilotArea2Row")
+      ];
+
+      return ReactUtilities.createTable(rows, "xwingMiniaturesView", "center");
+    }
+  }
+
+  GamePanel.propTypes = {
+    resourceBase: PropTypes.string,
+
+    // Pilots UI.
+    pilotInstances1: PropTypes.shape().isRequired,
+    pilotToDamages1: PropTypes.shape(),
+    pilotToUpgrades1: PropTypes.shape(),
+    pilotInstances2: PropTypes.shape().isRequired,
+    pilotToDamages2: PropTypes.shape(),
+    pilotToUpgrades2: PropTypes.shape(),
+
+    // Play area UI buttons.
+    playAreaZoomIn: PropTypes.func.isRequired,
+    playAreaZoomOut: PropTypes.func.isRequired,
+
+    // Play area UI.
+    playAreaState: PropTypes.number,
+    image: PropTypes.string,
+    explosion: PropTypes.shape(),
+    laserBeam: PropTypes.shape(),
+    maneuver: PropTypes.shape(),
+
+    // Status bar.
+    activeShipName: PropTypes.string,
+    phaseKey: PropTypes.string,
+    round: PropTypes.number,
+    userMessage: PropTypes.string,
+
+    // Tactical view buttons.
+    tacticalViewZoomIn: PropTypes.func.isRequired,
+    tacticalViewZoomOut: PropTypes.func.isRequired,
+
+    // Tactical view.
+    activePilotId: PropTypes.number,
+    tacticalViewState: PropTypes.number
+  };
+
+  GamePanel.defaultProps = {
+    resourceBase: "../../resource/",
+
+    // Pilots UI.
+    pilotToDamages1: {},
+    pilotToUpgrades1: {},
+    pilotToDamages2: {},
+    pilotToUpgrades2: {},
+
+    // Play area UI.
+    image: "background/pia13845.jpg",
+    explosion: undefined,
+    laserBeam: undefined,
+    maneuver: undefined,
+    playAreaState: PlayAreaState.create(),
+
+    // Status bar.
+    activeShipName: "",
+    phaseKey: "",
+    round: 0,
+    userMessage: "",
+
+    // Tactical view.
+    activePilotId: undefined,
+    tacticalViewState: TacticalViewState.create()
+  };
+
+  const BEARING_TO_FONT = {
+    "Turn Left": "turnleft",
+    "Turn Right": "turnright",
+    "Segnor's Loop Left": "sloopleft",
+    "Segnor's Loop Right": "sloopright",
+    "Tallon Roll Left": "trollleft",
+    "Tallon Roll Right": "trollright",
+    "Koiogran Turn": "kturn"
+  };
+
+  const STATIONARY_MANEUVER = XMA.Selector.maneuver(XMA.Maneuver.STATIONARY_0_HARD_0OR);
+
+  const regex = cls => new RegExp(`(\\s|^)${cls}(\\s|$)`);
+
+  const hasClass = (element, cls) => element.className.match(regex(cls));
+
+  const addClass = (element, cls) => element.className + (hasClass(element, cls) ? "" : ` ${cls}`);
+
+  const removeClass = (element, cls) =>
+    element.className +
+    (hasClass(element, cls) ? element.className.replace(regex(cls), " ") : element.className);
+
+  const createManeuverIcon = (bearing0, speed0, difficulty) => {
+    const defaultSrc = (bearing, speed) =>
+      speed === 0
+        ? "stop"
+        : (speed === -1 ? "reverse" : "") + bearing.toLowerCase().replace(/ /g, "");
+    const src = R.defaultTo(defaultSrc(bearing0, speed0), BEARING_TO_FONT[bearing0]);
+    let difficultyClass = "";
+    if (difficulty === "Easy") {
+      difficultyClass = " green";
+    } else if (difficulty === "Hard") {
+      difficultyClass = " red";
+    }
+    const className = `xw-f8${difficultyClass}`;
+
+    return ReactDOMFactories.span(
+      {
+        className
+      },
+      ReactDOMFactories.i({
+        className: `xwing-miniatures-font xwing-miniatures-font-${src}`
+      })
+    );
+  };
+
+  const maneuverBearing = maneuver =>
+    maneuver.bearing.startsWith("Reverse")
+      ? maneuver.bearing.substring("Reverse ".length)
+      : maneuver.bearing;
+
+  const maneuverSpeed = maneuver =>
+    (maneuver.bearing.startsWith("Reverse") ? -1 : 1) * maneuver.speed;
+
+  const findManeuver = (maneuvers, bearingIn, speedIn) => {
+    const isBearing = maneuver => R.equals(maneuverBearing(maneuver), bearingIn);
+    const isSpeed = maneuver => R.equals(maneuverSpeed(maneuver), speedIn);
+
+    return R.find(R.both(isBearing, isSpeed), maneuvers);
+  };
+
+  const determineMaximumSpeed = maneuvers =>
+    R.reduce(
+      (accum, maneuver) => Math.max(accum, maneuverSpeed(maneuver)),
+      Number.NEGATIVE_INFINITY,
+      maneuvers
+    );
+
+  const determineMinimumSpeed = maneuvers =>
+    R.reduce(
+      (accum, maneuver) => Math.min(accum, maneuverSpeed(maneuver)),
+      Number.POSITIVE_INFINITY,
+      maneuvers
+    );
+
+  // /////////////////////////////////////////////////////////////////////////////////////////////////
+  class ManeuverChooser extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        element: undefined
+      };
+
+      this.selectionChanged = this.selectionChangedFunction.bind(this);
+    }
+
+    bearingFunction0(cells, speed) {
+      const { isEditable, pilotId } = this.props;
+      const maneuver = STATIONARY_MANEUVER;
+      const { difficulty } = maneuver;
+      const image = createManeuverIcon(undefined, speed, difficulty);
+
+      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
+      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
+      cells.push(
+        ReactUtilities.createCell(image, cells.length, "b--xw-medium xw-min-w1-5", {
+          onClick: isEditable ? this.selectionChanged : undefined,
+          "data-pilotid": pilotId,
+          "data-maneuverkey": maneuver.key
+        })
+      );
+      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
+      cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium"));
+    }
+
+    bearingFunction(maneuverBearings, cells, speed, bearingValue) {
+      if (maneuverBearings.includes(bearingValue)) {
+        const { isEditable, maneuvers, pilotId } = this.props;
+        const maneuver = findManeuver(maneuvers, bearingValue, speed);
+
+        if (maneuver !== undefined) {
+          const { difficulty } = maneuver;
+          const image = createManeuverIcon(bearingValue, speed, difficulty);
+          cells.push(
+            ReactUtilities.createCell(image, cells.length, "b--xw-medium tc xw-min-w1-5", {
+              onClick: isEditable ? this.selectionChanged : undefined,
+              "data-pilotid": pilotId,
+              "data-maneuverkey": maneuver.key
+            })
+          );
+        } else {
+          cells.push(ReactUtilities.createCell(" ", cells.length, "b--xw-medium xw-min-w1-5"));
+        }
+      }
+    }
+
+    selectionChangedFunction(event) {
+      const { element: oldElement } = this.state;
+
+      if (oldElement) {
+        oldElement.className = removeClass(oldElement, "bg-xw-medium");
+      }
+
+      const element = event.currentTarget;
+      const pilotId = element.dataset.pilotid;
+      const maneuverKey = element.dataset.maneuverkey;
+      this.setState({
+        element
+      });
+      element.className = addClass(element, "bg-xw-medium");
+
+      const { callback } = this.props;
+
+      if (callback) {
+        callback({
+          pilotId,
+          maneuverKey
+        });
+      }
+    }
+
+    render() {
+      const { maneuvers, pilotName, shipName } = this.props;
+      const minSpeed = determineMinimumSpeed(maneuvers);
+      const maxSpeed = determineMaximumSpeed(maneuvers);
+      const bearingValues = [
+        "Turn Left",
+        "Bank Left",
+        "Straight",
+        "Bank Right",
+        "Turn Right",
+        "Segnor's Loop Left",
+        "Tallon Roll Left",
+        "Koiogran Turn",
+        "Segnor's Loop Right",
+        "Tallon Roll Right"
+      ];
+      const maneuverBearings = R.map(R.prop("bearing"), maneuvers);
+      const rows0 = [];
+
+      if (pilotName !== undefined) {
+        rows0.push(
+          ReactUtilities.createRow(ReactUtilities.createCell(pilotName), rows0.length, "bg-xw-light black f6")
+        );
+      }
+
+      if (shipName !== undefined) {
+        rows0.push(
+          ReactUtilities.createRow(ReactUtilities.createCell(shipName), rows0.length, "bg-xw-light black f6")
+        );
+      }
+
+      const rows = [];
+
+      for (let speed = maxSpeed; speed >= minSpeed; speed -= 1) {
+        const cells = [];
+        cells.push(ReactUtilities.createCell(speed, cells.length, "b--xw-medium center"));
+
+        if (speed === 0 && maneuvers.includes(STATIONARY_MANEUVER)) {
+          this.bearingFunction0(cells, speed);
+        } else {
+          bearingValues.forEach(bearingValue =>
+            this.bearingFunction(maneuverBearings, cells, speed, bearingValue)
+          );
+        }
+
+        rows.push(ReactUtilities.createRow(cells, rows.length));
+      }
+
+      const table = ReactUtilities.createTable(
+        rows,
+        rows0.length,
+        "b--xw-medium ba bg-black bw1 tc w-100 white"
+      );
+      rows0.push(table);
+
+      return ReactUtilities.createTable(rows0, undefined, "b--xw-medium ba bg-black bw1 center tc white");
+    }
+  }
+
+  ManeuverChooser.propTypes = {
+    maneuvers: PropTypes.arrayOf().isRequired,
+    shipName: PropTypes.string.isRequired,
+
+    callback: PropTypes.func,
+    isEditable: PropTypes.bool,
+    pilotName: PropTypes.string,
+    pilotId: PropTypes.number
+  };
+
+  ManeuverChooser.defaultProps = {
+    callback: undefined,
+    isEditable: true,
+    pilotName: undefined,
+    pilotId: undefined
+  };
+
+  class PlanningDialog extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        pilotToManeuver: {}
+      };
+
+      this.ok = this.okFunction.bind(this);
+      this.selectionChanged = this.selectionChangedFunction.bind(this);
+    }
+
+    okFunction() {
+      const { pilotToManeuver } = this.state;
+      const { callback } = this.props;
+
+      callback({
+        pilotToManeuver
+      });
+    }
+
+    selectionChangedFunction({ pilotId, maneuverKey }) {
+      const { pilotInstances } = this.props;
+      const pilotInstance = R.find(R.propEq("id", parseInt(pilotId, 10)))(pilotInstances);
+      const { pilotToManeuver } = this.state;
+      pilotToManeuver[pilotInstance.id] = maneuverKey;
+
+      this.setState({
+        pilotToManeuver
+      });
+    }
+
+    render() {
+      const { pilotInstances, pilotToValidManeuvers } = this.props;
+      const pilotIds = R.map(parseInt, Object.keys(pilotToValidManeuvers));
+      const cells = [];
+      const maneuverMap = maneuverKey => XMA.Selector.maneuver(maneuverKey);
+
+      pilotIds.forEach(pilotId => {
+        const pilotInstance = R.find(R.propEq("id", pilotId))(pilotInstances);
+        const maneuverKeys = pilotToValidManeuvers[pilotId];
+        const pilotCard = XMA.Selector.pilotCard(pilotInstance.pilotKey);
+        const maneuvers = R.map(maneuverMap, maneuverKeys);
+        const element = React.createElement(ManeuverChooser, {
+          maneuvers,
+          pilotName: PilotUtilities.name(pilotInstance, true),
+          shipName: pilotCard.ship,
+          pilotId: pilotInstance.id,
+          callback: this.selectionChanged
+        });
+        cells.push(ReactUtilities.createCell(element, cells.length, "v-top"));
+      });
+
+      const initialInput = ReactUtilities.createTable(ReactUtilities.createRow(cells));
+      const { pilotToManeuver } = this.state;
+      const disabled = Object.getOwnPropertyNames(pilotToManeuver).length < pilotIds.length;
+      const buttons = ReactDOMFactories.button(
+        {
+          onClick: this.ok,
+          disabled
+        },
+        "OK"
+      );
+
+      return React.createElement(OptionPane, {
+        title: "Planning: Select Maneuvers",
+        message: "",
+        initialInput,
+        buttons
+      });
+    }
+  }
+
+  PlanningDialog.propTypes = {
+    pilotInstances: PropTypes.arrayOf().isRequired,
+    pilotToValidManeuvers: PropTypes.shape().isRequired,
+    callback: PropTypes.func.isRequired
+  };
+
   const defenderInstancesForEach = (
     self,
     selectedWeaponKey,
@@ -2765,6 +2995,90 @@
     callback: PropTypes.func.isRequired
   };
 
+  const GamePanelContainer = (gameState, ownProps = {}) => {
+    const {
+      activePilotId,
+      displayExplosion,
+      displayLaserBeam,
+      displayManeuver,
+      phaseKey,
+      playArea,
+      playFormatKey,
+      round,
+      userMessage,
+      tacticalView
+    } = gameState;
+    const {
+      playAreaZoomIn,
+      playAreaZoomOut,
+      resourceBase,
+      tacticalViewZoomIn,
+      tacticalViewZoomOut
+    } = ownProps;
+
+    const damageReduceFunction = (accum, pilotInstance) => {
+      const damageInstances = XMS.Selector.damageInstancesByPilot(pilotInstance.id, gameState);
+      return R.assoc(pilotInstance.id, damageInstances, accum);
+    };
+
+    const upgradeReduceFunction = (accum, pilotInstance) => {
+      const upgradeInstances = XMS.Selector.upgradeInstancesByPilot(pilotInstance.id, gameState);
+      return R.assoc(pilotInstance.id, upgradeInstances, accum);
+    };
+
+    const pilotInstances1 = XMS.Selector.pilotInstancesByAgent(1, gameState);
+    const pilotToDamages1 = R.reduce(damageReduceFunction, {}, pilotInstances1);
+    const pilotToUpgrades1 = R.reduce(upgradeReduceFunction, {}, pilotInstances1);
+    const pilotInstances2 = XMS.Selector.pilotInstancesByAgent(2, gameState);
+    const pilotToDamages2 = R.reduce(damageReduceFunction, {}, pilotInstances2);
+    const pilotToUpgrades2 = R.reduce(upgradeReduceFunction, {}, pilotInstances2);
+
+    const image = `background/${
+    playFormatKey === XMA.PlayFormat.STANDARD ? "pia13845.jpg" : "horsehead_nebula_02092008.jpg"
+  }`;
+
+    const activePilotInstance = XMS.Selector.activePilotInstance(gameState);
+    const activeShipName =
+      activePilotInstance !== undefined ? PilotUtilities.name(activePilotInstance) : "";
+
+    return React.createElement(GamePanel, {
+      resourceBase,
+
+      // Pilots UI.
+      pilotInstances1,
+      pilotToDamages1,
+      pilotToUpgrades1,
+      pilotInstances2,
+      pilotToDamages2,
+      pilotToUpgrades2,
+
+      // Play area UI buttons.
+      playAreaZoomIn,
+      playAreaZoomOut,
+
+      // Play area UI.
+      playAreaState: playArea,
+      image,
+      explosion: displayExplosion,
+      laserBeam: displayLaserBeam,
+      maneuver: displayManeuver,
+
+      // Status bar.
+      activeShipName,
+      phaseKey,
+      round,
+      userMessage,
+
+      // Tactical view buttons.
+      tacticalViewZoomIn,
+      tacticalViewZoomOut,
+
+      // Tactical view.
+      activePilotId,
+      tacticalViewState: tacticalView
+    });
+  };
+
   const reduceDamage = gameState => (accumulator, pilotInstance) => {
     const pilotId = pilotInstance.id;
     const newPilotToDamages = {};
@@ -2884,6 +3198,7 @@
   exports.DicePanel = DicePanel;
   exports.EntityUI = EntityUI;
   exports.FactionUI = FactionUI;
+  exports.GamePanel = GamePanel;
   exports.ImageWithLabelUI = ImageWithLabelUI;
   exports.LabeledImage = LabeledImage;
   exports.ManeuverChooser = ManeuverChooser;
@@ -2898,6 +3213,7 @@
   exports.TokenPanel = TokenPanel;
   exports.UpgradeSlotUI = UpgradeSlotUI;
   exports.WeaponAndDefenderDialog = WeaponAndDefenderDialog;
+  exports.GamePanelContainer = GamePanelContainer;
   exports.PilotsContainer = PilotsContainer;
   exports.PlayAreaContainer = PlayAreaContainer;
   exports.StatusBarContainer = StatusBarContainer;
