@@ -3321,6 +3321,24 @@
     });
   };
 
+  const { Selector: Selector$3 } = XMS;
+
+  const SquadTableContainer = (gameState, ownProps = {}) => {
+    const { squadId } = ownProps;
+
+    const pilotInstances = Selector$3.pilotInstancesBySquad(squadId, gameState);
+
+    const pilotIds = R.map(pilotInstance => pilotInstance.id, pilotInstances);
+    const reduceFunction0 = (accum, pilotId) =>
+      R.assoc(pilotId, Selector$3.upgradeInstancesByPilot(pilotId, gameState), accum);
+    const pilotToUpgrades = R.reduce(reduceFunction0, {}, pilotIds);
+
+    return React.createElement(SquadTable, {
+      pilotInstances,
+      pilotToUpgrades
+    });
+  };
+
   const StatusBarContainer = (gameState, ownProps = {}) => {
     const { activePilotId, phaseKey, pilotInstances, round } = gameState;
     const activePilotInstance =
@@ -3409,6 +3427,7 @@
   exports.GamePanelContainer = GamePanelContainer;
   exports.PilotsContainer = PilotsContainer;
   exports.PlayAreaContainer = PlayAreaContainer;
+  exports.SquadTableContainer = SquadTableContainer;
   exports.StatusBarContainer = StatusBarContainer;
   exports.Endpoint = Endpoint;
   exports.PilotUtilities = PilotUtilities;

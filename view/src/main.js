@@ -27,6 +27,7 @@ import WeaponAndDefenderDialog from "./component/WeaponAndDefenderDialog.js";
 import GamePanelContainer from "./container/GamePanelContainer.js";
 import PilotsContainer from "./container/PilotsContainer.js";
 import PlayAreaContainer from "./container/PlayAreaContainer.js";
+import SquadTableContainer from "./container/SquadTableContainer.js";
 import StatusBarContainer from "./container/StatusBarContainer.js";
 
 import Endpoint from "./Endpoint.js";
@@ -64,6 +65,7 @@ export {
   GamePanelContainer,
   PilotsContainer,
   PlayAreaContainer,
+  SquadTableContainer,
   StatusBarContainer,
   Endpoint,
   PilotUtilities,
