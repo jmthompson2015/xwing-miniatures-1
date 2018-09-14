@@ -17,6 +17,7 @@ import PlayAreaUI from "./component/PlayAreaUI.js";
 import ShipActionUI from "./component/ShipActionUI.js";
 import ShipImage from "./component/ShipImage.js";
 import ShipSilhouetteUI from "./component/ShipSilhouetteUI.js";
+import SquadTable from "./component/SquadTable.js";
 import StatusBarUI from "./component/StatusBarUI.js";
 import TacticalView from "./component/TacticalView.js";
 import TokenPanel from "./component/TokenPanel.js";
@@ -54,6 +55,7 @@ export {
   ShipActionUI,
   ShipImage,
   ShipSilhouetteUI,
+  SquadTable,
   StatusBarUI,
   TacticalView,
   TokenPanel,
