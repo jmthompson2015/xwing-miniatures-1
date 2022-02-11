@@ -31,7 +31,7 @@
     "xwing-miniatures-font": "^2.2.0"
   },
   "devDependencies": {
-    "ajv": "^6.5.3",
+    "ajv": "^6.12.3",
     "eslint": "^5.4.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^3.0.1",
